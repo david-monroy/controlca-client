@@ -9,6 +9,11 @@ export default new Router({
   routes: [
     {
       path: "/",
+      name: "dashboard",
+      component: () => import("../views/Dashboard.vue"),
+    },
+    {
+      path: "/projects",
       name: "projects",
       component: () => import("../components/projects/ProjectsList.vue"),
     },

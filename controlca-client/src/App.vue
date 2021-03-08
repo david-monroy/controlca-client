@@ -14,3 +14,10 @@ export default {
   components: { Navbar }
 };
 </script>
+
+<style>
+  #app{
+    background-color: blanchedalmond;
+    min-height: 600px;
+  }
+</style>
