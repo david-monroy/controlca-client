@@ -19,7 +19,7 @@ export default new Router({
     {
       path: "/users",
       name: "users",
-      component: () => import("../components/users/UsersList.vue"),
+      component: () => import("../views/users/UsersList.vue"),
     },
     {
       path: "/users-add",

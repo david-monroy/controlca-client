@@ -1,10 +1,12 @@
 <template>
-  <div id="app">
-    <navbar></navbar>
-    <div class="container">
-      <router-view />
+  <v-app>
+    <div id="id">
+      <navbar></navbar>
+      <div class="container">
+        <router-view />
+      </div>
     </div>
-  </div>
+  </v-app>
 </template>
 
 <script>

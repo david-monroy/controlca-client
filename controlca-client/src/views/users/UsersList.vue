@@ -3,17 +3,7 @@
         <v-col cols="12" sm="12">
       <v-card class="mx-auto p-3" tile>
         <v-card-title>Usuarios</v-card-title>
-        <v-select
-                  v-model="user.rol"
-                  :items="users"
-                  label="Rol"
-                  
-                  outlined
-                  item-text="name"
-                  item-value="value"
-                  required
-                ></v-select>
-        
+       
         <v-data-table
           :headers="headers"
           :items="users"

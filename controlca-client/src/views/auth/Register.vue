@@ -57,23 +57,16 @@
 
             <v-col md="6" cols="12">
               <div class="form-group">
-                <!-- <v-select
-                  v-model="user.rol"
-                  :items="rol_items"
-                  label="Rol"
-                  :placeholder="rol_items[0].name"
-                  outlined
-                  item-text="name"
-                  item-value="value"
-                  required
-                ></v-select> -->
-                <input
-              v-model="user.rol"
-              v-validate="'required|max:50'"
-              type="number"
-              class="form-control"
-              name="rol"
-            />
+                <v-select
+                v-model="user.rol"
+                :items="rols"
+                label="Rol"       
+                :placeholder="rols[0].name"
+                outlined
+                item-text="name"
+                item-value="id"
+                required   
+                ></v-select>
               </div>
             </v-col>
           </v-row>
@@ -127,7 +120,7 @@
 import RolDataService from "../../services/RolDataService";
 
 export default {
-  name: 'Register',
+  name: 'register',
   data: () => ({
       user: {
         name: null,
@@ -137,43 +130,31 @@ export default {
         rol: null,
         carnet: null,
       },
+      rrr: [
+        "Hola", "Nojjoda", "Chao"
+      ],
       submitted: false,
       successful: false,
       message: '',
-      rol_items: [
-        {
-          name: "Administrador",
-          value: 1
-        },
-        {
-          name: "Líder",
-          value: 2
-        },
-        {
-          name: "Empleado",
-          value: 3
-        },
-      ],
+      rols: [],
       rolsDisabled: false
   }),
 
-  async mounted() {
-    await this.loadRols();
-  },
-
   methods: {
-    async loadRols() {
-      let response;
-      try {
-        response = await RolDataService.findAll();
-        console.log(response);
-        this.rols = response;
-        if (response.length == 0) {
-          this.rolsdDisabled = true;
-        }
-      } catch {
-        this.rolsDisabled = true;
-      }
+    retrieveRols() {
+      RolDataService.getAll()
+        .then((response) => {
+          this.rols = response.data.map(this.getDisplayRol);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+    getDisplayRol(rol) {
+      return {
+        id: rol.id,
+        name: rol.name.length > 30 ? rol.name.substr(0, 30) + "..." : rol.name
+      };
     },
     async handleRegister() {
       this.message = '';
@@ -197,7 +178,10 @@ export default {
         }
       });
     }
-  }
+  },
+  mounted() {
+    this.retrieveRols();
+  },
 };
 </script>
 
