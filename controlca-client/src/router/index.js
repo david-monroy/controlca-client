@@ -6,20 +6,9 @@ Vue.use(Router);
 export default new Router({
   routes: [
     {
-      path: "/projects",
-      alias: "/projects",
+      path: "/",
       name: "projects",
-      component: () => import("./components/projects/ProjectsList")
+      component: () => import("../components/projects/ProjectsList.vue"),
     },
-    {
-      path: "/projects/:id",
-      name: "project-details",
-      component: () => import("./components/projects/Project")
-    },
-    {
-      path: "/add",
-      name: "add",
-      component: () => import("./components/projects/AddProject")
-    }
   ]
 });
