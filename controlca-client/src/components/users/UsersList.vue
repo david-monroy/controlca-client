@@ -12,22 +12,22 @@
 
     <v-col cols="12" sm="12">
       <v-card class="mx-auto" tile>
-        <v-card-title>Proyectos</v-card-title>
+        <v-card-title>Usuarios</v-card-title>
 
         <v-data-table
           :headers="headers"
-          :items="projects"
+          :items="users"
           disable-pagination
           :hide-default-footer="true"
         >
           <template v-slot:[`item.actions`]="{ item }">
-            <v-icon small class="mr-2" @click="editProject(item.id)">mdi-pencil</v-icon>
-            <v-icon small @click="deleteProject(item.id)">mdi-delete</v-icon>
+            <v-icon small class="mr-2" @click="editUser(item.id)">mdi-pencil</v-icon>
+            <v-icon small @click="deleteUser(item.id)">mdi-delete</v-icon>
           </template>
         </v-data-table>
 
-        <v-card-actions v-if="projects.length > 0">
-          <v-btn small color="error" @click="removeAllProjects">
+        <v-card-actions v-if="users.length > 0">
+          <v-btn small color="error" @click="removeAllUsers">
             Remove All
           </v-btn>
         </v-card-actions>
@@ -37,24 +37,24 @@
 </template>
 
 <script>
-import ProjectDataService from "../../services/ProjectDataService";
+import UserDataService from "../../services/UserDataService";
 export default {
-  name: "projects-list",
+  name: "users-list",
   data() {
     return {
-      projects: [],
+      users: [],
       title: "",
       headers: [
         { text: "Nombre", align: "start", sortable: false, value: "name" },
-        { text: "Descripción", value: "description", sortable: false }
+        { text: "Apellido", value: "lastname", sortable: false }
       ],
     };
   },
   methods: {
-    retrieveProjects() {
-      ProjectDataService.getAll()
+    retrieveUsers() {
+      UserDataService.getAll()
         .then((response) => {
-          this.projects = response.data.map(this.getDisplayProject);
+          this.users = response.data.map(this.getDisplayUser);
           console.log(response.data);
         })
         .catch((e) => {
@@ -63,11 +63,11 @@ export default {
     },
 
     refreshList() {
-      this.retrieveProjects();
+      this.retrieveUsers();
     },
 
-    removeAllProjects() {
-      ProjectDataService.deleteAll()
+    removeAllUsers() {
+      UserDataService.deleteAll()
         .then((response) => {
           console.log(response.data);
           this.refreshList();
@@ -78,9 +78,9 @@ export default {
     },
 
     searchTitle() {
-      ProjectDataService.findByTitle(this.title)
+      UserDataService.findByTitle(this.title)
         .then((response) => {
-          this.projects = response.data.map(this.getDisplayProject);
+          this.users = response.data.map(this.getDisplayUser);
           console.log(response.data);
         })
         .catch((e) => {
@@ -88,12 +88,12 @@ export default {
         });
     },
 
-    editProject(id) {
-      this.$router.push({ name: "projects-details", params: { id: id } });
+    editUser(id) {
+      this.$router.push({ name: "users-details", params: { id: id } });
     },
 
-    deleteProject(id) {
-      ProjectDataService.delete(id)
+    deleteUser(id) {
+      UserDataService.delete(id)
         .then(() => {
           this.refreshList();
         })
@@ -102,16 +102,16 @@ export default {
         });
     },
 
-    getDisplayProject(project) {
+    getDisplayUser(user) {
       return {
-        id: project.id,
-        name: project.name.length > 30 ? project.name.substr(0, 30) + "..." : project.name,
-        description: project.description.length > 30 ? project.description.substr(0, 30) + "..." : project.description
+        id: user.id,
+        name: user.name.length > 30 ? user.name.substr(0, 30) + "..." : user.name,
+        lastname: user.lastname.length > 30 ? user.lastname.substr(0, 30) + "..." : user.lastname
       };
     },
   },
   mounted() {
-    this.retrieveProjects();
+    this.retrieveUsers();
   },
 };
 </script>

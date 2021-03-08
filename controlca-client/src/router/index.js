@@ -10,5 +10,11 @@ export default new Router({
       name: "projects",
       component: () => import("../components/projects/ProjectsList.vue"),
     },
+    {
+      path: "/users",
+      name: "users",
+      component: () => import("../components/users/UsersList.vue"),
+    },
+    
   ]
 });
