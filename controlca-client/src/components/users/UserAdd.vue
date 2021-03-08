@@ -1,6 +1,7 @@
 <template>
-  <div class="submit-form mt-3 mx-auto">
-    <p class="headline">Registrar Usuario</p>
+  <v-card class="mx-auto main-card">
+    <div class="submit-form mt-3 mx-auto">
+    <h3 class="headline">Registrar Usuario</h3>
 
     <div v-if="!submitted">
       <v-form ref="form" lazy-validation>
@@ -33,7 +34,7 @@
         ></v-text-field>
       </v-form>
 
-      <v-btn color="primary" class="mt-3" @click="saveUser">Registrar</v-btn>
+      <v-btn color="primary" class="mt-3 simple-btn" @click="saveUser">Registrar</v-btn>
     </div>
 
     <div v-else>
@@ -52,6 +53,7 @@
       </v-card>
     </div>
   </div>
+  </v-card>
 </template>
 
 <script>
