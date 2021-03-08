@@ -2,9 +2,9 @@
   <v-card 
   class="pa-4 ma-0 dashboard-card__item" 
   @click="goRoute(route)">
-    <div class="dashboard-card__info text-center">
-      <h4 class="dashboard-card__info-title">{{ name }}</h4>
-      
+    <div class="text-center">
+        
+      <h4 class="">{{ name }}</h4>
     </div>
   </v-card>
 </template>
@@ -32,8 +32,15 @@ export default {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width:200px;
+    width:240px;
     height:200px;
-    transition: 0.5;
+    background-color: #00917c !important;
+    color: white !important;
+    transition: 0.3s;
+    margin: 8px;
+}
+
+.dashboard-card__item:hover{
+    background-color: #066B5D !important;
 }
 </style>

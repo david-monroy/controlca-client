@@ -4,11 +4,6 @@
           <div class="container container-navbar">
       <a href class="navbar-brand" @click.prevent>Controlca App</a>
       <div class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <router-link to="/home" class="nav-link">
-            <font-awesome-icon icon="home" />Home
-          </router-link>
-        </li>
         <li v-if="showAdminBoard" class="nav-item">
           <router-link to="/" class="nav-link">Admin Board</router-link>
         </li>
@@ -53,7 +48,7 @@
 
 <script>
 export default {
-    name: "navbar",
+  name: "navbar",
   computed: {
     currentUser() {      
       return this.$store.state.auth.user;
@@ -62,7 +57,6 @@ export default {
       if (this.currentUser && this.currentUser.rol == 1) {
         return this.currentUser;
       }
-
       return false;
     },
     showLeaderBoard() {

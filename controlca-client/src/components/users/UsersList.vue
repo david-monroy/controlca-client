@@ -45,8 +45,11 @@ export default {
       users: [],
       title: "",
       headers: [
-        { text: "Nombre", align: "start", sortable: false, value: "name" },
-        { text: "Apellido", value: "lastname", sortable: false }
+        { text: "Nombre", align: "start", sortable: true, value: "name" },
+        { text: "Apellido", value: "lastname", sortable: true },
+        { text: "Nro. Carnet", value: "carnet", sortable: true },
+        { text: "Email", value: "email", sortable: true },
+        { text: "Rol", value: "rol", sortable: true }
       ],
     };
   },
