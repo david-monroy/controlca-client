@@ -14,7 +14,7 @@ class UserDataService {
   }
 
   create(data) {
-    return http.post("/auth/signin", data);
+    return http.post("/auth/signup", data);
   }
 
   update(id, data) {

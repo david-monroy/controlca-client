@@ -31,7 +31,7 @@ export default {
   data() {
     return {
       users: [],
-      addUser: 'users-add',
+      addUser: 'register',
       title: "",
       headers: [
         { text: "Nombre", align: "start", sortable: true, value: "name" },

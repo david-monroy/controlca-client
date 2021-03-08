@@ -27,6 +27,13 @@
         ></v-text-field>
 
         <v-text-field
+          v-model="user.rol"
+          :rules="[(v) => !!v || 'El correo es requerido']"
+          label="Rol"
+          required
+        ></v-text-field>
+
+        <v-text-field
           v-model="user.carnet"
           :rules="[(v) => !!v || 'El número de carnet es requerido']"
           label="Número de carnet"
@@ -58,7 +65,7 @@
 
 <script>
 import UserDataService from "../../services/UserDataService";
-
+import RolDataService from "../../services/RolDataService";
 export default {
   name: "add-user",
   data() {
@@ -68,8 +75,11 @@ export default {
         name: "",
         lastname: "",
         email: "",
-        carnet: "" 
+        carnet: "",
+        rol: ""
       },
+      rols: [],
+      rolsDisabled: false,
       submitted: false,
     };
   },
@@ -96,6 +106,19 @@ export default {
     newUser() {
       this.submitted = false;
       this.user = {};
+    },
+
+    async loadRols() {
+      let response;
+      try {
+        response = await RolDataService.findAll();
+        this.rols = response;
+        if (response.length == 0) {
+          this.rolsdDisabled = true;
+        }
+      } catch {
+        this.rolsDisabled = true;
+      }
     },
   },
 };

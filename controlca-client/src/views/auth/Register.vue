@@ -1,64 +1,84 @@
 <template>
-  <div class="col-md-12">
-    <div class="card card-container">
-      <form name="form" @submit.prevent="handleRegister">
+  <div class="col-md-12 mt-3 pt-1">
+    <div class="card card-container mt-0 form-card">
+      <form name="form" v-on="handleRegister.prevent">
         <div v-if="!successful">
-          <div class="form-group">
-            <label for="name">Nombre</label>
-            <input
-              v-model="user.name"
-              v-validate="'required|min:3|max:20'"
-              type="text"
-              class="form-control"
-              name="name"
-            />
-            <div
-              v-if="submitted && errors.has('name')"
-              class="alert-danger"
-            >{{errors.first('name')}}</div>
-          </div>
-          <div class="form-group">
-            <label for="lastname">Apellido</label>
-            <input
-              v-model="user.lastname"
-              v-validate="'required|min:3|max:20'"
-              type="text"
-              class="form-control"
-              name="lastname"
-            />
-            <div
-              v-if="submitted && errors.has('lastname')"
-              class="alert-danger"
-            >{{errors.first('lastname')}}</div>
-          </div>
-          <div class="form-group">
-            <label for="carnet">Número de carnet</label>
-            <input
-              v-model="user.carnet"
-              v-validate="'required|min:3|max:20'"
-              type="text"
-              class="form-control"
-              name="carnet"
-            />
-            <div
-              v-if="submitted && errors.has('carnet')"
-              class="alert-danger"
-            >{{errors.first('carnet')}}</div>
-          </div>
-          <div class="form-group">
-            <label for="rol">Rol</label>
-            <input
+          <v-row class="pb-0 mb-0 form-row" >
+            <v-col md="6" cols="12">
+              <div class="form-group">
+                <label for="name">Nombre</label>
+                <input
+                  v-model="user.name"
+                  v-validate="'required|min:3|max:20'"
+                  type="text"
+                  class="form-control"
+                  name="name"
+                />
+                <div
+                  v-if="submitted && errors.has('name')"
+                  class="alert-danger"
+                >{{errors.first('name')}}</div>
+              </div>
+              </v-col>
+              <v-col md="6" cols="12">
+              <div class="form-group">
+                <label for="lastname">Apellido</label>
+                <input
+                  v-model="user.lastname"
+                  v-validate="'required|min:3|max:20'"
+                  type="text"
+                  class="form-control"
+                  name="lastname"
+                />
+                <div
+                  v-if="submitted && errors.has('lastname')"
+                  class="alert-danger"
+                >{{errors.first('lastname')}}</div>
+              </div>
+            </v-col>
+          </v-row>
+          <v-row class="pb-0 mb-0 form-row">
+            <v-col md="6" cols="12">
+              <div class="form-group">
+              <label for="carnet">Número de carnet</label>
+              <input
+                v-model="user.carnet"
+                v-validate="'required|min:3|max:20'"
+                type="text"
+                class="form-control"
+                name="carnet"
+              />
+              <div
+                v-if="submitted && errors.has('carnet')"
+                class="alert-danger"
+              >{{errors.first('carnet')}}</div>
+            </div>
+            </v-col>
+
+            <v-col md="6" cols="12">
+              <div class="form-group">
+                <!-- <v-select
+                  v-model="user.rol"
+                  :items="rol_items"
+                  label="Rol"
+                  :placeholder="rol_items[0].name"
+                  outlined
+                  item-text="name"
+                  item-value="value"
+                  required
+                ></v-select> -->
+                <input
               v-model="user.rol"
-              v-validate="'required|max:20'"
-              type="text"
+              v-validate="'required|max:50'"
+              type="number"
               class="form-control"
               name="rol"
             />
-            <div
-              v-if="submitted && errors.has('rol')"
-              class="alert-danger"
-            >{{errors.first('rol')}}</div>
-          </div>
+              </div>
+            </v-col>
+          </v-row>
+          
+                   
           <div class="form-group">
             <label for="email">Correo electrónico</label>
             <input
@@ -88,7 +108,7 @@
             >{{errors.first('password')}}</div>
           </div>
           <div class="form-group">
-            <button class="btn btn-primary btn-block">Registrar</button>
+            <button class="btn btn-primary btn-block"  @click="handleRegister()">Registrar</button>
           </div>
         </div>
       </form>
@@ -103,32 +123,62 @@
 </template>
 
 <script>
-import User from '../../models/user';
+
+import RolDataService from "../../services/RolDataService";
 
 export default {
   name: 'Register',
-  data() {
-    return {
-      user: new User('', '', '','', '', ''),
+  data: () => ({
+      user: {
+        name: null,
+        lastname: null,
+        email: null,
+        password: null,
+        rol: null,
+        carnet: null,
+      },
       submitted: false,
       successful: false,
-      message: ''
-    };
+      message: '',
+      rol_items: [
+        {
+          name: "Administrador",
+          value: 1
+        },
+        {
+          name: "Líder",
+          value: 2
+        },
+        {
+          name: "Empleado",
+          value: 3
+        },
+      ],
+      rolsDisabled: false
+  }),
+
+  async mounted() {
+    await this.loadRols();
   },
-  computed: {
-    loggedIn() {
-      return this.$store.state.auth.status.loggedIn;
-    }
-  },
-  mounted() {
-    if (this.loggedIn) {
-      this.$router.push('/');
-    }
-  },
+
   methods: {
-    handleRegister() {
+    async loadRols() {
+      let response;
+      try {
+        response = await RolDataService.findAll();
+        console.log(response);
+        this.rols = response;
+        if (response.length == 0) {
+          this.rolsdDisabled = true;
+        }
+      } catch {
+        this.rolsDisabled = true;
+      }
+    },
+    async handleRegister() {
       this.message = '';
       this.submitted = true;
+      console.log(this.user);
       this.$validator.validate().then(isValid => {
         if (isValid) {
           this.$store.dispatch('auth/register', this.user).then(
@@ -152,13 +202,9 @@ export default {
 </script>
 
 <style scoped>
-label {
-  display: block;
-  margin-top: 10px;
-}
 
 .card-container.card {
-  max-width: 350px !important;
+  max-width: 650px !important;
   padding: 40px 40px;
 }
 
@@ -184,4 +230,5 @@ label {
   -webkit-border-radius: 50%;
   border-radius: 50%;
 }
+
 </style>
