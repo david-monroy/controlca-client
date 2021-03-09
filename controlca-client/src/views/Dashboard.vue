@@ -13,7 +13,7 @@
               <DashboardCard
                 :name="item.name"
                 :route="item.route"
-                class="text-center py-4"
+                class="text-center"
               >
               </DashboardCard>
             </div>
@@ -79,7 +79,9 @@ export default {
   }
   .item-list{
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
+    height: 450px;
+    padding: 0 40px;
     align-items: center;
     flex-direction: row;
     flex-wrap: wrap;

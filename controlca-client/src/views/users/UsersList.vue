@@ -1,18 +1,41 @@
 <template>
   <v-row align="center" class="list px-3 mt-5 mx-auto">
-        <v-col cols="12" sm="12">
+    <v-col cols="12" sm="12">
       <v-card class="mx-auto p-3" tile>
-        <v-card-title>Usuarios</v-card-title>
-       
+        <v-card-title>Usuarios
+          <v-spacer></v-spacer>
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Buscar"
+            single-line
+            hide-details
+          ></v-text-field>
+        </v-card-title>
         <v-data-table
           :headers="headers"
           :items="users"
-          disable-pagination
-          :hide-default-footer="true"
+          :hide-default-footer="false"
+          :items-per-page="5"
+          :search="search"
         >
+          <template v-slot:top>
+              <v-dialog v-model="dialogDelete" max-width="500px">
+                <v-card>
+                  <v-card-title class="headline">¿Seguro que desea eliminar este usuario?</v-card-title>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="closeDelete">Cancelar</v-btn>
+                    <v-btn color="blue darken-1" text @click="deleteUser()">Sí, eliminar</v-btn>
+                    <v-spacer></v-spacer>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+          </template>
+
           <template v-slot:[`item.actions`]="{ item }">
             <v-icon small class="mr-2" @click="editUser(item.id)">mdi-pencil</v-icon>
-            <v-icon small @click="deleteUser(item.id)">mdi-delete</v-icon>
+            <v-icon small @click="openDelete(item.id)">mdi-delete</v-icon>
           </template>
         </v-data-table>
 
@@ -21,11 +44,34 @@
     <v-btn class="simple-btn my-2 mx-auto" @click="goRoute(addUser)">
       Registrar Usuario
     </v-btn>
+    <v-snackbar
+          v-model="alertSuccess"
+          type="success"
+          top
+          :timeout="timeout"
+          color="success"
+        >
+          <strong class="body-1 font-weight-bold">
+            {{successMessage}}
+          </strong>
+          <template v-slot:action="{ attrs }">
+            <v-btn
+              dark
+              icon
+              color="white"
+              v-bind="attrs"
+              @click="alertSuccess = false"
+            >
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </template>
+        </v-snackbar>
   </v-row>
 </template>
 
 <script>
 import UserDataService from "../../services/UserDataService";
+
 export default {
   name: "users-list",
   data() {
@@ -33,16 +79,32 @@ export default {
       users: [],
       addUser: 'register',
       title: "",
+      search: "",
       headers: [
         { text: "Nombre", align: "start", sortable: true, value: "name" },
         { text: "Apellido", value: "lastname", sortable: true },
         { text: "Nro. Carnet", value: "carnet", sortable: true },
         { text: "Correo electrónico", value: "email", sortable: true },
-        { text: "Rol", value: "rol", sortable: true }
+        { text: "Rol", value: "rol", sortable: true },
+        { text: 'Acciones', value: 'actions', sortable: false },
       ],
+
+      dialogDelete: false,
+      userToDelete: "",
+
+      // Snackbar
+      timeout: 4000,
+      alertSuccess: false,
+      successMessage: "Usuario eliminado satisfactoriamente."
     };
   },
+  watch: {
+      dialogDelete (val) {
+        val || this.closeDelete()
+      },
+    },
   methods: {
+
     retrieveUsers() {
       UserDataService.getAll()
         .then((response) => {
@@ -83,7 +145,8 @@ export default {
       this.$router.push({ name: "users-details", params: { id: id } });
     },
 
-    deleteUser(id) {
+    deleteUser() {
+      let id = this.userToDelete;
       UserDataService.delete(id)
         .then(() => {
           this.refreshList();
@@ -91,6 +154,8 @@ export default {
         .catch((e) => {
           console.log(e);
         });
+      this.closeDelete();
+      this.alertSuccess = true;
     },
 
     getDisplayUser(user) {
@@ -99,14 +164,23 @@ export default {
         name: user.name.length > 30 ? user.name.substr(0, 30) + "..." : user.name,
         lastname: user.lastname.length > 30 ? user.lastname.substr(0, 30) + "..." : user.lastname,
         email: user.email.length > 30 ? user.email.substr(0, 30) + "..." : user.email,
-        rol: user.rol.length > 30 ? user.rol.substr(0, 30) + "..." : user.rol,
+        rol: user.rol,
         carnet: user.carnet.length > 30 ? user.carnet.substr(0, 30) + "..." : user.carnet
       };
+    },
+
+    closeDelete(){
+      this.dialogDelete = false;
+    },
+    openDelete(userID){
+      this.dialogDelete = true;
+      this.userToDelete = userID;
     },
 
     goRoute(route) {
       this.$router.push("/" + route);
     },
+
   },
   mounted() {
     this.retrieveUsers();

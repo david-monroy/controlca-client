@@ -9,6 +9,10 @@ class RolDataService {
     return http.get(`/rols/${id}`);
   }
 
+  getRolName(id) {
+    return http.get(`/rols/name/${id}`);
+  }
+
   create(data) {
     return http.post("/auth/signin", data);
   }

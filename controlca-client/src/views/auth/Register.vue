@@ -1,10 +1,11 @@
 <template>
   <div class="col-md-12 mt-3 pt-1">
     <div class="card card-container mt-0 form-card">
-      <form name="form" v-on="handleRegister.prevent">
-        <div v-if="!successful">
+      <form name="registryForm" 
+      v-on="handleRegister.prevent"
+      >
           <v-row class="pb-0 mb-0 form-row" >
-            <v-col md="6" cols="12">
+            <v-col md="6" cols="12" class="py-0">
               <div class="form-group">
                 <label for="name">Nombre</label>
                 <input
@@ -20,7 +21,7 @@
                 >{{errors.first('name')}}</div>
               </div>
               </v-col>
-              <v-col md="6" cols="12">
+              <v-col md="6" cols="12" class="py-0">
               <div class="form-group">
                 <label for="lastname">Apellido</label>
                 <input
@@ -38,7 +39,7 @@
             </v-col>
           </v-row>
           <v-row class="pb-0 mb-0 form-row">
-            <v-col md="6" cols="12">
+            <v-col md="6" cols="12" class="py-0">
               <div class="form-group">
               <label for="carnet">Número de carnet</label>
               <input
@@ -55,55 +56,85 @@
             </div>
             </v-col>
 
-            <v-col md="6" cols="12">
+            <v-col md="6" cols="12" class="py-0">
+              <label for="email">Correo electrónico</label>
+              <input
+                v-model="user.email"
+                v-validate="'required|email|max:50'"
+                type="email"
+                class="form-control"
+                name="email"
+              />
+              <div
+                v-if="submitted && errors.has('email')"
+                class="alert-danger"
+              >{{errors.first('email')}}
+              </div>
+
+            </v-col>
+          </v-row>
+          <v-row class="pb-0 mb-0 form-row-rol">
+            <div class="form-group">
+              <v-select
+                  v-model="user.rol"
+                  class="mt-8"
+                  :items="rols"
+                  label="Rol"       
+                  :placeholder="rols[0].name"
+                  outlined
+                  item-text="name"
+                  item-value="id"
+                  dense
+                  required   
+                  ></v-select>
+            </div>
+          </v-row>
+                   
+          <v-row class="pb-0 mb-0 form-row">
+            <v-col md="6" cols="12" class="py-0">
               <div class="form-group">
-                <v-select
-                v-model="user.rol"
-                :items="rols"
-                label="Rol"       
-                :placeholder="rols[0].name"
-                outlined
-                item-text="name"
-                item-value="id"
-                required   
-                ></v-select>
+                <v-text-field
+                  v-model="user.password"
+                  :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                  v-validate="'required|min:6|max:40'"
+                  label="Contraseña"
+                  :type="show ? 'text' : 'password'"
+                  @click:append="show = !show"
+                  name="password"
+                ></v-text-field>
+                <div
+                  v-if="submitted && errors.has('password')"
+                  class="alert-danger"
+                >{{errors.first('password')}}</div>
+              </div>
+            </v-col>
+            <v-col md="6" cols="12" class="py-0">
+              <div class="form-group">
+                <v-text-field
+                  v-model="confirmPassword"
+                  :append-icon="showConfirm ? 'mdi-eye' : 'mdi-eye-off'"
+                  v-validate="'required|min:6|max:40'"
+                  label="Confirmar contraseña"
+                  :type="showConfirm ? 'text' : 'password'"
+                  @click:append="showConfirm = !showConfirm"
+                  name="confirmPassword"
+                ></v-text-field>
+                <div
+                  v-if="submitted && errors.has('password')"
+                  class="alert-danger"
+                >{{errors.first('password')}}</div>
               </div>
             </v-col>
           </v-row>
           
-                   
-          <div class="form-group">
-            <label for="email">Correo electrónico</label>
-            <input
-              v-model="user.email"
-              v-validate="'required|email|max:50'"
-              type="email"
-              class="form-control"
-              name="email"
-            />
-            <div
-              v-if="submitted && errors.has('email')"
-              class="alert-danger"
-            >{{errors.first('email')}}</div>
+          <div class="form-group mt-4">
+            <button class="btn btn-primary btn-block"
+                @click="handleRegister()"
+                :loading="loading">
+                Registrar
+            </button>
           </div>
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input
-              v-model="user.password"
-              v-validate="'required|min:6|max:40'"
-              type="password"
-              class="form-control"
-              name="password"
-            />
-            <div
-              v-if="submitted && errors.has('password')"
-              class="alert-danger"
-            >{{errors.first('password')}}</div>
-          </div>
-          <div class="form-group">
-            <button class="btn btn-primary btn-block"  @click="handleRegister()">Registrar</button>
-          </div>
-        </div>
+
       </form>
 
       <div
@@ -112,6 +143,28 @@
         :class="successful ? 'alert-success' : 'alert-danger'"
       >{{message}}</div>
     </div>
+    <v-snackbar
+          v-model="alertError"
+          type="error"
+          top
+          :timeout="timeout"
+          color="error"
+        >
+          <strong class="body-1 registry-snackbar font-weight-bold">
+            {{errorMessage}}
+          </strong>
+          <template v-slot:action="{ attrs }">
+            <v-btn
+              dark
+              icon
+              color="white"
+              v-bind="attrs"
+              @click="alertError = false"
+            >
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </template>
+        </v-snackbar>
   </div>
 </template>
 
@@ -130,14 +183,19 @@ export default {
         rol: null,
         carnet: null,
       },
-      rrr: [
-        "Hola", "Nojjoda", "Chao"
-      ],
+      confirmPassword: null,
       submitted: false,
-      successful: false,
       message: '',
+      show: false,
+      showConfirm: false,
       rols: [],
-      rolsDisabled: false
+      rolsDisabled: false,
+      loading: false,
+
+      // Snackbar
+      timeout: 4000,
+      alertError: false,
+      errorMessage: "Las contraseñas no coinciden."
   }),
 
   methods: {
@@ -157,27 +215,26 @@ export default {
       };
     },
     async handleRegister() {
-      this.message = '';
-      this.submitted = true;
-      console.log(this.user);
-      this.$validator.validate().then(isValid => {
-        if (isValid) {
-          this.$store.dispatch('auth/register', this.user).then(
-            data => {
-              this.message = data.message;
-              this.successful = true;
-            },
-            error => {
-              this.message =
-                (error.response && error.response.data) ||
-                error.message ||
-                error.toString();
-              this.successful = false;
-            }
-          );
-        }
-      });
-    }
+      if (this.matchPassword()){
+        this.loading = true,
+        this.message = '';
+        this.submitted = true;
+        this.$validator.validate().then(isValid => {
+          if (isValid) {
+            this.$store.dispatch('auth/register', this.user);
+          }
+          this.$router.push("/users");
+        });
+      } else {
+        this.alertError = true;
+      }
+    },
+    matchPassword(){
+      return (this.user.password == this.confirmPassword)
+    },
+    goRoute(route) {
+      this.$router.push("/" + route);
+    },
   },
   mounted() {
     this.retrieveRols();
@@ -213,6 +270,15 @@ export default {
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
   border-radius: 50%;
+}
+
+.form-group{
+  margin-bottom: 8px !important;
+}
+
+.form-row-rol .form-group{
+  max-height: 60px;
+  margin-bottom: 50px;
 }
 
 </style>

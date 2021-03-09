@@ -37,7 +37,7 @@ export default {
     background-color: #00917c !important;
     color: white !important;
     transition: 0.3s;
-    margin: 8px;
+    margin: 14px  !important;
 }
 
 .dashboard-card__item:hover{

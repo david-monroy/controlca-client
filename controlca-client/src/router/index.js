@@ -24,7 +24,7 @@ export default new Router({
     {
       path: "/users-add",
       name: "users-add",
-      component: () => import("../components/users/UserAdd.vue"),
+      component: () => import("../views/auth/Register.vue"),
     },
     {
       path: '/login',
