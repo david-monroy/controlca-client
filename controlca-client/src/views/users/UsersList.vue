@@ -77,7 +77,7 @@ export default {
   data() {
     return {
       users: [],
-      addUser: 'register',
+      addUser: 'users-add',
       title: "",
       search: "",
       headers: [
