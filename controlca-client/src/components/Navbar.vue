@@ -3,19 +3,25 @@
       <nav class="navbar navbar-expand navbar-dark bg-dark">
           <div class="container container-navbar">
       <a href class="navbar-brand" @click.prevent>Controlca App</a>
-      <div class="navbar-nav mr-auto">
-        <li v-if="showAdminBoard" class="nav-item">
-          <router-link to="/" class="nav-link">Admin Board</router-link>
+      <div class="ml-auto navbar-nav">
+        <li v-if="showAdminBoard" class="nav-item ml-4">
+          <router-link to="/" class="nav-link ">Escritorio</router-link>
         </li>
-        <li v-if="showLeaderBoard" class="nav-item">
-          <router-link to="/" class="nav-link">Leader Board</router-link>
+        <li class="nav-item ml-4">
+          <router-link v-if="showLeaderBoard" to="/" class="nav-link">Proyectos</router-link>
         </li>
-        <li class="nav-item">
-          <router-link v-if="currentUser" to="/" class="nav-link">User</router-link>
+        <li class="nav-item ml-4">
+          <router-link v-if="showAdminBoard" to="/users" class="nav-link">Usuarios</router-link>
         </li>
-      </div>
+        <li class="nav-item ml-4">
+          <router-link v-if="showLeaderBoard" to="/" class="nav-link">Cargar Horas</router-link>
+        </li>
+        <li class="nav-item ml-4">
+          <router-link v-if="showLeaderBoard" to="/" class="nav-link">Reportes</router-link>
+        </li>
+      
 
-      <div v-if="!currentUser" class="navbar-nav ml-auto">
+      <!-- <div v-if="!currentUser" class="navbar-nav">
         <li class="nav-item">
           <router-link to="/register" class="nav-link">
             <font-awesome-icon icon="user-plus" />Sign Up
@@ -26,20 +32,21 @@
             <font-awesome-icon icon="sign-in-alt" />Login
           </router-link>
         </li>
-      </div>
+      </div> -->
 
       <div v-if="currentUser" class="navbar-nav ml-auto">
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <router-link to="/profile" class="nav-link">
             <font-awesome-icon icon="user" />
              {{ currentUser.name }} {{ currentUser.lastname }}
           </router-link>
-        </li>
-        <li class="nav-item">
+        </li> -->
+        <li class="nav-item ml-4">
           <a class="nav-link" href @click.prevent="logOut">
-            <font-awesome-icon icon="sign-out-alt" />LogOut
+            <font-awesome-icon icon="sign-out-alt" />Cerrar sesión
           </a>
         </li>
+      </div>
       </div>
       </div>
     </nav>
@@ -60,8 +67,8 @@ export default {
       return false;
     },
     showLeaderBoard() {
-      if (this.currentUser && this.currentUser.rol == 2) {
-        return this.currentUser.rol;
+      if (this.currentUser && (this.currentUser.rol == 2 || this.currentUser.rol == 1)) {
+        return this.currentUser;
       }
 
       return false;
