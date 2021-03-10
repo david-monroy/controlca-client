@@ -4,19 +4,19 @@
           <div class="container container-navbar">
       <a href class="navbar-brand" @click.prevent>Controlca App</a>
       <div class="ml-auto navbar-nav">
-        <li v-if="showAdminBoard" class="nav-item ml-4">
+        <li v-if="showAdminBoard" class="nav-item ml-3">
           <router-link to="/" class="nav-link ">Escritorio</router-link>
         </li>
-        <li class="nav-item ml-4">
+        <li class="nav-item ml-3">
           <router-link v-if="showLeaderBoard" to="/" class="nav-link">Proyectos</router-link>
         </li>
-        <li class="nav-item ml-4">
+        <li class="nav-item ml-3">
           <router-link v-if="showAdminBoard" to="/users" class="nav-link">Usuarios</router-link>
         </li>
-        <li class="nav-item ml-4">
+        <li class="nav-item ml-3">
           <router-link v-if="showLeaderBoard" to="/" class="nav-link">Cargar Horas</router-link>
         </li>
-        <li class="nav-item ml-4">
+        <li class="nav-item ml-3">
           <router-link v-if="showLeaderBoard" to="/" class="nav-link">Reportes</router-link>
         </li>
       
@@ -41,7 +41,7 @@
              {{ currentUser.name }} {{ currentUser.lastname }}
           </router-link>
         </li> -->
-        <li class="nav-item ml-4">
+        <li class="nav-item ml-3">
           <a class="nav-link" href @click.prevent="logOut">
             <font-awesome-icon icon="sign-out-alt" />Cerrar sesión
           </a>

@@ -10,7 +10,9 @@
               v-for="item in dashItems"
               :key="item.id"
             >
+
               <DashboardCard
+                v-if="currentUser.rol <= item.rol"
                 :name="item.name"
                 :route="item.route"
                 class="text-center"
@@ -42,24 +44,28 @@ export default {
         id: 1,
         name: "Proyectos",
         img: "",
+        rol: 2,
         route: "projects",
       },
       {
         id: 2,
         name: "Usuarios",
         img: "",
+        rol: 1,
         route: "users",
       },
       {
         id: 3,
         name: "Cargar Horas",
         img: "",
+        rol: 3,
         route: "",
       },
       {
         id: 4,
         name: "Reportes",
         img: "",
+        rol: 3,
         route: "",
       },
     ]
