@@ -1,5 +1,5 @@
 <template>
-  <v-row align="center" class="list px-3 mt-5 mx-auto">
+  <v-row align="center" class="list px-3 mt-2 mx-auto">
     <v-col cols="12" sm="12">
       <v-card class="mx-auto p-3" tile>
         <v-card-title>Usuarios
@@ -41,7 +41,7 @@
 
       </v-card>
     </v-col>
-    <v-btn class="simple-btn my-2 mx-auto" @click="goRoute(addUser)">
+    <v-btn class="simple-btn mt-2 mb-4 mx-auto" @click="goRoute(addUser)">
       Registrar Usuario
     </v-btn>
     <v-snackbar
@@ -202,5 +202,13 @@ export default {
   .simple-btn:hover{
     width: 35%;
     background-color: #066B5D !important;
+  }
+
+  .simple-btn-back{
+    width: 35%;
+    background-color: none !important;
+    transition: 0.3s;
+    color: lightslategray !important;
+    border: 1px solid lightslategrey;
   }
 </style>

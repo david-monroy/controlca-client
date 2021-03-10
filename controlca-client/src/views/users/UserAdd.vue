@@ -1,16 +1,19 @@
 <template>
   <div class="col-md-12 mt-3 pt-1">
     <div class="card card-container mt-0 form-card">
-      <div class="submit-form">
-        <div v-if="!submitted">
+      <v-form
+        ref="registerForm"
+        v-model="valid"
+        lazy-validation
+      >
           <v-row class="pb-0 mb-0 form-row" >
             <v-col md="6" cols="12" class="py-0">
                 <div class="form-group">
                     <v-text-field
                         v-model="user.name"
-                        v-validate="'required|max:40'"
-                        label="Nombre"
-                        name="name"
+                        :rules="nameRules"
+                        label="Name"
+                        required
                     ></v-text-field>
                 </div>
             </v-col>
@@ -18,7 +21,7 @@
                 <div class="form-group">
                     <v-text-field
                         v-model="user.lastname"
-                        v-validate="'required|max:40'"
+                        :rules="lastnameRules"
                         label="Apellido"
                         name="lastname"
                     ></v-text-field>
@@ -31,7 +34,7 @@
                 <div class="form-group">
                     <v-text-field
                         v-model="user.carnet"
-                        v-validate="'required|min:2|max:40'"
+                        :rules="carnetRules"
                         label="Número de carnet"
                         name="carnet"
                     ></v-text-field>
@@ -41,7 +44,7 @@
                 <div class="form-group">
                     <v-text-field
                         v-model="user.email"
-                        v-validate="'required|max:40'"
+                        :rules="emailRules"
                         label="Correo electrónico"
                         name="email"
                     ></v-text-field>
@@ -52,17 +55,17 @@
           <v-row class="pb-0 mb-0 form-row-rol">
             <div class="form-group">
               <v-select
-                  v-model="user.rol"
-                  class="mt-8"
-                  :items="rols"
-                  label="Rol"       
-                  :placeholder="rols[0].name"
-                  outlined
-                  item-text="name"
-                  item-value="id"
-                  dense
-                  required   
-                  ></v-select>
+                v-model="user.rol"
+                :items="rols"
+                :rules="[v => !!v || 'El rol es obligatorio']"
+                label="Rol"
+                :placeholder="rols[0].name"
+                item-text="name"
+                item-value="id"
+                outlined
+                dense
+                required
+              ></v-select>
             </div>
           </v-row>
 
@@ -72,7 +75,7 @@
                 <v-text-field
                   v-model="user.password"
                   :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-                  v-validate="'required|min:6|max:40'"
+                  :rules="passwordRules"
                   label="Contraseña"
                   :type="show ? 'text' : 'password'"
                   @click:append="show = !show"
@@ -89,7 +92,7 @@
                 <v-text-field
                   v-model="confirmPassword"
                   :append-icon="showConfirm ? 'mdi-eye' : 'mdi-eye-off'"
-                  v-validate="'required|min:6|max:40'"
+                  :rules="passwordRules"
                   label="Confirmar contraseña"
                   :type="showConfirm ? 'text' : 'password'"
                   @click:append="showConfirm = !showConfirm"
@@ -103,9 +106,16 @@
             </v-col>
           </v-row>
 
-        <button @click="saveUser" class="btn btn-success btn-block w-50 mx-auto">Registrar</button>
-        </div>
-        </div>
+            <v-btn @click="saveUser"
+                :disabled="!valid"
+                class="btn btn-success btn-block w-50 my-2 mx-auto simple-btn">
+                Registrar
+            </v-btn>
+            <v-btn @click="goRoute(back)"
+                class="btn-block w-25 mx-auto simple-btn-back">
+                Regresar
+            </v-btn>
+      </v-form>
     </div>
     <v-snackbar
           v-model="alertSuccess"
@@ -128,7 +138,29 @@
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </template>
-        </v-snackbar>
+    </v-snackbar>
+    <v-snackbar
+          v-model="alertError"
+          type="error"
+          top
+          :timeout="timeout"
+          color="error"
+        >
+          <strong class="body-1 font-weight-bold">
+            {{errorMessage}}
+          </strong>
+          <template v-slot:action="{ attrs }">
+            <v-btn
+              dark
+              icon
+              color="white"
+              v-bind="attrs"
+              @click="alertError = false"
+            >
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </template>
+    </v-snackbar>
   </div>
 </template>
 
@@ -152,11 +184,33 @@ export default {
       confirmPassword: null,
       show: false,
       showConfirm: false,
+      back: 'users',
+      valid: true,
+
+      // Rules
+      nameRules: [
+        v => !!v || 'El nombre es obligatorio'
+      ],
+      lastnameRules: [
+        v => !!v || 'El apellido es obligatorio'
+      ],
+      carnetRules: [
+        v => !!v || 'El carnet es obligatorio'
+      ],
+      emailRules: [
+        v => !!v || 'El correo es obligatorio'
+      ],
+      passwordRules: [
+        v => !!v || 'La contraseña es obligatoria',
+        v => (v && v.length >= 6) || 'Debe tener al menos 6 caracteres',
+      ],
 
       // Snackbar
       timeout: 4000,
       alertSuccess: false,
-      successMessage: "Usuario registrado satisfactoriamente."
+      successMessage: "Usuario registrado satisfactoriamente.",
+      alertError: false,
+      errorMessage: null,
   }),
   methods: {
     saveUser() {
@@ -169,18 +223,28 @@ export default {
         password: this.user.password
       };
 
+      let validatedForm = this.$refs.registerForm.validate();
+
       if (this.matchPassword()){
-        UserDataService.create(data)
-            .then(response => {
-            this.user.id = response.data.id;
-            console.log(response.data);
-            this.submitted = true;
-            })
-            .catch(e => {
-            console.log(e);
-            });
-        this.alertSuccess = true;
-        this.goRoute("users");
+          if (validatedForm){
+            UserDataService.create(data)
+                .then(response => {
+                this.user.id = response.data.id;
+                console.log(response.data);
+                this.submitted = true;
+                })
+                .catch(e => {
+                console.log(e);
+                });
+            this.alertSuccess = true;
+            this.reset();
+          }else{
+            this.alertError = true;
+            this. errorMessage = "Por favor, revise los campos.";
+          }
+        } else {
+            this.alertError = true;
+            this. errorMessage = "¡Las contraseñas no coinciden!";
         }
     },
 
@@ -211,6 +275,9 @@ export default {
     matchPassword(){
       return (this.user.password == this.confirmPassword)
     },
+    reset() {
+        this.$refs.registerForm.reset()
+      },
   },
   mounted() {
     this.retrieveRols();
@@ -221,7 +288,7 @@ export default {
 <style>
 .card-container.card {
   max-width: 650px !important;
-  padding: 40px 40px;
+  padding: 30px 30px;
 }
 
 .card {
@@ -255,4 +322,5 @@ export default {
   max-height: 60px;
   margin-bottom: 50px;
 }
+
 </style>
