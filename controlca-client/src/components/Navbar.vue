@@ -61,13 +61,13 @@ export default {
       return this.$store.state.auth.user;
     },
     showAdminBoard() {
-      if (this.currentUser && this.currentUser.rol == 1) {
+      if (this.currentUser && this.currentUser.rol_id == 1) {
         return this.currentUser;
       }
       return false;
     },
     showLeaderBoard() {
-      if (this.currentUser && (this.currentUser.rol == 2 || this.currentUser.rol == 1)) {
+      if (this.currentUser && (this.currentUser.rol_id == 2 || this.currentUser.rol_id == 1)) {
         return this.currentUser;
       }
 

@@ -12,7 +12,7 @@
             >
 
               <DashboardCard
-                v-if="currentUser.rol <= item.rol"
+                v-if="currentUser.rol_id <= item.rol"
                 :name="item.name"
                 :route="item.route"
                 class="text-center"

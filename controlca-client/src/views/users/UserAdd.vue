@@ -55,7 +55,7 @@
           <v-row class="pb-0 mb-0 form-row-rol">
             <div class="form-group">
               <v-select
-                v-model="user.rol"
+                v-model="user.rol_id"
                 :items="rols"
                 :rules="[v => !!v || 'El rol es obligatorio']"
                 label="Rol"
@@ -177,7 +177,7 @@ export default {
         email: null,
         carnet: null,
         password: null,
-        rol: null
+        rol_id: "",
       },
       rols: [],
       submitted: false,
@@ -219,7 +219,7 @@ export default {
         lastname: this.user.lastname,
         email: this.user.email,
         carnet: this.user.carnet,
-        rol: this.user.rol,
+        rol_id: this.user.rol_id,
         password: this.user.password
       };
 
@@ -240,7 +240,7 @@ export default {
             this.reset();
           }else{
             this.alertError = true;
-            this. errorMessage = "Por favor, revise los campos.";
+            this.errorMessage = "Por favor, revise los campos.";
           }
         } else {
             this.alertError = true;

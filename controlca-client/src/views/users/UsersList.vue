@@ -71,12 +71,14 @@
 
 <script>
 import UserDataService from "../../services/UserDataService";
+import RolDataService from "../../services/RolDataService";
 
 export default {
   name: "users-list",
   data() {
     return {
       users: [],
+      rols: [],
       addUser: 'users-add',
       title: "",
       search: "",
@@ -85,7 +87,7 @@ export default {
         { text: "Apellido", value: "lastname", sortable: true },
         { text: "Nro. Carnet", value: "carnet", sortable: true },
         { text: "Correo electrónico", value: "email", sortable: true },
-        { text: "Rol", value: "rol", sortable: true },
+        { text: "Rol", value: "rol.name", sortable: true },
         { text: 'Acciones', value: 'actions', sortable: false },
       ],
 
@@ -108,7 +110,7 @@ export default {
     retrieveUsers() {
       UserDataService.getAll()
         .then((response) => {
-          this.users = response.data.map(this.getDisplayUser);
+          this.users = response.data;
         })
         .catch((e) => {
           console.log(e);
@@ -175,15 +177,32 @@ export default {
     openDelete(userID){
       this.dialogDelete = true;
       this.userToDelete = userID;
+      console.log(this.users);
     },
 
     goRoute(route) {
       this.$router.push("/" + route);
     },
+    retrieveRols() {
+      RolDataService.getAll()
+        .then((response) => {
+          this.rols = response.data.map(this.getDisplayRol);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+    getDisplayRol(rol) {
+      return {
+        id: rol.id,
+        name: rol.name.length > 30 ? rol.name.substr(0, 30) + "..." : rol.name
+      };
+    },
 
   },
   mounted() {
     this.retrieveUsers();
+    this.retrieveRols();
   },
 };
 </script>

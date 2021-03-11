@@ -14,7 +14,7 @@ export default new Router({
     {
       path: "/projects",
       name: "projects",
-      component: () => import("../components/projects/ProjectsList.vue"),
+      component: () => import("../views/projects/ProjectsList.vue"),
     },
     {
       path: "/users",

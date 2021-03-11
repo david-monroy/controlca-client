@@ -57,7 +57,7 @@
           <v-row class="pb-0 mb-0 form-row-rol">
             <div class="form-group">
               <v-select
-                v-model="currentUser.rol"
+                v-model="currentUser.rol_id"
                 :items="rols"
                 :rules="[v => !!v || 'El rol es obligatorio']"
                 label="Rol"
@@ -146,7 +146,7 @@ export default {
         email: null,
         carnet: null,
         password: null,
-        rol: null
+        rol_id: "",
       },
       rols: [],
       submitted: false,
@@ -199,7 +199,6 @@ export default {
     },
 
     updateUser() {
-
       let validatedForm = this.$refs.updateForm.validate();
       if (validatedForm) {
         UserDataService.update(this.currentUser.id, this.currentUser)
@@ -215,7 +214,6 @@ export default {
         this.alertError = true;
         this. errorMessage = "Por favor, revise los campos.";
       }
-      
     },
 
     deleteUser() {
