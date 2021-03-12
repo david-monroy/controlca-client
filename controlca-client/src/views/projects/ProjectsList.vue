@@ -25,6 +25,12 @@
           </v-col>
         </v-row>
       </v-card-text>
+      <v-card-actions>
+        <v-btn class="simple-btn mt-2 mx-auto" @click="goRoute(addProject)">
+          Registrar Proyecto
+        </v-btn>
+      </v-card-actions>
+      
     </v-card>
   </div>
 </template>
@@ -39,6 +45,7 @@ export default {
   },
   data: () => ({
     projects: [],
+    addProject: 'projects-add',
   }),
   computed: {
     currentUser() {      

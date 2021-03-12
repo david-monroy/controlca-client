@@ -12,7 +12,7 @@
                     <v-text-field
                         v-model="user.name"
                         :rules="nameRules"
-                        label="Name"
+                        label="Nombre"
                         required
                     ></v-text-field>
                 </div>
