@@ -211,6 +211,7 @@ export default {
         width: 240px;
         max-height: 240px;
         border: 1px solid #00917c  !important;
+        padding: 8px;
         background-color:rgb(247, 245, 245) !important;
     }
     .project-card-info, .project-dialog-info {

@@ -13,6 +13,14 @@ class ProjectDataService {
     return http.post("/projects", data);
   }
 
+  addProduct(data) {
+    return http.post("/projects/addProduct", data);
+  }
+
+  addUser(data) {
+    return http.post("/projects/addUser", data);
+  }
+
   update(id, data) {
     return http.put(`/projects/${id}`, data);
   }

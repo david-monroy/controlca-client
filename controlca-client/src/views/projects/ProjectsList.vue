@@ -39,7 +39,7 @@
 import ProjectCard from "../../components/projects/ProjectCard.vue";
 import ProjectDataService from "../../services/ProjectDataService";
 export default {
-  name: "projectsList",
+  name: "projects",
   components: {
     ProjectCard
   },

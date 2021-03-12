@@ -202,7 +202,7 @@
                         <td class="text-center">{{ w+1 }}</td>
                         <td class="text-center">{{ worker.name }}</td>
                         <td class="text-center">{{ worker.lastname }}</td>
-                        <td class="text-center">{{ worker.estimated_hours }}</td>
+                        <td class="text-center">{{ worker.rol_in_project }}</td>
                         </tr>
                     </tbody>
                     </template>
@@ -294,7 +294,7 @@
                         </thead>
                         <tbody>
                             <tr
-                            v-for="(product,p) in products"
+                            v-for="(product,p) in projectData.products"
                             :key="p"
                             >
                             <td class="text-center">{{ p+1 }}</td>
@@ -358,9 +358,15 @@
             </v-btn>
             <v-btn
                 color="primary"
-                @click="formStep = 4"
+                @click="saveProject()"
                 >
                 Guardar
+                </v-btn>
+                <v-btn
+                color="primary"
+                @click="console()"
+                >
+                Ver info
                 </v-btn>
         </div>
       </v-stepper-content>
@@ -373,10 +379,12 @@
 <script>
 import ProductDataService from "../../services/ProductDataService";
 import UserDataService from "../../services/UserDataService";
+import ProjectDataService from "../../services/ProjectDataService";
 export default {
   name: "projects-add",
   data: () => ({
       formStep: 1,
+      project_id: 0,
       projectData: {
           name: "",
           description: "",
@@ -393,6 +401,8 @@ export default {
       origin_workers: [],
       temp_worker_id: null,
       temp_worker_rol_in_project: null,
+
+      origin_projects: [],
   }),
   computed: {
     currentUser() {      
@@ -436,6 +446,15 @@ export default {
           console.log(e);
         });
     },
+    retrieveProjects() {
+      ProjectDataService.getAll()
+        .then((response) => {
+          this.origin_projects = response.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     addWorkerToProject(){
         let worker_name = "";
         let worker_lastname = "";
@@ -452,17 +471,84 @@ export default {
             });
             this.projectData.workers.push({
                 id: this.temp_worker_id, 
-                estimated_hours: this.temp_worker_rol_in_project,
+                rol_in_project: this.temp_worker_rol_in_project,
                 name: worker_name,
                 lastname: worker_lastname,
             });
-        } 
-        
-    }
+        }
+    },
+    saveProject() {
+      var data = {
+        name: this.projectData.name,
+        description: this.projectData.description,
+        code: this.projectData.code,
+        area: this.projectData.area,
+        leader: this.currentUser.id,
+      };
+
+        ProjectDataService.create(data)
+            .then(response => {
+            this.projectData.id = response.data.id;
+            console.log(response.data);
+            })
+            .catch(e => {
+            console.log(e);
+            });
+
+        let productData = null;
+        this.projectData.products.forEach(productToAdd => {
+            productData = {
+                project: this.origin_projects.length+1,
+                product: productToAdd.id,
+                estimated_hours: productToAdd.estimated_hours,
+            }
+
+            console.log(productData);
+
+            ProjectDataService.addProduct(productData)
+                .then(response => {
+                console.log(response.data);
+                })
+                .catch(e => {
+                console.log(e);
+                });
+        });
+
+        let workerData = null;
+        this.projectData.workers.forEach(workerToAdd => {
+            
+            workerData = {
+                project: this.origin_projects.length+1,
+                worker: workerToAdd.id,
+                rol_in_project: workerToAdd.rol_in_project,
+            }
+
+            console.log(workerData);
+
+            ProjectDataService.addUser(workerData)
+                .then(response => {
+                console.log(response.data);
+                })
+                .catch(e => {
+                console.log(e);
+                });
+        });
+
+        this.goRoute("projects");
+
+    },
+    console(){
+        console.log(this.projectData);
+        console.log(this.origin_projects);
+    },
+    goRoute(route) {
+      this.$router.push("/" + route);
+    },
   },
   mounted() {
       this.retrieveProducts();
       this.retrieveUsers();
+      this.retrieveProjects();
   }
 }
 </script>
