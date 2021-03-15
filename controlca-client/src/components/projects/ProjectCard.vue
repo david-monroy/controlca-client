@@ -1,12 +1,12 @@
 <template>
-  
+  <div>
 <v-dialog
       v-model="dialog"
       width="500"
     >
       <template v-slot:activator="{ on, attrs }">
         <v-card 
-        class="pa-5 ma-0 project-card" 
+        class="pa-5 ma-2 project-card" 
         @click="goRoute(route)"
         outlined
         >
@@ -156,6 +156,13 @@
         </v-expansion-panels>
 
         <v-card-actions>
+            <v-btn
+            color="red"
+            text
+            @click="openDelete()"
+          >
+            Eliminar
+          </v-btn>
           <v-spacer></v-spacer>
           <v-btn
             color="primary"
@@ -165,10 +172,47 @@
             Cerrar
           </v-btn>
         </v-card-actions>
+        <template>
+              <v-dialog v-model="dialogDelete" max-width="400px" class="pa-0">
+                <v-card style="display: flex; justify-content: center; flex-direction: column">
+                  <v-card-title class="headline text-center mx-auto">¿Seguro que desea eliminar <br> este proyecto?</v-card-title>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="closeDelete">Cancelar</v-btn>
+                    <v-btn color="blue darken-1" text @click="deleteProject()">Sí, eliminar</v-btn>
+                    <v-spacer></v-spacer>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+          </template>
       </v-card>
     </v-dialog>
+    <v-snackbar
+          v-model="alertSuccess"
+          type="success"
+          top
+          :timeout="timeout"
+          color="success"
+        >
+          <strong class="body-1 font-weight-bold">
+            {{successMessage}}
+          </strong>
+          <template v-slot:action="{ attrs }">
+            <v-btn
+              dark
+              icon
+              color="white"
+              v-bind="attrs"
+              @click="alertSuccess = false"
+            >
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </template>
+        </v-snackbar>
+    </div>
 </template>
 <script>
+import ProjectDataService from "../../services/ProjectDataService";
 export default {
   name: "DashboardCard",
   props: {
@@ -180,9 +224,12 @@ export default {
     leader: Object,
     products: Array,
     users: Array,
+    id: Number,
   },
   data: () => ({
       dialog: false,
+      dialogDelete: false,
+      projectToDelete: "",
       associations: [
           {
               title: "Productos",
@@ -192,7 +239,9 @@ export default {
               title: "Colaboradores",
               array: "users"
           }
-      ]
+      ],
+      alertSuccess: false,
+      successMessage: "Proyecto eliminado correctamente. Espere mientras se actualiza."
   }),
   methods: {
     goRoute(route) {
@@ -200,15 +249,36 @@ export default {
     },
     openDialog(){
         this.dialog = true;
-        this.goRoute('projects');
-    }
+    },
+    closeDelete(){
+      this.dialogDelete = false;
+    },
+    openDelete(){
+      this.dialogDelete = true;
+      this.projectToDelete = this.id;
+    },
+    deleteProject() {
+      let id = this.projectToDelete;
+      ProjectDataService.delete(id)
+        .then(() => {
+          this.refreshList();
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+      this.closeDelete();
+      this.dialog = false;
+      this.alertSuccess = true;
+      location.reload();
+      return false;
+    },
   }
 };
 </script>
 
 <style>
     .project-card{
-        width: 240px;
+        width: 236px;
         max-height: 240px;
         border: 1px solid #00917c  !important;
         padding: 8px;

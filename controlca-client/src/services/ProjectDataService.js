@@ -9,6 +9,10 @@ class ProjectDataService {
     return http.get(`/projects/${id}`);
   }
 
+  getByLeader(id) {
+    return http.get(`/projects/leader/${id}`);
+  }
+
   create(data) {
     return http.post("/projects", data);
   }

@@ -177,7 +177,6 @@ export default {
     openDelete(userID){
       this.dialogDelete = true;
       this.userToDelete = userID;
-      console.log(this.users);
     },
 
     goRoute(route) {

@@ -14,6 +14,7 @@
               <DashboardCard
                 v-if="currentUser.rol_id <= item.rol"
                 :name="item.name"
+                :icon="item.icon"
                 :route="item.route"
                 class="text-center"
               >
@@ -43,28 +44,28 @@ export default {
       {
         id: 1,
         name: "Proyectos",
-        img: "",
+        icon: "mdi-folder-multiple",
         rol: 2,
         route: "projects",
       },
       {
         id: 2,
         name: "Usuarios",
-        img: "",
+        icon: "mdi-account-group",
         rol: 1,
         route: "users",
       },
       {
         id: 3,
         name: "Cargar Horas",
-        img: "",
+        icon: "mdi-progress-clock",
         rol: 3,
         route: "",
       },
       {
         id: 4,
         name: "Reportes",
-        img: "",
+        icon: "mdi-note-text",
         rol: 3,
         route: "",
       },

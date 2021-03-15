@@ -111,6 +111,9 @@
                             <th class="text-center">
                                 Horas estimadas
                             </th>
+                            <th class="text-center">
+                                Eliminar
+                            </th>
                             </tr>
                     </thead>
                     <tbody>
@@ -121,6 +124,10 @@
                         <td class="text-center">{{ p+1 }}</td>
                         <td class="text-center">{{ product.name }}</td>
                         <td class="text-center">{{ product.estimated_hours }}</td>
+                        <td class="text-center">
+                            <v-icon small class="text-center" 
+                            color="red" @click="removeProduct(p)">mdi-delete</v-icon>
+                        </td>
                         </tr>
                     </tbody>
                     </template>
@@ -192,6 +199,9 @@
                             <th class="text-center">
                                 Rol
                             </th>
+                            <th class="text-center">
+                                Eliminar
+                            </th>
                             </tr>
                     </thead>
                     <tbody>
@@ -203,6 +213,10 @@
                         <td class="text-center">{{ worker.name }}</td>
                         <td class="text-center">{{ worker.lastname }}</td>
                         <td class="text-center">{{ worker.rol_in_project }}</td>
+                        <td class="text-center">
+                            <v-icon small class="text-center" 
+                            color="red" @click="removeWorker(w)">mdi-delete</v-icon>
+                        </td>
                         </tr>
                     </tbody>
                     </template>
@@ -362,12 +376,6 @@
                 >
                 Guardar
                 </v-btn>
-                <v-btn
-                color="primary"
-                @click="console()"
-                >
-                Ver info
-                </v-btn>
         </div>
       </v-stepper-content>
     </v-stepper-items>
@@ -437,6 +445,9 @@ export default {
         } 
         
     },
+    removeProduct(pos){
+        return this.projectData.products.splice(pos, 1);
+    },
     retrieveUsers() {
       UserDataService.getAll()
         .then((response) => {
@@ -477,6 +488,9 @@ export default {
             });
         }
     },
+    removeWorker(pos){
+        return this.projectData.workers.splice(pos, 1);
+    },
     saveProject() {
       var data = {
         name: this.projectData.name,
@@ -515,14 +529,12 @@ export default {
         });
 
         let workerData = null;
-        this.projectData.workers.forEach(workerToAdd => {
-            
+        this.projectData.workers.forEach(workerToAdd => {    
             workerData = {
                 project: this.origin_projects.length+1,
                 worker: workerToAdd.id,
                 rol_in_project: workerToAdd.rol_in_project,
             }
-
             console.log(workerData);
 
             ProjectDataService.addUser(workerData)

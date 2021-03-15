@@ -5,7 +5,8 @@
     >
       <v-card-text>
         <v-row>
-          <v-col cols="12" class="item-list-projects">
+          <v-col cols="12" class="item-list-projects"
+          v-if="currentUser.id == 1">
             <div
               v-for="item in projects"
               :key="item.id"
@@ -22,6 +23,27 @@
               >
               </ProjectCard>
             </div>
+          </v-col>
+          <v-col cols="12" class="item-list-projects"
+          v-else>
+            <div
+              v-for="item in projectsByLeader"
+              :key="item.id"
+            >
+              <ProjectCard
+                :name="item.name"
+                :description="item.description"
+                :code="item.code"
+                :area="item.area"
+                :status="item.status"
+                :products="item.products"
+                :users="item.working_users"
+                :leader="item.leader"
+                :id="item.id"
+              >
+              </ProjectCard>
+            </div>
+
           </v-col>
         </v-row>
       </v-card-text>
@@ -46,6 +68,7 @@ export default {
   data: () => ({
     projects: [],
     addProject: 'projects-add',
+    projectsByLeader: [],
   }),
   computed: {
     currentUser() {      
@@ -62,12 +85,23 @@ export default {
           console.log(e);
         });
     },
+    retrieveProjectsByLeader() {
+      ProjectDataService.getByLeader(this.currentUser.id)
+        .then((response) => {
+          this.projectsByLeader = response.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     goRoute(route) {
       this.$router.push("/" + route);
     },
   },
   mounted() {
     this.retrieveProjects();
+    this.retrieveProjectsByLeader();
+    console.log(this.projects)
   },
   
 };
@@ -80,10 +114,10 @@ export default {
   }
   .item-list-projects{
     display: flex;
-    justify-content: space-around;
+    justify-content: flex-start;
     min-height: 450px;
-    padding: 0 40px;
-    align-items: center;
+    padding: 0 20px;
+    align-items: flex-start;
     flex-direction: row;
     flex-wrap: wrap;
   }
