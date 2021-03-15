@@ -392,7 +392,6 @@ export default {
   name: "projects-add",
   data: () => ({
       formStep: 1,
-      project_id: 0,
       projectData: {
           name: "",
           description: "",
@@ -411,6 +410,8 @@ export default {
       temp_worker_rol_in_project: null,
 
       origin_projects: [],
+      error_add_workers: false,
+      error_add_products: false,
   }),
   computed: {
     currentUser() {      
@@ -491,7 +492,7 @@ export default {
     removeWorker(pos){
         return this.projectData.workers.splice(pos, 1);
     },
-    saveProject() {
+    async saveProject() {
       var data = {
         name: this.projectData.name,
         description: this.projectData.description,
@@ -499,20 +500,13 @@ export default {
         area: this.projectData.area,
         leader: this.currentUser.id,
       };
+      let project_id = await ProjectDataService.create(data);
 
-        ProjectDataService.create(data)
-            .then(response => {
-            this.projectData.id = response.data.id;
-            console.log(response.data);
-            })
-            .catch(e => {
-            console.log(e);
-            });
-
+        console.log(project_id.data.id);
         let productData = null;
         this.projectData.products.forEach(productToAdd => {
             productData = {
-                project: this.origin_projects.length+1,
+                project: project_id.data.id,
                 product: productToAdd.id,
                 estimated_hours: productToAdd.estimated_hours,
             }
@@ -531,7 +525,7 @@ export default {
         let workerData = null;
         this.projectData.workers.forEach(workerToAdd => {    
             workerData = {
-                project: this.origin_projects.length+1,
+                project: project_id.data.id,
                 worker: workerToAdd.id,
                 rol_in_project: workerToAdd.rol_in_project,
             }

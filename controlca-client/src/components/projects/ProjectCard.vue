@@ -241,7 +241,8 @@ export default {
           }
       ],
       alertSuccess: false,
-      successMessage: "Proyecto eliminado correctamente. Espere mientras se actualiza."
+      successMessage: "Proyecto eliminado correctamente. Espere mientras se actualiza.",
+      timeout: 4000,
   }),
   methods: {
     goRoute(route) {
