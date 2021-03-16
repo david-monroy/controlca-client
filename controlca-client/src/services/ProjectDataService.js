@@ -21,8 +21,16 @@ class ProjectDataService {
     return http.post("/projects/addProduct", data);
   }
 
+  updateProduct(data) {
+    return http.post("/projects/updateProduct", data);
+  }
+
   addUser(data) {
     return http.post("/projects/addUser", data);
+  }
+
+  updateUser(data) {
+    return http.post("/projects/updateUser", data);
   }
 
   update(id, data) {
