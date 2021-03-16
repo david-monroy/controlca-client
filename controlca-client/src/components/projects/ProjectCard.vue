@@ -163,6 +163,13 @@
           >
             Eliminar
           </v-btn>
+          <v-btn
+            color="primary"
+            text
+            @click="editProject()"
+          >
+            Editar
+          </v-btn>
           <v-spacer></v-spacer>
           <v-btn
             color="primary"
@@ -250,6 +257,11 @@ export default {
     },
     openDialog(){
         this.dialog = true;
+        console.log(this.id)
+    },
+    editProject() {
+      let id = this.id;
+      this.$router.push({ name: "projects-details", params: { id: id } });
     },
     closeDelete(){
       this.dialogDelete = false;

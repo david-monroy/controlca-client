@@ -20,6 +20,7 @@
                 :products="item.products"
                 :users="item.working_users"
                 :leader="item.leader"
+                :id="item.id"
               >
               </ProjectCard>
             </div>
