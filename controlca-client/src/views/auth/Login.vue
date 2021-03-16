@@ -3,16 +3,16 @@
     <div class="card card-container">
       <form name="form" @submit.prevent="handleLogin">
         <div class="form-group">
-          <label for="email">Correo electrónico</label>
+          <label for="username">Nombre de usuario</label>
           <input
-            v-model="user.email"
+            v-model="user.username"
             v-validate="'required'"
             type="text"
             class="form-control"
-            name="email"
+            name="username"
           />
           <div
-            v-if="errors.has('email')"
+            v-if="errors.has('username')"
             class="alert alert-danger"
             role="alert"
           >¡El correo es requerido!</div>
@@ -77,7 +77,7 @@ export default {
           return;
         }
 
-        if (this.user.email && this.user.password) {
+        if (this.user.username && this.user.password) {
           this.$store.dispatch('auth/login', this.user).then(
             () => {
               this.$router.push('/');

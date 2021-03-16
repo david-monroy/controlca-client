@@ -57,18 +57,18 @@
             </v-col>
 
             <v-col md="6" cols="12" class="py-0">
-              <label for="email">Correo electrónico</label>
+              <label for="username">Nombre de usuario</label>
               <input
-                v-model="user.email"
-                v-validate="'required|email|max:50'"
-                type="email"
+                v-model="user.username"
+                v-validate="'required|max:50'"
+                type="text"
                 class="form-control"
-                name="email"
+                name="username"
               />
               <div
-                v-if="submitted && errors.has('email')"
+                v-if="submitted && errors.has('username')"
                 class="alert-danger"
-              >{{errors.first('email')}}
+              >{{errors.first('username')}}
               </div>
 
             </v-col>
@@ -178,7 +178,7 @@ export default {
       user: {
         name: null,
         lastname: null,
-        email: null,
+        username: this.name + "." + this.username,
         password: null,
         rol: null,
         carnet: null,

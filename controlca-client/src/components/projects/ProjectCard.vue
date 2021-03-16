@@ -100,7 +100,7 @@
                             v-for="(product,p) in products"
                             :key="p"
                             >
-                            <td class="text-center">{{ p+1 }}</td>
+                            <td class="text-center">{{ product.project_product.consecutive }}</td>
                             <td class="text-center">{{ product.name }}</td>
                             <td class="text-center">0</td>
                             <td class="text-center">{{ product.project_product.estimated_hours }}</td>
@@ -145,7 +145,7 @@
                             <td class="text-center">{{ u+1 }}</td>
                             <td class="text-center">{{ user.name }}</td>
                             <td class="text-center">{{ user.lastname }}</td>
-                            <td class="text-center">{{ user.project_user.rol_in_project }}</td>
+                            <td class="text-center">{{ user.project_user.roster }}</td>
                             <td class="text-center">0</td>
                             </tr>
                         </tbody>

@@ -9,8 +9,8 @@ class UserDataService {
     return http.get(`/users/${id}`);
   }
 
-  getByEmail(email) {
-    return http.get(`/users/email/${email}`);
+  getByUsername(username) {
+    return http.get(`/users/username/${username}`);
   }
 
   create(data) {
@@ -29,8 +29,8 @@ class UserDataService {
     return http.delete(`/users`);
   }
 
-  findByEmail(email) {
-    return http.get(`/users?email=${email}`);
+  findByUsername(username) {
+    return http.get(`/users?username=${username}`);
   }
 }
 

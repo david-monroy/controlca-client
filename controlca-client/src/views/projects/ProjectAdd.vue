@@ -212,7 +212,7 @@
                         <td class="text-center">{{ w+1 }}</td>
                         <td class="text-center">{{ worker.name }}</td>
                         <td class="text-center">{{ worker.lastname }}</td>
-                        <td class="text-center">{{ worker.rol_in_project }}</td>
+                        <td class="text-center">{{ worker.roster }}</td>
                         <td class="text-center">
                             <v-icon small class="text-center" 
                             color="red" @click="removeWorker(w)">mdi-delete</v-icon>
@@ -239,7 +239,7 @@
         </v-row>
         <v-row class="pa-0 ma-0 mb-0 form-row-rol">
             <v-text-field
-                v-model="temp_worker_rol_in_project"
+                v-model="temp_worker_roster"
                 label="Rol"
                 type="text"
             ></v-text-field>
@@ -352,7 +352,7 @@
                             <td class="text-center">{{ w+1 }}</td>
                             <td class="text-center">{{ worker.name }}</td>
                             <td class="text-center">{{ worker.lastname }}</td>
-                            <td class="text-center">{{ worker.rol_in_project }}</td>
+                            <td class="text-center">{{ worker.roster }}</td>
                             </tr>
                         </tbody>
                         </template>
@@ -407,7 +407,7 @@ export default {
 
       origin_workers: [],
       temp_worker_id: null,
-      temp_worker_rol_in_project: null,
+      temp_worker_roster: null,
 
       origin_projects: [],
       error_add_workers: false,
@@ -483,7 +483,7 @@ export default {
             });
             this.projectData.workers.push({
                 id: this.temp_worker_id, 
-                rol_in_project: this.temp_worker_rol_in_project,
+                roster: this.temp_worker_roster,
                 name: worker_name,
                 lastname: worker_lastname,
             });
@@ -504,12 +504,15 @@ export default {
 
         console.log(project_id.data.id);
         let productData = null;
+        let consecutive_counter = 1;
         this.projectData.products.forEach(productToAdd => {
             productData = {
                 project: project_id.data.id,
                 product: productToAdd.id,
                 estimated_hours: productToAdd.estimated_hours,
+                consecutive: consecutive_counter,
             }
+            consecutive_counter = consecutive_counter + 1;
 
             console.log(productData);
 
@@ -527,7 +530,7 @@ export default {
             workerData = {
                 project: project_id.data.id,
                 worker: workerToAdd.id,
-                rol_in_project: workerToAdd.rol_in_project,
+                roster: workerToAdd.roster,
             }
             console.log(workerData);
 
