@@ -231,7 +231,7 @@
                 v-model="temp_worker_id"
                 :items="origin_workers"
                 label="Colaborador"
-                item-text="email"
+                item-text="username"
                 item-value="id"
                 dense
                 required

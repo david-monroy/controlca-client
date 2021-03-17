@@ -86,7 +86,7 @@ export default {
         { text: "Nombre", align: "start", sortable: true, value: "name" },
         { text: "Apellido", value: "lastname", sortable: true },
         { text: "Nro. Carnet", value: "carnet", sortable: true },
-        { text: "Correo electrónico", value: "email", sortable: true },
+        { text: "Nombre de usuario", value: "username", sortable: true },
         { text: "Rol", value: "rol.name", sortable: true },
         { text: 'Acciones', value: 'actions', sortable: false },
       ],
@@ -165,7 +165,7 @@ export default {
         id: user.id,
         name: user.name.length > 30 ? user.name.substr(0, 30) + "..." : user.name,
         lastname: user.lastname.length > 30 ? user.lastname.substr(0, 30) + "..." : user.lastname,
-        email: user.email.length > 30 ? user.email.substr(0, 30) + "..." : user.email,
+        username: user.username.length > 30 ? user.username.substr(0, 30) + "..." : user.username,
         rol: user.rol,
         carnet: user.carnet.length > 30 ? user.carnet.substr(0, 30) + "..." : user.carnet
       };

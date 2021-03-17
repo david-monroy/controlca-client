@@ -43,10 +43,11 @@
             <v-col md="6" cols="12" class="py-0">
                 <div class="form-group">
                     <v-text-field
-                        v-model="user.email"
-                        :rules="emailRules"
-                        label="Correo electrónico"
-                        name="email"
+                        v-model="username"
+                        :rules="usernameRules"
+                        label="Nombre de usuario"
+                        name="username"
+                        readonly
                     ></v-text-field>
                 </div>
             </v-col>
@@ -172,9 +173,8 @@ export default {
   name: "users-add",
   data: () => ({
       user: {
-        name: null,
-        lastname: null,
-        email: null,
+        name: "",
+        lastname: "",
         carnet: null,
         password: null,
         rol_id: "",
@@ -197,7 +197,7 @@ export default {
       carnetRules: [
         v => !!v || 'El carnet es obligatorio'
       ],
-      emailRules: [
+      usernameRules: [
         v => !!v || 'El correo es obligatorio'
       ],
       passwordRules: [
@@ -212,12 +212,18 @@ export default {
       alertError: false,
       errorMessage: null,
   }),
+  computed: {
+    username: function(){
+      let un = this.user.name + "." + this.user.lastname;
+      return un.toLowerCase();
+    }
+  },
   methods: {
     saveUser() {
       var data = {
         name: this.user.name,
         lastname: this.user.lastname,
-        email: this.user.email,
+        username: this.username,
         carnet: this.user.carnet,
         rol_id: this.user.rol_id,
         password: this.user.password

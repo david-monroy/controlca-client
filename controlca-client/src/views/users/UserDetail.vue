@@ -45,10 +45,11 @@
             <v-col md="6" cols="12" class="py-0">
                 <div class="form-group">
                     <v-text-field
-                        v-model="currentUser.email"
-                        :rules="emailRules"
-                        label="Correo electrónico"
-                        name="email"
+                        v-model="currentUser.username"
+                        :rules="usernameRules"
+                        label="Nombre de usuario"
+                        name="username"
+                        readonly
                     ></v-text-field>
                 </div>
             </v-col>
@@ -143,7 +144,7 @@ export default {
       user: {
         name: null,
         lastname: null,
-        email: null,
+        username: null,
         carnet: null,
         password: null,
         rol_id: "",
@@ -168,7 +169,7 @@ export default {
       carnetRules: [
         v => !!v || 'El carnet es obligatorio'
       ],
-      emailRules: [
+      usernameRules: [
         v => !!v || 'El correo es obligatorio'
       ],
       passwordRules: [

@@ -2,22 +2,23 @@
   <div id="navbar">
       <nav class="navbar navbar-expand navbar-dark bg-dark">
           <div class="container container-navbar">
-      <a href class="navbar-brand" @click.prevent>Controlca App</a>
+      <a href class="navbar-brand" @click.prevent>Controlca App </a>
+      <p class="navbar-name ma-0">|  {{currentUser.name}} {{currentUser.lastname}}</p>
       <div class="ml-auto navbar-nav">
-        <li v-if="showAdminBoard" class="nav-item ml-3">
+        <li class="nav-item ml-3">
           <router-link to="/" class="nav-link ">Escritorio</router-link>
         </li>
         <li class="nav-item ml-3">
-          <router-link v-if="showLeaderBoard" to="/" class="nav-link">Proyectos</router-link>
+          <router-link v-if="showLeaderBoard" to="/projects" class="nav-link">Proyectos</router-link>
         </li>
         <li class="nav-item ml-3">
           <router-link v-if="showAdminBoard" to="/users" class="nav-link">Usuarios</router-link>
         </li>
         <li class="nav-item ml-3">
-          <router-link v-if="showLeaderBoard" to="/" class="nav-link">Cargar Horas</router-link>
+          <router-link to="/" class="nav-link">Cargar Horas</router-link>
         </li>
         <li class="nav-item ml-3">
-          <router-link v-if="showLeaderBoard" to="/" class="nav-link">Reportes</router-link>
+          <router-link to="/" class="nav-link">Reportes</router-link>
         </li>
       
 
@@ -89,5 +90,10 @@ export default {
         margin-bottom: 0 !important;
         padding-top: 0 !important;
         padding-bottom: 0 !important;
+    }
+    .navbar-name{
+      font-size: 15px;
+      color: lightgray;
+      padding: 5px 0;
     }
 </style>
