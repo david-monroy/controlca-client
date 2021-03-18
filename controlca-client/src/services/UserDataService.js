@@ -5,6 +5,10 @@ class UserDataService {
     return http.get("/users");
   }
 
+  getAllByRol(rol) {
+    return http.get(`/users/rol/${rol}`);
+  }
+
   get(id) {
     return http.get(`/users/${id}`);
   }

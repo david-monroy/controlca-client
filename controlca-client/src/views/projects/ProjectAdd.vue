@@ -138,25 +138,23 @@
                 <v-expansion-panel-header>Añadir producto</v-expansion-panel-header>
                 <v-expansion-panel-content class="py-4">
             <v-row class="pa-0 ma-0 form-row-rol">
-            <v-select
-                v-model="temp_product_id"
-                :items="origin_products"
-                label="Producto"
-                item-text="name"
-                item-value="id"
-                dense
-                required
-              ></v-select>
+              <v-col md="6" cols="12" class="py-0">
+                <v-text-field
+                    v-model="temp_product_name"
+                    label="Nombre de producto"
+                    type="text"
+                ></v-text-field>
+              </v-col>
+              <v-col md="6" cols="12" class="py-0">
+                <v-text-field
+                    v-model="temp_product_estimated_hours"
+                    label="Horas estimadas"
+                    suffix="horas"
+                    type="number"
+                ></v-text-field>
+              </v-col>
         </v-row>
-        <v-row class="pa-0 ma-0 mb-0 form-row-rol">
-            <v-text-field
-                v-model="temp_product_estimated_hours"
-                label="Horas estimadas"
-                suffix="horas"
-                type="number"
-            ></v-text-field>
-        </v-row>
-        <v-btn class="simple-btn mt-2 mx-auto btn-block" @click="addProductToProject()">
+        <v-btn class="simple-btn mt-2 mx-auto btn-block w-75" @click="addProductToProject()">
           Añadir producto al proyecto
         </v-btn>
         </v-expansion-panel-content>
@@ -227,23 +225,53 @@
                 <v-expansion-panel-header>Añadir colaborador</v-expansion-panel-header>
                 <v-expansion-panel-content class="py-4">
             <v-row class="pa-0 ma-0 form-row-rol">
-            <v-select
-                v-model="temp_worker_id"
-                :items="origin_workers"
-                label="Colaborador"
-                item-text="username"
-                item-value="id"
-                dense
-                required
-              ></v-select>
-        </v-row>
-        <v-row class="pa-0 ma-0 mb-0 form-row-rol">
-            <v-text-field
-                v-model="temp_worker_roster"
-                label="Rol"
-                type="text"
-            ></v-text-field>
-        </v-row>
+              <v-col md="6" cols="12" class="py-0">
+                <v-select
+                    v-model="temp_worker_roster"
+                    :items="roster_list"
+                    label="Rol"
+                    dense
+                    required
+                ></v-select>
+              </v-col>
+              <v-col md="6" cols="12" class="py-0"
+              v-if="temp_worker_roster == 'Director' || temp_worker_roster == 'Gerente'">
+                    <v-select
+                        v-model="temp_worker_id"
+                        :items="origin_workers_admin"
+                        label="Colaborador"
+                        item-text="completeName"
+                        item-value="id"
+                        dense
+                        required
+                    ></v-select>
+                </v-col>
+              <v-col md="6" cols="12" class="py-0"
+              v-else-if="temp_worker_roster == 'Líder'">
+                    <v-select
+                        v-model="temp_worker_id"
+                        :items="origin_workers_projects"
+                        label="Colaborador"
+                        item-text="completeName"
+                        item-value="id"
+                        dense
+                        required
+                    ></v-select>
+                </v-col>
+              <v-col md="6" cols="12" class="py-0"
+              v-else>
+                    <v-select
+                        v-model="temp_worker_id"
+                        :items="origin_workers_hours"
+                        label="Colaborador"
+                        item-text="completeName"
+                        item-value="id"
+                        dense
+                        required
+                    ></v-select>
+                
+              </v-col>
+            </v-row>
         <v-btn class="simple-btn mt-2 mx-auto btn-block" @click="addWorkerToProject()">
           Añadir colaborador al proyecto
         </v-btn>
@@ -401,8 +429,14 @@ export default {
           products: [],
           workers: [],
       },
+
+      roster_list: [
+          "Director", "Gerente", "Líder", "Colaborador"
+      ], 
+
       origin_products: [],
       temp_product_id: null,
+      temp_product_name: null,
       temp_product_estimated_hours: null,
 
       origin_workers: [],
@@ -417,6 +451,34 @@ export default {
     currentUser() {      
       return this.$store.state.auth.user;
     },
+    origin_workers_admin() {
+        let data = [];
+        this.origin_workers.forEach(worker => {
+            if (worker.rol.name == "Administrador") {
+                data.push(worker);
+            }
+            worker.completeName = worker.name + " " + worker.lastname;
+        });
+        return data;
+    },
+    origin_workers_projects() {
+        let data = [];
+        this.origin_workers.forEach(worker => {
+            if (worker.rol.name == "Administrador" || worker.rol.name =="Proyectos") {
+                data.push(worker);
+            }
+            worker.completeName = worker.name + " " + worker.lastname;
+        });
+        return data;
+    },
+    origin_workers_hours() {
+        let data = [];
+        this.origin_workers.forEach(worker => {
+            data.push(worker);
+            worker.completeName = worker.name + " " + worker.lastname;
+        });
+        return data;
+    }
   },
   methods: {
       retrieveProducts() {
@@ -429,22 +491,18 @@ export default {
         });
     },
     addProductToProject(){
-        let product_name = "";
         let itExists = false;
         this.projectData.products.forEach(product => {
-            if (product.id == this.temp_product_id) itExists = true;
+            if (product.name == this.temp_product_name) itExists = true;
         });
         if (!itExists) {
-            this.origin_products.forEach(op => {
-                if (op.id==this.temp_product_id) product_name = op.name;
-            });
             this.projectData.products.push({
-                id: this.temp_product_id, 
                 estimated_hours: this.temp_product_estimated_hours,
-                name: product_name
+                name: this.temp_product_name,
             });
         } 
-        
+        this.temp_product_name = "",
+        this.temp_product_estimated_hours = ""
     },
     removeProduct(pos){
         return this.projectData.products.splice(pos, 1);
@@ -502,10 +560,20 @@ export default {
       };
       let project_id = await ProjectDataService.create(data);
 
-        console.log(project_id.data.id);
         let productData = null;
+        let newProductData = null;
+
+    for (let index = 0; index < this.projectData.products.length; index++){
+        newProductData = {
+            name: this.projectData.products[index].name,
+        }
+        let product_id = await ProductDataService.create(newProductData);
+        this.projectData.products[index].id = product_id.data.id;
+    }
+
         let consecutive_counter = 1;
         this.projectData.products.forEach(productToAdd => {
+
             productData = {
                 project: project_id.data.id,
                 product: productToAdd.id,
