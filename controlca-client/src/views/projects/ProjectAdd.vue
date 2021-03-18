@@ -23,7 +23,7 @@
       <v-stepper-step
         :complete="formStep > 3"
         step="3">
-        Colaboradores
+        Involucrados
       </v-stepper-step>
 
       <v-divider></v-divider>
@@ -83,12 +83,13 @@
           </v-row>
 
         <div style="display: flex; justify-content: space-between">
-            <v-btn text>
+            <v-btn text
+            @click="confirmCancel = true">
                 Cancelar
             </v-btn>
             <v-btn
                 color="primary"
-                @click="formStep = 2"
+                @click="validateStep1()"
                 >
                 Siguiente
                 </v-btn>
@@ -103,7 +104,7 @@
                     <thead >
                             <tr>
                             <th class="text-center">
-                                Nro.
+                                Consecutivo
                             </th>
                             <th class="text-center">
                                 Producto
@@ -133,6 +134,9 @@
                     </template>
                 </v-simple-table>
         </div>
+        <div v-else class="no-items-label mx-5 mb-3 pa-5">
+            <p class="text-body-2 ma-0">Ningún producto añadido, agrega uno usando el siguiente panel: </p>
+        </div>
         <v-expansion-panels focusable class="px-5 mt-2 mb-5">
             <v-expansion-panel>
                 <v-expansion-panel-header>Añadir producto</v-expansion-panel-header>
@@ -155,7 +159,7 @@
               </v-col>
         </v-row>
         <v-btn class="simple-btn mt-2 mx-auto btn-block w-75" @click="addProductToProject()">
-          Añadir producto al proyecto
+          Añadir al proyecto
         </v-btn>
         </v-expansion-panel-content>
         </v-expansion-panel>
@@ -163,7 +167,7 @@
            
         <div style="display: flex; justify-content: space-between">
             <v-btn text
-            >
+            @click="confirmCancel = true">
                 Cancelar
             </v-btn>
             <v-btn text
@@ -172,7 +176,7 @@
             </v-btn>
             <v-btn
                 color="primary"
-                @click="formStep = 3"
+                @click="validateStep2()"
                 >
                 Siguiente
                 </v-btn>
@@ -211,8 +215,12 @@
                         <td class="text-center">{{ worker.name }}</td>
                         <td class="text-center">{{ worker.lastname }}</td>
                         <td class="text-center">{{ worker.roster }}</td>
-                        <td class="text-center">
+                        <td v-if="w>0" class="text-center">
                             <v-icon small class="text-center" 
+                            color="red" @click="removeWorker(w)">mdi-delete</v-icon>
+                        </td>
+                        <td v-else class="text-center">
+                            <v-icon small class="text-center" disabled
                             color="red" @click="removeWorker(w)">mdi-delete</v-icon>
                         </td>
                         </tr>
@@ -220,9 +228,12 @@
                     </template>
                 </v-simple-table>
         </div>
+        <div v-else class="no-items-label mx-5 mb-3 pa-5">
+            <p class="text-body-2 ma-0">Ningún involucrado añadido, agrega uno usando el siguiente panel: </p>
+        </div>
         <v-expansion-panels focusable class="px-5 mt-2 mb-5">
             <v-expansion-panel>
-                <v-expansion-panel-header>Añadir colaborador</v-expansion-panel-header>
+                <v-expansion-panel-header>Añadir involucrado</v-expansion-panel-header>
                 <v-expansion-panel-content class="py-4">
             <v-row class="pa-0 ma-0 form-row-rol">
               <v-col md="6" cols="12" class="py-0">
@@ -239,31 +250,31 @@
                     <v-select
                         v-model="temp_worker_id"
                         :items="origin_workers_admin"
-                        label="Colaborador"
+                        label="Involucrado"
                         item-text="completeName"
                         item-value="id"
                         dense
                         required
                     ></v-select>
                 </v-col>
-              <v-col md="6" cols="12" class="py-0"
+              <!-- <v-col md="6" cols="12" class="py-0"
               v-else-if="temp_worker_roster == 'Líder'">
                     <v-select
                         v-model="temp_worker_id"
                         :items="origin_workers_projects"
-                        label="Colaborador"
+                        label="Involucrado"
                         item-text="completeName"
                         item-value="id"
                         dense
                         required
                     ></v-select>
-                </v-col>
+                </v-col> -->
               <v-col md="6" cols="12" class="py-0"
               v-else>
                     <v-select
                         v-model="temp_worker_id"
                         :items="origin_workers_hours"
-                        label="Colaborador"
+                        label="Involucrado"
                         item-text="completeName"
                         item-value="id"
                         dense
@@ -272,15 +283,16 @@
                 
               </v-col>
             </v-row>
-        <v-btn class="simple-btn mt-2 mx-auto btn-block" @click="addWorkerToProject()">
-          Añadir colaborador al proyecto
+        <v-btn class="simple-btn mt-2 mx-auto btn-block w-75" @click="addWorkerToProject()">
+          Añadir al proyecto
         </v-btn>
         </v-expansion-panel-content>
         </v-expansion-panel>
         </v-expansion-panels>
 
         <div style="display: flex; justify-content: space-between">
-            <v-btn text>
+            <v-btn text
+            @click="confirmCancel = true">
                 Cancelar
             </v-btn>
             <v-btn text
@@ -289,7 +301,7 @@
             </v-btn>
             <v-btn
                 color="primary"
-                @click="formStep = 4"
+                @click="validateStep3()"
                 >
                 Siguiente
                 </v-btn>
@@ -297,6 +309,9 @@
       </v-stepper-content>
       <v-stepper-content step="4">
 
+        <div class="no-items-label mb-3 pa-5">
+            <p class="text-body-2 ma-0">Confirme la información. Recuerde que una vez registrado el proyecto, no podrá modificar los productos ni involucrados añadidos.</p>
+        </div>
         <div class="project-confirm-section pa-4 body-2 mb-4">
             <div style="display: flex; justify-content: space-between;">
                 <div>
@@ -352,7 +367,7 @@
 
         <v-expansion-panels focusable class="pa-0 mb-5">
             <v-expansion-panel>
-                <v-expansion-panel-header>Colaboradores ({{projectData.workers.length}})</v-expansion-panel-header>
+                <v-expansion-panel-header>Involucrados ({{projectData.workers.length}})</v-expansion-panel-header>
                 <v-expansion-panel-content>
                     <v-simple-table max-height="240px" >
                         <template v-slot:default>
@@ -391,7 +406,8 @@
         
 
         <div style="display: flex; justify-content: space-between">
-            <v-btn text>
+            <v-btn text
+            @click="confirmCancel = true">
                 Cancelar
             </v-btn>
             <v-btn text
@@ -408,6 +424,51 @@
       </v-stepper-content>
     </v-stepper-items>
   </v-stepper>
+  <v-snackbar
+          v-model="alertError"
+          type="error"
+          top
+          :timeout="timeout"
+          color="error"
+        >
+          <strong class="body-1 font-weight-bold">
+            {{errorMessage}}
+          </strong>
+          <template v-slot:action="{ attrs }">
+            <v-btn
+              dark
+              icon
+              color="white"
+              v-bind="attrs"
+              @click="alertError = false"
+            >
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </template>
+    </v-snackbar>
+        <v-dialog v-model="confirmWorkers" max-width="500px">
+            <v-card style="display: flex; justify-content: center; flex-direction: column">
+                  <v-card-title class="body-1 text-center mx-auto">¿Seguro que no desea añadir <br> más involucrados además del líder?</v-card-title>
+            <v-card-actions style="display: flex; justify-content: space-between">
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="confirmWorkers = false">Regresar</v-btn>
+                <v-btn color="blue darken-1" text @click="formStep = 4; confirmWorkers = false">Sí, continuar</v-btn>
+                <v-spacer></v-spacer>
+            </v-card-actions>
+        </v-card>
+        </v-dialog>
+
+        <v-dialog v-model="confirmCancel" max-width="500px">
+        <v-card style="display: flex; justify-content: center; flex-direction: column">
+                  <v-card-title class="body-1 text-center mx-auto">¿Seguro que desea cancelar y salir?</v-card-title>
+            <v-card-actions style="display: flex; justify-content: space-between">
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="confirmCancel = false">No, seguir registrado</v-btn>
+                <v-btn color="blue darken-1" text @click="goRoute('projects')">Sí, salir</v-btn>
+                <v-spacer></v-spacer>
+            </v-card-actions>
+        </v-card>
+        </v-dialog>
     </div>
 
 </template>
@@ -431,7 +492,10 @@ export default {
       },
 
       roster_list: [
-          "Director", "Gerente", "Líder", "Colaborador"
+          "Director",
+          "Gerente",
+        //   "Líder",
+          "Colaborador"
       ], 
 
       origin_products: [],
@@ -446,9 +510,16 @@ export default {
       origin_projects: [],
       error_add_workers: false,
       error_add_products: false,
+
+      timeout: 4000,
+      alertError: false,
+      errorMessage: null,
+
+      confirmWorkers: false,
+      confirmCancel: false,
   }),
   computed: {
-    currentUser() {      
+    currentUser() {    
       return this.$store.state.auth.user;
     },
     origin_workers_admin() {
@@ -481,6 +552,49 @@ export default {
     }
   },
   methods: {
+      validateStep1(){
+          if (!this.projectData.name){
+              this.errorMessage = "Debes indicar el nombre del proyecto."
+              this.alertError = true;
+          } else if (!this.projectData.code) {
+              this.errorMessage = "Debes indicar el código del proyecto."
+              this.alertError = true;
+          } else if (!this.projectData.description) {
+              this.errorMessage = "Debes indicar una descripción del proyecto."
+              this.alertError = true;
+          } else {
+              let itExists = false;
+              this.origin_projects.forEach(project => {
+                  if (this.projectData.code == project.code) {
+                      itExists = true;
+                  }
+              });
+              if (itExists) {
+                  this.errorMessage = "Ya existe un proyecto con el código " + this.projectData.code;
+                  this.alertError = true;
+              }
+              else {
+                  this.formStep = 2;
+                  this.projectData.workers.push({
+                    id: this.currentUser.id, 
+                    roster: "Líder",
+                    name: this.currentUser.name,
+                    lastname: this.currentUser.lastname,
+                });
+              }
+          }
+      },
+      validateStep2(){
+          if (this.projectData.products.length < 1){
+              this.errorMessage = "Debes añadir al menos un (1) producto."
+              this.alertError = true;
+          } else this.formStep = 3;
+      },
+      validateStep3(){
+          if (this.projectData.workers.length < 2){
+              this.confirmWorkers = true;
+          } else this.formStep = 4;
+      },
       retrieveProducts() {
       ProductDataService.getAll()
         .then((response) => {
@@ -492,17 +606,28 @@ export default {
     },
     addProductToProject(){
         let itExists = false;
-        this.projectData.products.forEach(product => {
-            if (product.name == this.temp_product_name) itExists = true;
-        });
-        if (!itExists) {
-            this.projectData.products.push({
-                estimated_hours: this.temp_product_estimated_hours,
-                name: this.temp_product_name,
+        if (!this.temp_product_name){
+            this.errorMessage = "Debes indicar el nombre del producto."
+            this.alertError = true;
+        } else if (!this.temp_product_estimated_hours){
+            this.errorMessage = "Debes indicar las horas estimadas."
+            this.alertError = true;
+        } else {
+            this.projectData.products.forEach(product => {
+                if (product.name == this.temp_product_name) itExists = true;
             });
-        } 
-        this.temp_product_name = "",
-        this.temp_product_estimated_hours = ""
+            if (!itExists) {
+                this.projectData.products.push({
+                    estimated_hours: this.temp_product_estimated_hours,
+                    name: this.temp_product_name,
+                });
+                this.temp_product_name = "",
+                this.temp_product_estimated_hours = ""
+            } else {
+                this.errorMessage = "Ya se agregó un producto con ese nombre a este proyecto."
+               this.alertError = true;
+            }
+        }
     },
     removeProduct(pos){
         return this.projectData.products.splice(pos, 1);
@@ -529,22 +654,33 @@ export default {
         let worker_name = "";
         let worker_lastname = "";
         let itExists = false;
-        this.projectData.workers.forEach(worker => {
-            if (worker.id == this.temp_worker_id) itExists = true;
-        });
-        if (!itExists) {
-            this.origin_workers.forEach(op => {
-                if (op.id==this.temp_worker_id) {
-                    worker_name = op.name;
-                    worker_lastname = op.lastname;
-                } 
+        if (!this.temp_worker_roster){
+            this.errorMessage = "Debes indicar el rol del involucrado."
+            this.alertError = true;
+        } else if (!this.temp_worker_id){
+            this.errorMessage = "Debes indicar el involucrado a añadir."
+            this.alertError = true;
+        } else {
+            this.projectData.workers.forEach(worker => {
+                if (worker.id == this.temp_worker_id) itExists = true;
             });
-            this.projectData.workers.push({
-                id: this.temp_worker_id, 
-                roster: this.temp_worker_roster,
-                name: worker_name,
-                lastname: worker_lastname,
-            });
+            if (!itExists) {
+                this.origin_workers.forEach(op => {
+                    if (op.id==this.temp_worker_id) {
+                        worker_name = op.name;
+                        worker_lastname = op.lastname;
+                    } 
+                });
+                this.projectData.workers.push({
+                    id: this.temp_worker_id, 
+                    roster: this.temp_worker_roster,
+                    name: worker_name,
+                    lastname: worker_lastname,
+                });
+            } else {
+               this.errorMessage = "Ya está agregado."
+               this.alertError = true;
+            }
         }
     },
     removeWorker(pos){
@@ -645,4 +781,18 @@ export default {
         border-radius: 10px;
         padding: 8px;
     }
+    .simple-btn{
+    width: 35%;
+    background-color: #00917c !important;
+    transition: 0.3s;
+    color: white !important;
+  }
+  .simple-btn:hover{
+    width: 35%;
+    background-color: #066B5D !important;
+  }
+  .no-items-label{
+      background-color: rgba(219, 214, 214, 0.301);
+      border-radius: 10px;
+  }
 </style>

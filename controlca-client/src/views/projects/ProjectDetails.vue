@@ -61,7 +61,7 @@
           </v-row>
 
         <div style="display: flex; justify-content: space-between">
-            <v-btn text>
+            <v-btn text @click="goRoute('projects')">
                 Cancelar
             </v-btn>
             <v-btn

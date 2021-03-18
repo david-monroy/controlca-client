@@ -87,7 +87,7 @@ export default {
         { text: "Apellido", value: "lastname", sortable: true },
         { text: "Nro. Carnet", value: "carnet", sortable: true },
         { text: "Nombre de usuario", value: "username", sortable: true },
-        { text: "Rol", value: "rol.name", sortable: true },
+        { text: "Permisos", value: "rol.name", sortable: true },
         { text: 'Acciones', value: 'actions', sortable: false },
       ],
 

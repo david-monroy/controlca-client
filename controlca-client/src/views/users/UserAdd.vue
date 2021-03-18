@@ -58,8 +58,8 @@
               <v-select
                 v-model="user.rol_id"
                 :items="rols"
-                :rules="[v => !!v || 'El rol es obligatorio']"
-                label="Rol"
+                :rules="[v => !!v || 'Campo obligatorio']"
+                label="Permisos"
                 :placeholder="rols[0].name"
                 item-text="name"
                 item-value="id"

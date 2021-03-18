@@ -3,8 +3,8 @@
       <nav class="navbar navbar-expand navbar-dark bg-dark">
           <div class="container container-navbar">
       <a href class="navbar-brand" @click.prevent>Controlca App </a>
-      <p class="navbar-name ma-0">|  {{currentUser.name}} {{currentUser.lastname}}</p>
-      <div class="ml-auto navbar-nav">
+      <p v-if="currentUser" class="navbar-name ma-0">|  {{currentUser.name}} {{currentUser.lastname}}</p>
+      <div v-if="currentUser" class="ml-auto navbar-nav">
         <li class="nav-item ml-3">
           <router-link to="/" class="nav-link ">Escritorio</router-link>
         </li>

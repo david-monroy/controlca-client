@@ -122,4 +122,14 @@ export default {
     flex-direction: row;
     flex-wrap: wrap;
   }
+  .simple-btn{
+    width: 35%;
+    background-color: #00917c !important;
+    transition: 0.3s;
+    color: white !important;
+  }
+  .simple-btn:hover{
+    width: 35%;
+    background-color: #066B5D !important;
+  }
 </style>
