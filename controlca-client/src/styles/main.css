@@ -9,6 +9,14 @@
     border-radius: 6px;
 }
 
+.primary-color{
+  background-color: #55b300 !important;
+}
+
+.primary-color:hover{
+  background-color: #3f8303 !important;
+}
+
 /* BOTONES */
 
 .simple-btn{

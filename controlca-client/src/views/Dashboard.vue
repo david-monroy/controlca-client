@@ -1,16 +1,15 @@
 <template>
   <div id="dashboard">
     <v-card
-    class="mx-auto main-card"
+    class="mx-auto dashboard-main-card"
     >
       <v-card-text>
         <v-row>
-          <v-col cols="12" class="item-list">
+          <v-col cols="12" class="dashboard-item-list">
             <div
               v-for="item in dashItems"
               :key="item.id"
             >
-
               <DashboardCard
                 v-if="currentUser.rol_id <= item.rol"
                 :name="item.name"
@@ -75,22 +74,5 @@ export default {
 </script>
 
 <style>
-  #dashboard{
-    display: flex;
-    align-items: center;
-    min-height: 540px;
-  }
-  .main-card{
-    width: 60%;
-    padding: 30px;
-  }
-  .item-list{
-    display: flex;
-    justify-content: space-around;
-    height: 450px;
-    padding: 0 40px;
-    align-items: center;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
+  @import "../styles/components/dashboard.css";
 </style>
