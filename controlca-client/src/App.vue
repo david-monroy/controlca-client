@@ -18,8 +18,5 @@ export default {
 </script>
 
 <style>
-  #app{
-    background-color: blanchedalmond;
-    min-height: 600px;
-  }
+@import "./styles/main.css";
 </style>

@@ -10,7 +10,7 @@
         @click="goRoute(route)"
         outlined
         >
-    <v-card-title class="p-0 headline font-weight-bold "> {{ name }} </v-card-title>
+    <v-card-title class="p-0 body-1 font-weight-bold "> {{ name }} </v-card-title>
     <v-card-text class="p-0">
       
       <div class="project-card-chips my-2">

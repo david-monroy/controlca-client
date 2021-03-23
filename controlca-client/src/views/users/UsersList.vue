@@ -210,23 +210,4 @@ export default {
   .list {
     max-width: 750px;
   }
-  
-  .simple-btn{
-    width: 35%;
-    background-color: #00917c !important;
-    transition: 0.3s;
-    color: white !important;
-  }
-  .simple-btn:hover{
-    width: 35%;
-    background-color: #066B5D !important;
-  }
-
-  .simple-btn-back{
-    width: 35%;
-    background-color: none !important;
-    transition: 0.3s;
-    color: lightslategray !important;
-    border: 1px solid lightslategrey;
-  }
 </style>

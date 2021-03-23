@@ -1,0 +1,22 @@
+#app{
+    background-color: blanchedalmond;
+    min-height: 600px;
+}
+
+/* BOTONES */
+
+.simple-btn{
+    background-color: #55b300 !important;
+    transition: 0.3s;
+    color: white !important;
+  }
+  .simple-btn:hover{
+    background-color: #3f8303 !important;
+  }
+
+  .simple-btn-back{
+    background-color: none !important;
+    transition: 0.3s;
+    color: lightslategray !important;
+    border: 1px solid lightslategrey;
+  }
