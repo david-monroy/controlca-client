@@ -1,53 +1,38 @@
 <template>
   <div id="navbar">
-      <nav class="navbar navbar-expand navbar-dark bg-dark">
-          <div class="container container-navbar">
-      <a href class="navbar-brand" @click.prevent>Controlca App </a>
-      <p v-if="currentUser" class="navbar-name ma-0">|  {{currentUser.name}} {{currentUser.lastname}}</p>
-      <div v-if="currentUser" class="ml-auto navbar-nav">
-        <li class="nav-item ml-3">
-          <router-link to="/" class="nav-link ">Escritorio</router-link>
-        </li>
-        <li class="nav-item ml-3">
-          <router-link v-if="showLeaderBoard" to="/projects" class="nav-link">Proyectos</router-link>
-        </li>
-        <li class="nav-item ml-3">
-          <router-link v-if="showAdminBoard" to="/users" class="nav-link">Usuarios</router-link>
-        </li>
-        <li class="nav-item ml-3">
-          <router-link to="/" class="nav-link">Cargar Horas</router-link>
-        </li>
-        <li class="nav-item ml-3">
-          <router-link to="/" class="nav-link">Reportes</router-link>
-        </li>
-      
-
-      <!-- <div v-if="!currentUser" class="navbar-nav">
-        <li class="nav-item">
-          <router-link to="/register" class="nav-link">
-            <font-awesome-icon icon="user-plus" />Sign Up
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link to="/login" class="nav-link">
-            <font-awesome-icon icon="sign-in-alt" />Login
-          </router-link>
-        </li>
-      </div> -->
-
-      <div v-if="currentUser" class="navbar-nav ml-auto">
-        <!-- <li class="nav-item">
-          <router-link to="/profile" class="nav-link">
-            <font-awesome-icon icon="user" />
-             {{ currentUser.name }} {{ currentUser.lastname }}
-          </router-link>
-        </li> -->
-        <li class="nav-item ml-3">
-          <a class="nav-link" href @click.prevent="logOut">
-            <font-awesome-icon icon="sign-out-alt" />Cerrar sesión
+      <nav class="navbar navbar-expand secondary">
+        <div class="container container-navbar">
+          <a href class="navbar-brand"
+            @click.prevent>Controlca App
           </a>
-        </li>
-      </div>
+          <p  v-if="currentUser"
+              class="navbar-name ma-0">
+              |  {{currentUser.name}} {{currentUser.lastname}}
+          </p>
+
+        <div v-if="currentUser" class="ml-auto navbar-nav">
+          <!-- Muestra solo si el usuario está logueado -->
+          <li class="nav-item">
+            <router-link to="/" class="nav-link ">Escritorio</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link v-if="showLeaderBoard" to="/projects" class="nav-link">Proyectos</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link v-if="showAdminBoard" to="/users" class="nav-link">Usuarios</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link to="/" class="nav-link">Cargar Horas</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link to="/" class="nav-link">Reportes</router-link>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href @click.prevent="logOut">
+              <font-awesome-icon icon="sign-out-alt" />     Cerrar sesión
+            </a>
+          </li>
       </div>
       </div>
     </nav>
@@ -57,6 +42,9 @@
 <script>
 export default {
   name: "navbar",
+  data: () => ({
+
+  }),
   computed: {
     currentUser() {      
       return this.$store.state.auth.user;
@@ -85,15 +73,5 @@ export default {
 </script>
 
 <style>
-    .container-navbar{
-        margin-top: 0 !important;
-        margin-bottom: 0 !important;
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
-    }
-    .navbar-name{
-      font-size: 15px;
-      color: lightgray;
-      padding: 5px 0;
-    }
+@import "../styles/components/navbar.css";
 </style>

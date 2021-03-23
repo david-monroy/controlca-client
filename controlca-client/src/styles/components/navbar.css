@@ -1,0 +1,27 @@
+/* NAVBAR */
+
+.container-navbar{
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+.navbar-brand{
+    color: white !important;
+}
+
+.nav-link{
+    color: rgba(255, 255, 255, 0.849) !important;
+    margin-left: 6px;
+}
+
+.nav-link:hover{
+    color: #55b300 !important;
+}
+
+.navbar-name{
+  font-size: 15px;
+  color: lightgray !important;
+  padding: 5px 0;
+}
