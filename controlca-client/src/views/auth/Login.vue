@@ -1,6 +1,12 @@
 <template>
   <div class="col-md-12">
-    <div class="card card-container">
+    <div class="login-card login-card-container rounded-card">
+      <div class="w-100">
+        <img src="../../assets/logo-controlca.png" alt="Logo Controlca" class="login-logo ma-0">
+        <p class="mb-0 primary--text text-center">[ Control Interno ]</p>
+        <v-divider class="w-75 my-4 mx-auto"></v-divider>
+      </div>
+      
       <form name="form" @submit.prevent="handleLogin">
         <div class="form-group">
           <label for="username">Nombre de usuario</label>
@@ -22,9 +28,11 @@
           <input
             v-model="user.password"
             v-validate="'required'"
-            type="password"
             class="form-control"
             name="password"
+            :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+            :type="show ? 'text' : 'password'"
+            @click:append="show = !show"
           />
           <div
             v-if="errors.has('password')"
@@ -55,7 +63,8 @@ export default {
     return {
       user: new User('', ''),
       loading: false,
-      message: ''
+      message: '',
+      show: false
     };
   },
   computed: {

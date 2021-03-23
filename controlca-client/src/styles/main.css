@@ -3,6 +3,12 @@
     min-height: 600px;
 }
 
+.rounded-card{
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+}
+
 /* BOTONES */
 
 .simple-btn{
