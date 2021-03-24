@@ -2,7 +2,7 @@
   <div v-if="currentUser" class="edit-form py-3">
     <div class="col-md-12 mt-3 pt-1">
     <div class="card card-container mt-0 form-card">
-      <p class="headline">Editar usuario</p>
+      <h3 class="primary--text mx-auto mb-6 mt-0">Editar usuario</h3>
       <v-form
         ref="updateForm"
         v-model="valid"

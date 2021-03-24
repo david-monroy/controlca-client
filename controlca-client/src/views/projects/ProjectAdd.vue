@@ -83,7 +83,7 @@
           </v-row>
 
         <div style="display: flex; justify-content: space-between">
-            <v-btn text
+            <v-btn text color="red"
             @click="confirmCancel = true">
                 Cancelar
             </v-btn>
@@ -165,12 +165,12 @@
         </v-expansion-panel>
         </v-expansion-panels>
            
-        <div style="display: flex; justify-content: space-between">
-            <v-btn text
+        <div style="display: flex; justify-content: space-between" class="px-4">
+            <v-btn text color="red"
             @click="confirmCancel = true">
                 Cancelar
             </v-btn>
-            <v-btn text
+            <v-btn text color="primary"
             @click="formStep = 1">
                 Regresar
             </v-btn>
@@ -291,11 +291,11 @@
         </v-expansion-panels>
 
         <div style="display: flex; justify-content: space-between">
-            <v-btn text
+            <v-btn text color="red"
             @click="confirmCancel = true">
                 Cancelar
             </v-btn>
-            <v-btn text
+            <v-btn text color="primary"
             @click="formStep = 2">
                 Regresar
             </v-btn>
@@ -406,11 +406,11 @@
         
 
         <div style="display: flex; justify-content: space-between">
-            <v-btn text
+            <v-btn text color="red"
             @click="confirmCancel = true">
                 Cancelar
             </v-btn>
-            <v-btn text
+            <v-btn text color="primary"
             @click="formStep = 3">
                 Regresar
             </v-btn>
@@ -451,8 +451,8 @@
                   <v-card-title class="body-1 text-center mx-auto">¿Seguro que no desea añadir <br> más involucrados además del líder?</v-card-title>
             <v-card-actions style="display: flex; justify-content: space-between">
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="confirmWorkers = false">Regresar</v-btn>
-                <v-btn color="blue darken-1" text @click="formStep = 4; confirmWorkers = false">Sí, continuar</v-btn>
+                <v-btn class="simple-btn-back" text @click="confirmWorkers = false">Regresar</v-btn>
+                <v-btn class="simple-btn" text @click="formStep = 4; confirmWorkers = false">Sí, continuar</v-btn>
                 <v-spacer></v-spacer>
             </v-card-actions>
         </v-card>
@@ -463,8 +463,8 @@
                   <v-card-title class="body-1 text-center mx-auto">¿Seguro que desea cancelar y salir?</v-card-title>
             <v-card-actions style="display: flex; justify-content: space-between">
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="confirmCancel = false">No, seguir registrado</v-btn>
-                <v-btn color="blue darken-1" text @click="goRoute('projects')">Sí, salir</v-btn>
+                <v-btn class="simple-btn-back" text @click="confirmCancel = false">No, seguir registrado</v-btn>
+                <v-btn class="simple-btn" text @click="goRoute('projects')">Sí, salir</v-btn>
                 <v-spacer></v-spacer>
             </v-card-actions>
         </v-card>
@@ -781,16 +781,6 @@ export default {
         border-radius: 10px;
         padding: 8px;
     }
-    .simple-btn{
-    width: 35%;
-    background-color: #00917c !important;
-    transition: 0.3s;
-    color: white !important;
-  }
-  .simple-btn:hover{
-    width: 35%;
-    background-color: #066B5D !important;
-  }
   .no-items-label{
       background-color: rgba(219, 214, 214, 0.301);
       border-radius: 10px;

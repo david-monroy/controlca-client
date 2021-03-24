@@ -185,8 +185,8 @@
                   <v-card-title class="headline text-center mx-auto">¿Seguro que desea eliminar <br> este proyecto?</v-card-title>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="closeDelete">Cancelar</v-btn>
-                    <v-btn color="blue darken-1" text @click="deleteProject()">Sí, eliminar</v-btn>
+                    <v-btn class="simple-btn-back" text @click="closeDelete">Cancelar</v-btn>
+                    <v-btn class="simple-btn" text @click="deleteProject()">Sí, eliminar</v-btn>
                     <v-spacer></v-spacer>
                   </v-card-actions>
                 </v-card>

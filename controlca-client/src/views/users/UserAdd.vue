@@ -1,6 +1,9 @@
 <template>
   <div class="col-md-12 mt-3 pt-1">
     <div class="card card-container mt-0 form-card">
+      <h3 class="primary--text mx-auto mb-3 mt-0">Registrar nuevo usuario</h3>
+      <v-spacer></v-spacer>
+  
       <v-form
         ref="registerForm"
         v-model="valid"
@@ -24,6 +27,7 @@
                         :rules="lastnameRules"
                         label="Apellido"
                         name="lastname"
+                        required
                     ></v-text-field>
                 </div>
             </v-col>
@@ -113,7 +117,7 @@
                 Registrar
             </v-btn>
             <v-btn @click="goRoute(back)"
-                class="btn-block w-25 mx-auto simple-btn-back">
+                class="btn-block w-25 mx-auto simple-btn-back mb-0">
                 Regresar
             </v-btn>
       </v-form>

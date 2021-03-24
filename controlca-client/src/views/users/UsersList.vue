@@ -2,7 +2,7 @@
   <v-row align="center" class="list px-3 mt-2 mx-auto">
     <v-col cols="12" sm="12">
       <v-card class="mx-auto p-3" tile>
-        <v-card-title>Usuarios
+        <v-card-title> <span class="primary--text">Usuarios</span>
           <v-spacer></v-spacer>
           <v-text-field
             v-model="search"
@@ -22,10 +22,10 @@
           <template v-slot:top>
               <v-dialog v-model="dialogDelete" max-width="500px">
                 <v-card>
-                  <v-card-title class="headline">¿Seguro que desea eliminar este usuario?</v-card-title>
+                  <v-card-title class="body-1 mx-auto">¿Seguro que desea eliminar a {{userToDeleteName}} {{userToDeleteLastname}}?</v-card-title>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="closeDelete">Cancelar</v-btn>
+                    <v-btn class="secondary--text" text @click="closeDelete">Cancelar</v-btn>
                     <v-btn color="blue darken-1" text @click="deleteUser()">Sí, eliminar</v-btn>
                     <v-spacer></v-spacer>
                   </v-card-actions>
@@ -34,16 +34,22 @@
           </template>
 
           <template v-slot:[`item.actions`]="{ item }">
-            <v-icon small class="mr-2" @click="editUser(item.id)">mdi-pencil</v-icon>
-            <v-icon small @click="openDelete(item.id)">mdi-delete</v-icon>
+            <v-icon small @click="editUser(item.id)" class="mr-2">mdi-pencil</v-icon>
+            <v-icon small @click="openDelete(item.id, item.name, item.lastname)" class="red--text">mdi-delete</v-icon>
           </template>
         </v-data-table>
 
       </v-card>
     </v-col>
-    <v-btn class="simple-btn mt-2 mb-4 mx-auto" @click="goRoute(addUser)">
-      Registrar Usuario
-    </v-btn>
+    <div class="buttons">
+      <v-btn class="btn-block w-50 my-2 mx-auto simple-btn" @click="goRoute(addUser)">
+        Registrar Usuario
+      </v-btn>
+      <v-btn class="btn-block w-25 mx-auto simple-btn-back" @click="goRoute(goBack)">
+        Regresar
+      </v-btn>
+    </div>
+    
     <v-snackbar
           v-model="alertSuccess"
           type="success"
@@ -80,6 +86,7 @@ export default {
       users: [],
       rols: [],
       addUser: 'users-add',
+      goBack: "",
       title: "",
       search: "",
       headers: [
@@ -93,6 +100,9 @@ export default {
 
       dialogDelete: false,
       userToDelete: "",
+
+      userToDeleteName: "",
+      userToDeleteLastname: "",
 
       // Snackbar
       timeout: 4000,
@@ -174,9 +184,11 @@ export default {
     closeDelete(){
       this.dialogDelete = false;
     },
-    openDelete(userID){
+    openDelete(userID, userName, userLastname){
       this.dialogDelete = true;
       this.userToDelete = userID;
+      this.userToDeleteName = userName;
+      this.userToDeleteLastname = userLastname;
     },
 
     goRoute(route) {

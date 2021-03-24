@@ -21,17 +21,30 @@
 
 .simple-btn{
     background-color: #55b300 !important;
-    transition: 0.3s;
+    transition: 0.3s !important;
     color: white !important;
+    border: none !important;
   }
   .simple-btn:hover{
     background-color: #3f8303 !important;
   }
 
   .simple-btn-back{
-    background-color: none !important;
-    transition: 0.3s;
-    color: lightslategray !important;
-    border: 1px solid lightslategrey;
+    background-color: rgba(124, 119, 119, 0.753) !important;
+    transition: 0.3s !important;
+    color: white !important;
   }
+
+  .buttons{
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* SNACKBARS */
+
+  .success-snackbar{
+    background-color: #55b300 !important;
+  }
+
+
 

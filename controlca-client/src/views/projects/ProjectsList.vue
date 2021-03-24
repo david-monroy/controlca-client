@@ -49,7 +49,7 @@
         </v-row>
       </v-card-text>
       <v-card-actions>
-        <v-btn class="simple-btn mt-2 mx-auto" @click="goRoute(addProject)">
+        <v-btn class="simple-btn mt-2 mx-auto w-50" @click="goRoute(addProject)">
           Registrar Proyecto
         </v-btn>
       </v-card-actions>
@@ -122,14 +122,5 @@ export default {
     flex-direction: row;
     flex-wrap: wrap;
   }
-  .simple-btn{
-    width: 35%;
-    background-color: #00917c !important;
-    transition: 0.3s;
-    color: white !important;
-  }
-  .simple-btn:hover{
-    width: 35%;
-    background-color: #066B5D !important;
-  }
+
 </style>
