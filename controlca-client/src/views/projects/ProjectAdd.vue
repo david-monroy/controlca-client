@@ -55,15 +55,19 @@
                         v-model="projectData.code"
                         label="Código"
                         name="code"
+                        v-mask="'####'"
+                        type="number"
                     ></v-text-field>
                 </div>
             </v-col>
             <v-col md="6" cols="12" class="py-0">
                 <div class="form-group">
                     <v-text-field
-                        v-model="projectData.area"
-                        name="area"
-                        label="Área de trabajo"
+                        v-model="projectData.areas"
+                        name="areas"
+                        label="Número de áreas de trabajo"
+                        placeholder="0"
+                        type="number"
                         required
                     ></v-text-field>
                 </div>
@@ -75,7 +79,7 @@
                     <v-textarea
                         v-model="projectData.description"
                         filled height="100"
-                        label="Descripción"
+                        label="Descripción (opcional)"
                         required
                     ></v-textarea>
                 </div>
@@ -104,10 +108,13 @@
                     <thead >
                             <tr>
                             <th class="text-center">
-                                Consecutivo
+                                Área
                             </th>
                             <th class="text-center">
-                                Producto
+                                Código
+                            </th>
+                            <th class="text-center">
+                                Nombre
                             </th>
                             <th class="text-center">
                                 Horas estimadas
@@ -122,7 +129,8 @@
                         v-for="(product,p) in projectData.products"
                         :key="p"
                         >
-                        <td class="text-center">{{ p+1 }}</td>
+                        <td class="text-center">{{ product.area }}</td>
+                        <td class="text-center">{{ product.code }}</td>
                         <td class="text-center">{{ product.name }}</td>
                         <td class="text-center">{{ product.estimated_hours }}</td>
                         <td class="text-center">
@@ -142,14 +150,29 @@
                 <v-expansion-panel-header>Añadir producto</v-expansion-panel-header>
                 <v-expansion-panel-content class="py-4">
             <v-row class="pa-0 ma-0 form-row-rol">
-              <v-col md="6" cols="12" class="py-0">
-                <v-text-field
-                    v-model="temp_product_name"
-                    label="Nombre de producto"
-                    type="text"
-                ></v-text-field>
+                <v-col md="6" cols="12" class="py-0">
+                <v-select
+                    v-model="temp_product_area"
+                    :items="areas_list"
+                    label="Área"
+                    dense
+                    required
+                ></v-select>
               </v-col>
               <v-col md="6" cols="12" class="py-0">
+                <v-select
+                    v-model="temp_product_id"
+                    :items="origin_products_rename"
+                    label="Producto"
+                    item-text="completeName"
+                    item-value="id"
+                    dense
+                    required
+                ></v-select>
+              </v-col>
+            </v-row>
+            <v-row class="pa-0 ma-0 form-row-rol">
+              <v-col md="8" cols="12" class="py-0 mx-auto">
                 <v-text-field
                     v-model="temp_product_estimated_hours"
                     label="Horas estimadas"
@@ -189,9 +212,7 @@
                 <template v-slot:default>
                     <thead >
                             <tr>
-                            <th class="text-center">
-                                Nro.
-                            </th>
+
                             <th class="text-center">
                                 Nombre
                             </th>
@@ -211,7 +232,6 @@
                         v-for="(worker,w) in projectData.workers"
                         :key="w"
                         >
-                        <td class="text-center">{{ w+1 }}</td>
                         <td class="text-center">{{ worker.name }}</td>
                         <td class="text-center">{{ worker.lastname }}</td>
                         <td class="text-center">{{ worker.roster }}</td>
@@ -318,14 +338,14 @@
                     <strong>Código: </strong> <p>{{projectData.code}}</p>
                 </div>
                 <div>
-                    <strong>Área: </strong> <p>{{projectData.area}}</p>
+                    <strong>Área: </strong> <p>{{projectData.areas}}</p>
                 </div>
                 <div>
                     <strong>Líder: </strong> <p>{{currentUser.name}} {{currentUser.lastname}}</p>
                 </div>
             </div>
             
-            <div class="mb-2 pb-0 body-2">
+            <div class="mb-2 pb-0 body-2" v-if="projectData.description">
                 <p><strong>Descripción: </strong>{{projectData.description}}</p> 
             </div>
         </div>
@@ -339,13 +359,19 @@
                         <thead >
                             <tr>
                             <th class="text-center">
-                                Nro.
+                                Área
+                            </th>
+                            <th class="text-center">
+                                Código
                             </th>
                             <th class="text-center">
                                 Producto
                             </th>
                             <th class="text-center">
                                 Horas estimadas
+                            </th>
+                            <th class="text-center">
+                                Eliminar
                             </th>
                             </tr>
                         </thead>
@@ -354,9 +380,14 @@
                             v-for="(product,p) in projectData.products"
                             :key="p"
                             >
-                            <td class="text-center">{{ p+1 }}</td>
+                            <td class="text-center">{{ product.area }}</td>
+                            <td class="text-center">{{ product.code }}</td>
                             <td class="text-center">{{ product.name }}</td>
                             <td class="text-center">{{ product.estimated_hours }}</td>
+                            <td class="text-center">
+                            <v-icon small class="text-center" 
+                            color="red" @click="removeProduct(p)">mdi-delete</v-icon>
+                            </td>
                             </tr>
                         </tbody>
                         </template>
@@ -374,9 +405,6 @@
                         <thead >
                             <tr>
                             <th class="text-center">
-                                Nro.
-                            </th>
-                            <th class="text-center">
                                 Nombre
                             </th>
                             <th class="text-center">
@@ -385,6 +413,9 @@
                             <th class="text-center">
                                 Rol
                             </th>
+                            <th class="text-center">
+                                Eliminar
+                            </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -392,10 +423,13 @@
                             v-for="(worker,w) in projectData.workers"
                             :key="w"
                             >
-                            <td class="text-center">{{ w+1 }}</td>
                             <td class="text-center">{{ worker.name }}</td>
                             <td class="text-center">{{ worker.lastname }}</td>
                             <td class="text-center">{{ worker.roster }}</td>
+                            <td class="text-center">
+                            <v-icon small class="text-center" 
+                            color="red" @click="removeWorker(w)">mdi-delete</v-icon>
+                            </td>
                             </tr>
                         </tbody>
                         </template>
@@ -483,9 +517,9 @@ export default {
       formStep: 1,
       projectData: {
           name: "",
-          description: "",
+          description: null,
           code: "",
-          area: "",
+          areas: 1,
           leader: null,
           products: [],
           workers: [],
@@ -517,10 +551,28 @@ export default {
 
       confirmWorkers: false,
       confirmCancel: false,
+      counter: 1,
   }),
   computed: {
     currentUser() {    
       return this.$store.state.auth.user;
+    },
+    areas_list(){
+        let n = this.projectData.areas;
+        let list = [];
+        for (let i = 1; i <= n; i++){
+            if (i<10) list.push("A0" + i);
+            else list.push("A" + i);
+        }
+        return list;
+    },
+    origin_products_rename(){
+        let data = [];
+        this.origin_products.forEach(product => {
+            product.completeName = product.code + " - " + product.name;
+            data.push(product);
+        });
+        return data;
     },
     origin_workers_admin() {
         let data = [];
@@ -552,6 +604,13 @@ export default {
     }
   },
   methods: {
+      codeIsCorrect(){
+          if (this.projectData.code > 6999 && this.projectData.code < 8000) 
+              return true;
+          if (this.projectData.code > 3999 && this.projectData.code < 5000) 
+              return true;
+          return false;
+      },
       validateStep1(){
           if (!this.projectData.name){
               this.errorMessage = "Debes indicar el nombre del proyecto."
@@ -559,8 +618,11 @@ export default {
           } else if (!this.projectData.code) {
               this.errorMessage = "Debes indicar el código del proyecto."
               this.alertError = true;
-          } else if (!this.projectData.description) {
-              this.errorMessage = "Debes indicar una descripción del proyecto."
+          } else if (!this.projectData.areas || this.projectData.areas<1) {
+              this.errorMessage = "Al menos debe tener un (1) área de trabajo."
+              this.alertError = true;
+          } else if (!this.codeIsCorrect()) {
+              this.errorMessage = "Verifique que el código inicie con 4 o 7, y que tenga cuatro (4) dígitos"
               this.alertError = true;
           } else {
               let itExists = false;
@@ -575,12 +637,15 @@ export default {
               }
               else {
                   this.formStep = 2;
-                  this.projectData.workers.push({
-                    id: this.currentUser.id, 
-                    roster: "Líder",
-                    name: this.currentUser.name,
-                    lastname: this.currentUser.lastname,
-                });
+                  if (this.counter == 1){
+                      this.projectData.workers.push({
+                        id: this.currentUser.id, 
+                        roster: "Líder",
+                        name: this.currentUser.name,
+                        lastname: this.currentUser.lastname,
+                    });
+                    this.counter++;
+                  }
               }
           }
       },
@@ -605,24 +670,39 @@ export default {
         });
     },
     addProductToProject(){
+        let product_name = "";
+        let product_code = "";
         let itExists = false;
-        if (!this.temp_product_name){
-            this.errorMessage = "Debes indicar el nombre del producto."
+        if (!this.temp_product_id){
+            this.errorMessage = "Debes indicar el producto."
             this.alertError = true;
         } else if (!this.temp_product_estimated_hours){
             this.errorMessage = "Debes indicar las horas estimadas."
+            this.alertError = true;
+        } else if (!this.temp_product_area){
+            this.errorMessage = "Debes indicar el área de trabajo."
             this.alertError = true;
         } else {
             this.projectData.products.forEach(product => {
                 if (product.name == this.temp_product_name) itExists = true;
             });
             if (!itExists) {
-                this.projectData.products.push({
-                    estimated_hours: this.temp_product_estimated_hours,
-                    name: this.temp_product_name,
+                this.origin_products.forEach(op => {
+                    if (op.id==this.temp_product_id) {
+                        product_name = op.name;
+                        product_code = op.code;
+                    } 
                 });
-                this.temp_product_name = "",
-                this.temp_product_estimated_hours = ""
+                this.projectData.products.push({
+                    id: this.temp_product_id, 
+                    estimated_hours: this.temp_product_estimated_hours,
+                    name: product_name,
+                    code: product_code,
+                    area: this.temp_product_area,
+                });
+                this.temp_product_id = "",
+                this.temp_product_estimated_hours = "",
+                this.temp_product_area = ""
             } else {
                 this.errorMessage = "Ya se agregó un producto con ese nombre a este proyecto."
                this.alertError = true;
@@ -691,32 +771,22 @@ export default {
         name: this.projectData.name,
         description: this.projectData.description,
         code: this.projectData.code,
-        area: this.projectData.area,
+        areas: this.projectData.areas,
         leader: this.currentUser.id,
       };
       let project_id = await ProjectDataService.create(data);
 
         let productData = null;
-        let newProductData = null;
 
-    for (let index = 0; index < this.projectData.products.length; index++){
-        newProductData = {
-            name: this.projectData.products[index].name,
-        }
-        let product_id = await ProductDataService.create(newProductData);
-        this.projectData.products[index].id = product_id.data.id;
-    }
-
-        let consecutive_counter = 1;
         this.projectData.products.forEach(productToAdd => {
 
             productData = {
                 project: project_id.data.id,
                 product: productToAdd.id,
                 estimated_hours: productToAdd.estimated_hours,
-                consecutive: consecutive_counter,
+                code: productToAdd.code,
+                area: productToAdd.area
             }
-            consecutive_counter = consecutive_counter + 1;
 
             console.log(productData);
 

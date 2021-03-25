@@ -22,7 +22,7 @@
           <v-chip
             class="ma-0 ml-2 color-chip" small label
             >
-            {{area}}
+            {{areas}} áreas
           </v-chip>
       </div>
       
@@ -58,7 +58,7 @@
                 <strong>Código: </strong> <p>{{code}}</p>
             </div>
             <div>
-                <strong>Área: </strong> <p>{{area}}</p>
+                <strong>Áreas: </strong> <p>{{areas}}</p>
             </div>
             <div>
                 <strong>Líder: </strong> <p>{{leader.name}} {{leader.lastname}}</p>
@@ -69,7 +69,7 @@
           
         </v-card-text>
 
-        <v-card-text class="mb-2 pb-0 body-2">
+        <v-card-text class="mb-2 pb-0 body-2" v-if="description">
           <p><strong>Descripción: </strong>{{description}}</p> 
         </v-card-text>
 
@@ -81,8 +81,11 @@
                         <template v-slot:default>
                         <thead >
                             <tr>
+                              <th class="text-center">
+                                Área
+                            </th>
                             <th class="text-center">
-                                Nro.
+                                Código
                             </th>
                             <th class="text-center">
                                 Producto
@@ -100,7 +103,8 @@
                             v-for="(product,p) in products"
                             :key="p"
                             >
-                            <td class="text-center">{{ product.project_product.consecutive }}</td>
+                            <td class="text-center">{{ product.project_product.area }}</td>
+                            <td class="text-center">{{ product.code }}</td>
                             <td class="text-center">{{ product.name }}</td>
                             <td class="text-center">0</td>
                             <td class="text-center">{{ product.project_product.estimated_hours }}</td>
@@ -121,9 +125,6 @@
                         <thead >
                             <tr>
                             <th class="text-center">
-                                Nro.
-                            </th>
-                            <th class="text-center">
                                 Nombre
                             </th>
                             <th class="text-center">
@@ -142,7 +143,6 @@
                             v-for="(user,u) in users"
                             :key="u"
                             >
-                            <td class="text-center">{{ u+1 }}</td>
                             <td class="text-center">{{ user.name }}</td>
                             <td class="text-center">{{ user.lastname }}</td>
                             <td class="text-center">{{ user.project_user.roster }}</td>
@@ -226,7 +226,7 @@ export default {
     name: String,
     description: String,
     code: String,
-    area: String,
+    areas: Number,
     status: String,
     leader: Object,
     products: Array,
