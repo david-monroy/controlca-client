@@ -12,6 +12,11 @@ export default new Router({
       component: () => import("../views/Dashboard.vue"),
     },
     {
+      path: "/project_offer",
+      name: "project_offer",
+      component: () => import("../views/Project_Offer.vue"),
+    },
+    {
       path: "/projects",
       name: "projects",
       component: () => import("../views/projects/ProjectsList.vue"),
@@ -26,6 +31,21 @@ export default new Router({
       name: "projects-details",
       component: () => import("../views/projects/ProjectDetails.vue"),
     },
+    {
+      path: "/offers",
+      name: "offers",
+      component: () => import("../views/offers/OffersList.vue"),
+    },
+    {
+      path: "/offers-add",
+      name: "offers-add",
+      component: () => import("../views/offers/OfferAdd.vue"),
+    },
+    // {
+    //   path: "/offers/:id",
+    //   name: "offers-details",
+    //   component: () => import("../views/offers/OfferDetails.vue"),
+    // },
     {
       path: "/users",
       name: "users",

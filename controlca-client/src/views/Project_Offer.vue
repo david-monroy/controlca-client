@@ -29,7 +29,7 @@
 <script>
 import DashboardCard from "../components/dashboard/DashboardCard.vue";
 export default {
-  name: "Dashboard",
+  name: "Project_Offer",
   components: {
     DashboardCard
   },
@@ -42,32 +42,18 @@ export default {
       dashItems: [
       {
         id: 1,
-        name: "Proyectos y ofertas",
-        icon: "mdi-folder-multiple",
+        name: "Proyectos",
+        icon: "mdi-tools",
         rol: 2,
-        route: "project_offer",
+        route: "projects",
       },
       {
         id: 2,
-        name: "Usuarios",
-        icon: "mdi-account-group",
-        rol: 1,
-        route: "users",
-      },
-      {
-        id: 3,
-        name: "Cargar Horas",
-        icon: "mdi-progress-clock",
-        rol: 3,
-        route: "",
-      },
-      {
-        id: 4,
-        name: "Reportes",
-        icon: "mdi-note-text",
-        rol: 3,
-        route: "",
-      },
+        name: "Ofertas",
+        icon: "mdi-file-multiple",
+        rol: 2,
+        route: "offers",
+      }
     ]
   })
 };

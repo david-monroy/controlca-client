@@ -37,7 +37,7 @@
                     <v-text-field
                         v-model="currentUser.carnet"
                         :rules="carnetRules"
-                        label="Número de carnet"
+                        label="Número de empleado"
                         name="carnet"
                     ></v-text-field>
                 </div>
