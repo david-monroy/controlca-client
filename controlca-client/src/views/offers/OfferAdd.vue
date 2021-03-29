@@ -11,8 +11,6 @@
 
       <v-divider></v-divider>
 
-      <v-divider></v-divider>
-
       <v-stepper-step
         :complete="formStep > 2"
         step="2">
@@ -34,7 +32,7 @@
                     <v-text-field
                         v-model="offerData.name"
                         
-                        label="Nombre"
+                        label="Nombre de la oferta"
                         required
                     ></v-text-field>
                 </div>
@@ -42,37 +40,22 @@
           </v-row>
           <input type="hidden" value="currentUser.id">
           <v-row class="pb-0 mb-0 form-row" >
-            <v-col md="4" cols="12" class="py-0">
+            <v-col md="6" cols="12" class="py-0">
+                <v-select
+                    v-model="offerData.department"
+                    :items="departments_list"
+                    label="Departamento"
+                    dense
+                    required
+                ></v-select>
+            </v-col>
+            <v-col md="6" cols="12" class="py-0">
                 <div class="form-group">
                     <v-text-field
                         v-model="offerData.code"
                         label="Código"
                         name="code"
-                        v-mask="'#####'"
-                        type="number"
-                        required
-                    ></v-text-field>
-                </div>
-            </v-col>
-            <v-col md="4" cols="12" class="py-0">
-                <div class="form-group">
-                    <v-text-field
-                        v-model="offerData.number"
-                        name="number"
-                        label="Número de oferta"
-                        v-mask="'X###'"
-                        required
-                    ></v-text-field>
-                </div>
-            </v-col>
-            <v-col md="4" cols="12" class="py-0">
-                <div class="form-group">
-                    <v-text-field
-                        v-model="offerData.codification"
-                        name="codification"
-                        label="Codificación"
-                        v-mask="'###'"
-                        type="number"
+                        v-mask="'x###'"
                         required
                     ></v-text-field>
                 </div>
@@ -238,10 +221,7 @@
                     <strong>Código: </strong> <p>{{offerData.code}}</p>
                 </div>
                 <div>
-                    <strong>Número: </strong> <p>{{offerData.number}}</p>
-                </div>
-                <div>
-                    <strong>Codificación: </strong> <p>{{offerData.codification}}</p>
+                    <strong>Departamento: </strong> <p>{{offerData.department}}</p>
                 </div>
                 <div>
                     <strong>Líder: </strong> <p>{{currentUser.name}} {{currentUser.lastname}}</p>
@@ -385,6 +365,11 @@ export default {
           workers: [],
       },
 
+      departments_list: [
+          "Ingeniería",
+          "SIT"
+      ],
+
       roster_list: [
           "Director",
           "Gerente",
@@ -449,21 +434,18 @@ export default {
           } else if (!this.offerData.code) {
               this.errorMessage = "Debes indicar el código de la oferta."
               this.alertError = true;
-          } else if (!this.offerData.number) {
-              this.errorMessage = "Debes indicar el número de la oferta."
-              this.alertError = true;
-          } else if (!this.offerData.codification) {
-              this.errorMessage = "Debes indicar la codificación de la oferta."
+          } else if (!this.offerData.department) {
+              this.errorMessage = "Debes indicar el departamento al que pertenece la oferta."
               this.alertError = true;
           } else {
               let itExists = false;
               this.origin_offers.forEach(offer => {
-                  if (this.offerData.number == offer.number) {
+                  if (this.offerData.code == offer.code) {
                       itExists = true;
                   }
               });
               if (itExists) {
-                  this.errorMessage = "Ya existe un proyecto con el número " + this.offerData.number;
+                  this.errorMessage = "Ya existe una oferta con el código " + this.offerData.code;
                   this.alertError = true;
               }
               else {
@@ -544,8 +526,7 @@ export default {
         name: this.offerData.name,
         description: this.offerData.description,
         code: this.offerData.code,
-        number: this.offerData.number,
-        codification: this.offerData.codification,
+        department: this.offerData.department,
         leader: this.currentUser.id,
       };
       let offer_id = await OfferDataService.create(data);
@@ -605,4 +586,8 @@ export default {
       background-color: rgba(219, 214, 214, 0.301);
       border-radius: 10px;
   }
+  .v-text-field.v-input--dense {
+    padding-top: 0;
+    margin-top: 22px;
+}
 </style>

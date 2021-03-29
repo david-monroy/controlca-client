@@ -22,12 +22,7 @@
           <v-chip
             class="ma-0 ml-2 color-chip" small label
             >
-            {{number}}
-          </v-chip>
-          <v-chip
-            class="ma-0 ml-2 color-chip" small label
-            >
-            {{codification}}
+            {{department}}
           </v-chip>
           
       </div>
@@ -63,10 +58,7 @@
                 <strong>Código: </strong> <p>{{code}}</p>
             </div>
             <div>
-                <strong>Número de oferta: </strong> <p>{{number}}</p>
-            </div>
-            <div>
-                <strong>Codificación: </strong> <p>{{codification}}</p>
+                <strong>Departamento: </strong> <p>{{department}}</p>
             </div>
             <div>
                 <strong>Líder: </strong> <p>{{leader.name}} {{leader.lastname}}</p>
@@ -111,7 +103,7 @@
                             <td class="text-center">{{ user.name }}</td>
                             <td class="text-center">{{ user.lastname }}</td>
                             <td class="text-center">{{ user.offer_user.roster }}</td>
-                            <td class="text-center">0</td>
+                            <td class="text-center">{{ user.offer_user.hours_done }}</td>
                             </tr>
                         </tbody>
                         </template>
@@ -191,8 +183,7 @@ export default {
     name: String,
     description: String,
     code: String,
-    number: String,
-    codification: String,
+    department: String,
     status: String,
     leader: Object,
     users: Array,

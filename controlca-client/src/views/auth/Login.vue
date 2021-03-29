@@ -17,11 +17,7 @@
             class="form-control"
             name="username"
           />
-          <div
-            v-if="errors.has('username')"
-            class="alert alert-danger"
-            role="alert"
-          >¡El correo es requerido!</div>
+
         </div>
         <div class="form-group">
           <label for="password">Contraseña</label>
@@ -34,11 +30,6 @@
             :type="show ? 'text' : 'password'"
             @click:append="show = !show"
           />
-          <div
-            v-if="errors.has('password')"
-            class="alert alert-danger"
-            role="alert"
-          >¡La contraseña es requerida!</div>
         </div>
         <div class="form-group">
           <button class="btn simple-btn btn-block" :disabled="loading">
@@ -48,6 +39,9 @@
         </div>
         <div class="form-group">
           <div v-if="message" class="alert alert-danger" role="alert">{{message.message}}</div>
+        </div>
+        <div class="form-group">
+          <div v-if="completeFields" class="alert alert-danger" role="alert">Por favor, complete los campos.</div>
         </div>
       </form>
     </div>
@@ -64,7 +58,8 @@ export default {
       user: new User('', ''),
       loading: false,
       message: '',
-      show: false
+      show: false,
+      completeFields: false,
     };
   },
   computed: {
@@ -80,11 +75,12 @@ export default {
   methods: {
     handleLogin() {
       this.loading = true;
-      this.$validator.validateAll().then(isValid => {
-        if (!isValid) {
-          this.loading = false;
-          return;
-        }
+      this.completeFields = false;
+      // this.$validator.validateAll().then(isValid => {
+      //   if (!isValid) {
+      //     this.loading = false;
+      //     return;
+      //   }
 
         if (this.user.username && this.user.password) {
           this.$store.dispatch('auth/login', this.user).then(
@@ -99,8 +95,11 @@ export default {
                 error.toString();
             }
           );
+        } else {
+          this.loading = false;
+          this.completeFields = true;
         }
-      });
+      // });
     }
   }
 };
