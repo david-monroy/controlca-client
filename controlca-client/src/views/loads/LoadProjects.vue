@@ -155,6 +155,7 @@
 
 <script>
 import ProjectDataService from "../../services/ProjectDataService";
+import ProjectUserDataService from "../../services/ProjectUserDataService";
 import ProductDataService from "../../services/ProductDataService";
 import UserDataService from "../../services/UserDataService";
 
@@ -163,6 +164,7 @@ export default {
   data() {
     return {
       origin_projects: [],
+      origin_project_users: [],
       origin_products: [],
       origin_users: [],
       currentProjectId: "",
@@ -243,6 +245,15 @@ export default {
         });
         return products;
     },
+    project_user_id(){
+      let pu_id = 0;
+      this.origin_project_users.forEach(pu => {
+        if ((this.currentUser.id == pu.worker_id) && (this.currentProjectId == pu.project_id)){
+          pu_id = pu.id;
+        }
+      });
+      return pu_id
+    }
   },
 
   methods: {
@@ -250,15 +261,14 @@ export default {
     saveHours(){
         
         let loadPayload = {
-            project: this.currentProjectId,
-            worker: this.currentUser.id,
+            project_user: this.project_user_id,
             date: this.dateFormatted,
             hours: this.payload.hours,
             observations: this.payload.observations
         }
         console.log(loadPayload);
 
-        ProjectDataService.loadHour(loadPayload)
+        ProjectUserDataService.addLoad(loadPayload)
             .then(response => {
 
                 console.log(response.data);
@@ -266,6 +276,10 @@ export default {
             .catch(e => {
             console.log(e);
             });
+
+        this.loadDialog = false;
+        this.successMessage = "Se han cargado las horas correctamente";
+        this.alertSuccess = true;
         
     },
 
@@ -291,6 +305,16 @@ export default {
       ProjectDataService.getAll()
         .then((response) => {
           this.origin_projects = response.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+
+    retrieveProjectUsers() {
+      ProjectUserDataService.getAll()
+        .then((response) => {
+          this.origin_project_users = response.data;
         })
         .catch((e) => {
           console.log(e);
@@ -345,6 +369,7 @@ export default {
     },
   mounted() {
     this.retrieveProjects();
+    this.retrieveProjectUsers();
     this.retrieveProducts();
     this.retrieveUser();
   },
