@@ -7,7 +7,7 @@ Vue.use(Router);
 export default new Router({
   routes: [
     {
-      path: "/",
+      path: "/dashboard",
       name: "dashboard",
       component: () => import("../views/Dashboard.vue"),
     },
@@ -62,7 +62,17 @@ export default new Router({
       component: () => import("../views/users/UserDetail.vue"),
     },
     {
-      path: '/login',
+      path: "/loads",
+      name: "load-dashboard",
+      component: () => import("../views/loads/LoadDashboard.vue"),
+    },
+    {
+      path: "/load-projects",
+      name: "load-projects",
+      component: () => import("../views/loads/LoadProjects.vue"),
+    },
+    {
+      path: '/',
       component: Login
     },    
   ]

@@ -59,7 +59,7 @@ export default {
         name: "Cargar Horas",
         icon: "mdi-progress-clock",
         rol: 3,
-        route: "",
+        route: "loads",
       },
       {
         id: 4,

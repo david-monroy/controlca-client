@@ -13,7 +13,7 @@
         <div v-if="currentUser" class="ml-auto navbar-nav">
           <!-- Muestra solo si el usuario está logueado -->
           <li class="nav-item">
-            <router-link to="/" class="nav-link ">Escritorio</router-link>
+            <router-link to="/dashboard" class="nav-link ">Escritorio</router-link>
           </li>
           <li class="nav-item">
             <router-link v-if="showLeaderBoard" to="/projects" class="nav-link">Proyectos</router-link>
@@ -22,7 +22,7 @@
             <router-link v-if="showAdminBoard" to="/users" class="nav-link">Usuarios</router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/" class="nav-link">Cargar Horas</router-link>
+            <router-link to="/loads" class="nav-link">Cargar Horas</router-link>
           </li>
           <li class="nav-item">
             <router-link to="/" class="nav-link">Reportes</router-link>
@@ -66,7 +66,7 @@ export default {
   methods: {
     logOut() {
       this.$store.dispatch('auth/logout');
-      this.$router.push('/login');
+      this.$router.push('/');
     }
   }
 }

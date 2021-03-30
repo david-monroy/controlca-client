@@ -33,6 +33,10 @@ class ProjectDataService {
     return http.post("/projects/updateUser", data);
   }
 
+  loadHour(data) {
+    return http.post("/projects/loadHour", data);
+  }
+
   update(id, data) {
     return http.put(`/projects/${id}`, data);
   }
