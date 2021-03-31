@@ -68,7 +68,9 @@
             </div>
           
         </v-card-text>
-
+        <v-card-text class="mb-2 pb-0 body-2">
+          <p><strong>Total de horas trabajadas: </strong>{{worked_hours}}</p> 
+        </v-card-text>
         <v-card-text class="mb-2 pb-0 body-2" v-if="description">
           <p><strong>Descripción: </strong>{{description}}</p> 
         </v-card-text>
@@ -91,9 +93,6 @@
                                 Producto
                             </th>
                             <th class="text-center">
-                                Horas completadas
-                            </th>
-                            <th class="text-center">
                                 Horas estimadas
                             </th>
                             </tr>
@@ -106,7 +105,6 @@
                             <td class="text-center">{{ product.project_product.area }}</td>
                             <td class="text-center">{{ product.code }}</td>
                             <td class="text-center">{{ product.name }}</td>
-                            <td class="text-center">0</td>
                             <td class="text-center">{{ product.project_product.estimated_hours }}</td>
                             </tr>
                         </tbody>
@@ -220,6 +218,7 @@
 </template>
 <script>
 import ProjectDataService from "../../services/ProjectDataService";
+import ProjectUserDataService from "../../services/ProjectUserDataService";
 export default {
   name: "DashboardCard",
   props: {
@@ -247,17 +246,31 @@ export default {
               array: "users"
           }
       ],
+      origin_project_users: [],
       alertSuccess: false,
       successMessage: "Proyecto eliminado correctamente. Espere mientras se actualiza.",
       timeout: 4000,
   }),
+  computed: {
+    worked_hours(){
+      let hours = 0;
+      this.origin_project_users.forEach(pu => {
+        if (this.id == pu.project_id){
+          pu.loads.forEach(load => {
+            hours = hours + load.hours;
+          });
+        }
+      });
+      return hours;
+    },
+  },
   methods: {
     goRoute(route) {
       this.$router.push("/" + route);
     },
     openDialog(){
         this.dialog = true;
-        console.log(this.id)
+        console.log(this.products)
     },
     editProject() {
       let id = this.id;
@@ -285,7 +298,20 @@ export default {
       location.reload();
       return false;
     },
-  }
+    retrieveProjectUsers() {
+      ProjectUserDataService.getAll()
+        .then((response) => {
+          this.origin_project_users = response.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+  },
+  mounted() {
+    this.retrieveProjectUsers();
+
+  },
 };
 </script>
 

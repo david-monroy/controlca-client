@@ -2,7 +2,7 @@
   <v-row align="center" class="load-list px-3 mt-2 mx-auto">
     <v-col cols="12" sm="12">
       <v-card class="mx-auto p-3" tile>
-        <v-card-title> <span class="primary--text">Cargar horas en proyecto</span>
+        <v-card-title> <span class="primary--text">Cargar horas en oferta</span>
           <v-spacer></v-spacer>
           <v-text-field
             v-model="search"
@@ -15,7 +15,7 @@
         </v-card-title>
         <v-data-table
           :headers="headers"
-          :items="user_projects"
+          :items="user_offers"
           :hide-default-footer="false"
           :items-per-page="5"
           :search="search"
@@ -25,31 +25,10 @@
               <v-dialog v-model="loadDialog" max-width="500px">
                 <v-card class="pa-10 pb-2">
                     <div class="mx-auto pb-2">
-                        <p class="primary--text text-center">Cargar horas - {{currentProjectName}} - {{currentProjectCode}}</p>
+                        <p class="primary--text text-center">Cargar horas - {{currentOfferName}} - {{currentOfferCode}}</p>
                     </div>
                     <div>
-                        <v-row class="pb-0 mb-0 form-row" >
-                            <v-col md="6" cols="12" class="py-0">
-                            <v-select
-                                v-model="payload.area"
-                                :items="project_products_areas"
-                                label="Área"
-                                dense
-                                required
-                            ></v-select>
-                            </v-col>
-                            <v-col md="6" cols="12" class="py-0">
-                            <v-select
-                                v-model="payload.product_id"
-                                :items="project_products"
-                                label="Producto"
-                                item-text="name"
-                                item-value="id"
-                                dense
-                                required
-                            ></v-select>
-                            </v-col>
-                        </v-row>
+                    
                         <v-row class="pb-0 mb-0 form-row" >
                             <v-col md="6" cols="12" class="py-0">
                                 <v-menu
@@ -154,31 +133,29 @@
 </template>
 
 <script>
-import ProjectDataService from "../../services/ProjectDataService";
-import ProjectUserDataService from "../../services/ProjectUserDataService";
-import ProductDataService from "../../services/ProductDataService";
+import OfferDataService from "../../services/OfferDataService";
+import OfferUserDataService from "../../services/OfferUserDataService";
 import UserDataService from "../../services/UserDataService";
 
 export default {
-  name: "load-projects",
+  name: "load-offers",
   data() {
     return {
-      origin_projects: [],
-      origin_project_users: [],
-      origin_products: [],
+      origin_offers: [],
+      origin_offer_users: [],
       origin_users: [],
-      currentProjectId: "",
-      currentProjectName: "",
-      currentProjectCode: "",
-      loadProjectHours: 'load-project-hours',
+      currentOfferId: "",
+      currentOfferName: "",
+      currentOfferCode: "",
+      loadOfferHours: 'load-offer-hours',
       goBack: "",
       title: "",
       search: "",
       headers: [
         { text: "Nombre", align: "start", sortable: true, value: "name" },
         { text: "Código", value: "code", sortable: true },
-        { text: "Áreas", value: "areas", sortable: true },
-        { text: "Rol", value: "project_user.roster", sortable: true },
+        { text: "Department", value: "department", sortable: true },
+        { text: "Rol", value: "offer_user.roster", sortable: true },
         { text: "Horas trabajadas", value: "worked_hours", sortable: true },
         { text: 'Cargar', value: 'actions', sortable: false },
       ],
@@ -186,7 +163,7 @@ export default {
       singleExpand: true,
 
       payload: {
-          product_id: "",
+          offer_id: "",
       },
 
       loadDialog: false,
@@ -208,62 +185,35 @@ export default {
     currentUser() {      
       return this.$store.state.auth.user;
     },
-    user_projects(){
-        let projects = [];
+    user_offers(){
+        let offers = [];
         let hours;
         this.origin_users.forEach(user => {
-            user.working_projects.forEach(wp => {
+            user.working_offers.forEach(wp => {
               hours = 0;
-              this.origin_project_users.forEach(pu => {
-                if ((this.currentUser.id == pu.worker_id) && (wp.id == pu.project_id)){
-                  pu.loads.forEach(load => {
+              this.origin_offer_users.forEach(ou => {
+                if ((this.currentUser.id == ou.worker_id) && (wp.id == ou.offer_id)){
+                  ou.load_offers.forEach(load => {
                     hours = hours + load.hours;
                   });
                 }
               });
                 wp.worked_hours = hours;
                 console.log(wp.worked_hours);
-                projects.push(wp);
+                offers.push(wp);
             });
             
         });
-        return projects;
+        return offers;
     },
-    project_products_areas(){
-        let areas = [];
-        let project_id = this.currentProjectId;
-        this.origin_projects.forEach(project => {
-            if (project_id == project.id){
-                 project.products.forEach(prod => {
-                    areas.push(prod.project_product.area);
-                 });      
-            }            
-        });
-        return areas;
-    },
-    project_products(){
-        let products = [];
-        let project_id = this.currentProjectId;
-        this.origin_projects.forEach(project => {
-            if (project_id == project.id){
-                 project.products.forEach(prod => {
-                        if (this.payload.area == prod.project_product.area){
-                            products.push(prod);
-                        }
-                    
-                 });      
-            }            
-        });
-        return products;
-    },
-    project_user_id(){
-      let pu_id = 0;
-      this.origin_project_users.forEach(pu => {
-        if ((this.currentUser.id == pu.worker_id) && (this.currentProjectId == pu.project_id)){
-          pu_id = pu.id;
+    offer_user_id(){
+      let ou_id = 0;
+      this.origin_offer_users.forEach(ou => {
+        if ((this.currentUser.id == ou.worker_id) && (this.currentOfferId == ou.offer_id)){
+          ou_id = ou.id;
         }
       });
-      return pu_id
+      return ou_id
     },
   },
 
@@ -272,15 +222,14 @@ export default {
     saveHours(){
         
         let loadPayload = {
-            project_user: this.project_user_id,
+            offer_user: this.offer_user_id,
             date: this.dateFormatted,
             hours: this.payload.hours,
             observations: this.payload.observations,
-            product: this.payload.product_id,
         }
         console.log(loadPayload);
 
-        ProjectUserDataService.addLoad(loadPayload)
+        OfferUserDataService.addLoad(loadPayload)
             .then(response => {
 
                 console.log(response.data);
@@ -296,9 +245,9 @@ export default {
     },
 
     openLoadDialog(itemId, itemName, itemCode){
-        this.currentProjectId = itemId;
-        this.currentProjectName = itemName;
-        this.currentProjectCode = itemCode;
+        this.currentOfferId = itemId;
+        this.currentOfferName = itemName;
+        this.currentOfferCode = itemCode;
         this.loadDialog = true;
         console.log(itemId);
     },
@@ -313,20 +262,20 @@ export default {
         });
     },
 
-    retrieveProjects() {
-      ProjectDataService.getAll()
+    retrieveOffers() {
+      OfferDataService.getAll()
         .then((response) => {
-          this.origin_projects = response.data;
+          this.origin_offers = response.data;
         })
         .catch((e) => {
           console.log(e);
         });
     },
 
-    retrieveProjectUsers() {
-      ProjectUserDataService.getAll()
+    retrieveOfferUsers() {
+      OfferUserDataService.getAll()
         .then((response) => {
-          this.origin_project_users = response.data;
+          this.origin_offer_users = response.data;
         })
         .catch((e) => {
           console.log(e);
@@ -334,13 +283,13 @@ export default {
     },
 
     refreshList() {
-      this.retrieveProjects();
+      this.retrieveOffers();
     },
 
     searchName() {
-      ProjectDataService.findByName(this.name)
+      OfferDataService.findByName(this.name)
         .then((response) => {
-          this.projects = response.data;
+          this.offers = response.data;
           console.log(response.data);
         })
         .catch((e) => {
@@ -350,15 +299,6 @@ export default {
 
     goRoute(route) {
       this.$router.push("/" + route);
-    },
-    retrieveProducts() {
-      ProductDataService.getAll()
-        .then((response) => {
-          this.origin_products = response.data;
-        })
-        .catch((e) => {
-          console.log(e);
-        });
     },
     formatDate (date) {
         if (!date) return null
@@ -380,9 +320,8 @@ export default {
       },
     },
   mounted() {
-    this.retrieveProjects();
-    this.retrieveProjectUsers();
-    this.retrieveProducts();
+    this.retrieveOffers();
+    this.retrieveOfferUsers();
     this.retrieveUser();
   },
 };

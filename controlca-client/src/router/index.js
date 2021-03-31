@@ -72,6 +72,11 @@ export default new Router({
       component: () => import("../views/loads/LoadProjects.vue"),
     },
     {
+      path: "/load-offers",
+      name: "load-offers",
+      component: () => import("../views/loads/LoadOffers.vue"),
+    },
+    {
       path: '/',
       component: Login
     },    

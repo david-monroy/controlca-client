@@ -68,7 +68,9 @@
             </div>
           
         </v-card-text>
-
+        <v-card-text class="mb-2 pb-0 body-2">
+          <p><strong>Total de horas trabajadas: </strong>{{worked_hours}}</p> 
+        </v-card-text>
         <v-card-text class="mb-2 pb-0 body-2" v-if="description">
           <p><strong>Descripción: </strong>{{description}}</p> 
         </v-card-text>
@@ -177,6 +179,7 @@
 </template>
 <script>
 import OfferDataService from "../../services/OfferDataService";
+import OfferUserDataService from "../../services/OfferUserDataService";
 export default {
   name: "OfferCard",
   props: {
@@ -199,10 +202,24 @@ export default {
               array: "users"
           }
       ],
+      origin_offer_users: [],
       alertSuccess: false,
       successMessage: "Oferta eliminada correctamente. Espere mientras se actualiza.",
       timeout: 4000,
   }),
+  computed: {
+    worked_hours(){
+      let hours = 0;
+      this.origin_offer_users.forEach(pu => {
+        if (this.id == pu.offer_id){
+          pu.load_offers.forEach(load => {
+            hours = hours + load.hours;
+          });
+        }
+      });
+      return hours;
+    },
+  },
   methods: {
     goRoute(route) {
       this.$router.push("/" + route);
@@ -237,7 +254,20 @@ export default {
       location.reload();
       return false;
     },
-  }
+    retrieveOfferUsers() {
+      OfferUserDataService.getAll()
+        .then((response) => {
+          this.origin_offer_users = response.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+  },
+  mounted() {
+    this.retrieveOfferUsers();
+
+  },
 };
 </script>
 
