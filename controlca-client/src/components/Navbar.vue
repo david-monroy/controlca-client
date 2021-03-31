@@ -16,7 +16,7 @@
             <router-link to="/dashboard" class="nav-link ">Escritorio</router-link>
           </li>
           <li class="nav-item">
-            <router-link v-if="showLeaderBoard" to="/projects" class="nav-link">Proyectos</router-link>
+            <router-link v-if="showLeaderBoard" to="/project_offer" class="nav-link">Proyectos</router-link>
           </li>
           <li class="nav-item">
             <router-link v-if="showAdminBoard" to="/users" class="nav-link">Usuarios</router-link>

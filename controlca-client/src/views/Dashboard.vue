@@ -64,7 +64,7 @@ export default {
       {
         id: 4,
         name: "Reportes",
-        icon: "mdi-note-text",
+        icon: "mdi-align-vertical-bottom",
         rol: 3,
         route: "",
       },

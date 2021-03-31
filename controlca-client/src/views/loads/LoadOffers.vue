@@ -95,7 +95,7 @@
               </v-dialog>
           </template>
           <template v-slot:[`item.actions`]="{ item }">
-            <v-icon small @click="openLoadDialog(item.id, item.name, item.code)" class="mr-2">mdi-pencil</v-icon>
+            <v-icon small @click="openLoadDialog(item.id, item.name, item.code)" class="mr-2 primary--text">mdi-plus-circle</v-icon>
           </template>
         </v-data-table>
 
@@ -148,7 +148,7 @@ export default {
       currentOfferName: "",
       currentOfferCode: "",
       loadOfferHours: 'load-offer-hours',
-      goBack: "",
+      goBack: "dashboard",
       title: "",
       search: "",
       headers: [

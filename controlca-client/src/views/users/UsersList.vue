@@ -31,9 +31,116 @@
                   </v-card-actions>
                 </v-card>
               </v-dialog>
+         
+              <v-dialog v-model="dialogInfo" max-width="650px">
+                <v-card class="project-dialog">
+                  <v-card-title class="headline grey lighten-2">
+                    {{currentUserInfo.name}} {{currentUserInfo.lastname}}
+                  </v-card-title>
+
+                  <v-card-text class="my-2  pb-0" style="display: flex; justify-content: space-between">
+                      <div>
+                          <strong>Número de empleado: </strong> <p>{{currentUserInfo.carnet}}</p>
+                      </div>
+                      <div>
+                          <strong>Usuario: </strong> <p>{{currentUserInfo.username}}</p>
+                      </div>
+                      <div>
+                          <strong>Permisos: </strong> <p> {{currentUserInfo.rol.name}}</p>
+                      </div>
+                    
+                  </v-card-text>
+
+                  <v-expansion-panels focusable class="px-5 mb-2">
+            <v-expansion-panel>
+                <v-expansion-panel-header>Proyectos involucrado ({{currentUserInfo.working_projects.length}})</v-expansion-panel-header>
+                <v-expansion-panel-content>
+                    <v-simple-table max-height="240px" >
+                        <template v-slot:default>
+                        <thead >
+                            <tr>
+                              <th class="text-center">
+                                Código
+                            </th>
+                            <th class="text-center">
+                                Nombre
+                            </th>
+                            <th class="text-center">
+                                Nro. de áreas
+                            </th>
+                            <th class="text-center">
+                                Rol
+                            </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                            v-for="(working_project,p) in currentUserInfo.working_projects"
+                            :key="p"
+                            >
+                            <td class="text-center">{{ working_project.code }}</td>
+                            <td class="text-center">{{ working_project.name }}</td>
+                            <td class="text-center">{{ working_project.areas }}</td>
+                            <td class="text-center">{{ working_project.project_user.roster }}</td>
+                            </tr>
+                        </tbody>
+                        </template>
+                    </v-simple-table>
+                </v-expansion-panel-content>
+            </v-expansion-panel>
+        </v-expansion-panels>
+
+        <v-expansion-panels focusable class="px-5 mb-2">
+            <v-expansion-panel>
+                <v-expansion-panel-header>Ofertas involucrado ({{currentUserInfo.working_offers.length}})</v-expansion-panel-header>
+                <v-expansion-panel-content>
+                    <v-simple-table max-height="240px" >
+                        <template v-slot:default>
+                        <thead >
+                            <tr>
+                              <th class="text-center">
+                                Código
+                            </th>
+                            <th class="text-center">
+                                Nombre
+                            </th>
+                            <th class="text-center">
+                                Rol
+                            </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                            v-for="(working_offer,p) in currentUserInfo.working_offers"
+                            :key="p"
+                            >
+                            <td class="text-center">{{ working_offer.code }}</td>
+                            <td class="text-center">{{ working_offer.name }}</td>
+                            <td class="text-center">{{ working_offer.offer_user.roster }}</td>
+                            </tr>
+                        </tbody>
+                        </template>
+                    </v-simple-table>
+                </v-expansion-panel-content>
+            </v-expansion-panel>
+        </v-expansion-panels>
+
+                  <v-card-actions>
+                    <v-btn
+                      color="primary"
+                      text
+                      @click="dialogInfo = false"
+                    >
+                      Cerrar
+                    </v-btn>
+                  </v-card-actions>
+                  </v-card>
+              </v-dialog>
           </template>
+      
 
           <template v-slot:[`item.actions`]="{ item }">
+            <v-icon small @click="openInfo(item.id)" class="mr-2 primary--text">mdi-folder-search</v-icon>
             <v-icon small @click="editUser(item.id)" class="mr-2">mdi-pencil</v-icon>
             <v-icon small @click="openDelete(item.id, item.name, item.lastname)" class="red--text">mdi-delete</v-icon>
           </template>
@@ -86,7 +193,7 @@ export default {
       users: [],
       rols: [],
       addUser: 'users-add',
-      goBack: "",
+      goBack: "dashboard",
       title: "",
       search: "",
       headers: [
@@ -101,8 +208,26 @@ export default {
       dialogDelete: false,
       userToDelete: "",
 
+      dialogInfo: false,
+      userToInfo: 1,
+
       userToDeleteName: "",
       userToDeleteLastname: "",
+
+      currentUserInfo: {
+        name: "Test",
+        lastname: "Test",
+        carnet: "Test",
+        username: "Test",
+        id: 0,
+        projects: [],
+        offers: [],
+        working_projects: [],
+        working_offers: [],
+        rol: {
+          name: "Test"
+        }
+      },
 
       // Snackbar
       timeout: 4000,
@@ -110,6 +235,17 @@ export default {
       successMessage: "Usuario eliminado satisfactoriamente."
     };
   },
+  // computed: {
+  //   currentUserInfo(){
+  //     let currentUser = 1;
+  //     this.users.forEach(user => {
+  //       if (user.id == this.userToInfo){
+  //         currentUser = user;
+  //       }
+  //     });
+  //     return currentUser;
+  //   }
+  // },
   watch: {
       dialogDelete (val) {
         val || this.closeDelete()
@@ -189,6 +325,16 @@ export default {
       this.userToDelete = userID;
       this.userToDeleteName = userName;
       this.userToDeleteLastname = userLastname;
+    },
+
+    openInfo(userID){
+      this.dialogInfo = true;
+      this.userToInfo = userID;
+      this.users.forEach(user => {
+        if (user.id == this.userToInfo){
+          this.currentUserInfo = user;
+        }
+      });
     },
 
     goRoute(route) {
