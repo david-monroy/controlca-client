@@ -522,6 +522,7 @@
 import ProductDataService from "../../services/ProductDataService";
 import UserDataService from "../../services/UserDataService";
 import ProjectDataService from "../../services/ProjectDataService";
+import AreaDataService from "../../services/AreaDataService";
 export default {
   name: "projects-add",
   data: () => ({
@@ -546,7 +547,12 @@ export default {
       origin_products: [],
       temp_product_id: null,
       temp_product_name: null,
+      temp_product_area: null,
       temp_product_estimated_hours: null,
+      temp_product_obs: null,
+
+      temp_area_id: null,
+      temp_area_name: null,
 
       origin_workers: [],
       temp_worker_id: null,
@@ -789,26 +795,40 @@ export default {
 
         let productData = null;
 
-        this.projectData.products.forEach(productToAdd => {
+        let area_id = null;
 
-            productData = {
-                project: project_id.data.id,
-                product: productToAdd.id,
-                estimated_hours: productToAdd.estimated_hours,
-                code: productToAdd.code,
-                area: productToAdd.area
+        let areaData = null;
+
+        for (let i = 0; i < this.areas_list.length; i++) {
+            areaData = {
+                name: this.areas_list[i],
+                project: project_id.data.id
             }
 
-            console.log(productData);
+            area_id = await AreaDataService.create(areaData);
+        
+            for (let index = 0; index < this.projectData.products.length; index++) {
+                
+                if (this.projectData.products[index].area == this.areas_list[i]){
+                
+                    productData = {
+                        product: this.projectData.products[index].id,
+                        estimated_hours: this.projectData.products[index].estimated_hours,
+                        area: area_id.data.id
+                    }
 
-            ProjectDataService.addProduct(productData)
-                .then(response => {
-                console.log(response.data);
-                })
-                .catch(e => {
-                console.log(e);
-                });
-        });
+                    console.log(productData);
+
+                    AreaDataService.addProduct(productData)
+                        .then(response => {
+                        console.log(response.data);
+                        })
+                        .catch(e => {
+                        console.log(e);
+                        });
+                }
+            }
+        }
 
         let workerData = null;
         this.projectData.workers.forEach(workerToAdd => {    

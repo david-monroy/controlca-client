@@ -25,6 +25,10 @@ class ProjectDataService {
     return http.post("/projects/updateProduct", data);
   }
 
+  addArea(data) {
+    return http.post("/projects/addArea", data);
+  }
+
   addUser(data) {
     return http.post("/projects/addUser", data);
   }
