@@ -80,7 +80,7 @@
                         v-model="projectData.description"
                         filled height="100"
                         label="Descripción (opcional)"
-                        required
+                        
                     ></v-textarea>
                 </div>
             </v-col>
@@ -337,7 +337,7 @@
       <v-stepper-content step="4">
 
         <div class="no-items-label mb-3 pa-5">
-            <p class="text-body-2 ma-0">Confirme la información. Recuerde que una vez registrado el proyecto, no podrá modificar los productos ni involucrados añadidos.</p>
+            <p class="text-body-2 ma-0">Confirme la información a registrar.</p>
         </div>
         <div class="project-confirm-section pa-4 body-2 mb-4">
             <div style="display: flex; justify-content: space-between;">
