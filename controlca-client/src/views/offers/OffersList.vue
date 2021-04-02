@@ -7,6 +7,11 @@
         <v-row>
           <v-col cols="12" class="item-list-offers"
           v-if="currentUser.id == 1">
+            <v-card v-if="offers.length < 1" class="mx-auto">
+              <v-card-text>
+                <h5>No hay ofertas registradas en el sistema.</h5>
+              </v-card-text>
+            </v-card>
             <div
               v-for="item in offers"
               :key="item.id"
@@ -26,6 +31,11 @@
           </v-col>
           <v-col cols="12" class="item-list-offers"
           v-else>
+            <v-card v-if="offersByLeader.length < 1" class="mx-auto">
+              <v-card-text>
+                <h5>No hay ofertas registradas por usted en el sistema.</h5>
+              </v-card-text>
+            </v-card>
             <div
               v-for="item in offersByLeader"
               :key="item.id"

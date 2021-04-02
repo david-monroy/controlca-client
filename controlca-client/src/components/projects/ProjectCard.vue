@@ -28,7 +28,7 @@
       
 
       <div class="project-card-info">
-        <p class="m-0">Productos: {{products.length}}</p>
+        <p class="m-0">Productos: {{project_products.length}}</p>
         <p class="m-0">Colaboradores: {{users.length}}</p>
       </div>
       
@@ -77,7 +77,7 @@
 
         <v-expansion-panels focusable class="px-5 mb-2">
             <v-expansion-panel>
-                <v-expansion-panel-header>Productos ({{products.length}})</v-expansion-panel-header>
+                <v-expansion-panel-header>Productos ({{project_products.length}})</v-expansion-panel-header>
                 <v-expansion-panel-content>
                     <v-simple-table max-height="240px" >
                         <template v-slot:default>
@@ -99,13 +99,13 @@
                         </thead>
                         <tbody>
                             <tr
-                            v-for="(product,p) in products"
+                            v-for="(product,p) in project_products"
                             :key="p"
                             >
-                            <td class="text-center">{{ product.project_product.area }}</td>
+                            <td class="text-center">{{ product.area_name }}</td>
                             <td class="text-center">{{ product.code }}</td>
                             <td class="text-center">{{ product.name }}</td>
-                            <td class="text-center">{{ product.project_product.estimated_hours }}</td>
+                            <td class="text-center">{{ product.area_product.estimated_hours }}</td>
                             </tr>
                         </tbody>
                         </template>
@@ -219,6 +219,7 @@
 <script>
 import ProjectDataService from "../../services/ProjectDataService";
 import ProjectUserDataService from "../../services/ProjectUserDataService";
+import AreaDataService from "../../services/AreaDataService";
 export default {
   name: "DashboardCard",
   props: {
@@ -247,6 +248,7 @@ export default {
           }
       ],
       origin_project_users: [],
+      origin_areas: [],
       alertSuccess: false,
       successMessage: "Proyecto eliminado correctamente. Espere mientras se actualiza.",
       timeout: 4000,
@@ -263,6 +265,18 @@ export default {
       });
       return hours;
     },
+    project_products(){
+      let products = [];
+      this.origin_areas.forEach(area => {
+        if (area.project_id == this.id){
+          area.products.forEach(p => {
+            p.area_name = area.name;
+            products.push(p);
+          });  
+        }
+      });
+      return products;
+    }
   },
   methods: {
     goRoute(route) {
@@ -307,10 +321,19 @@ export default {
           console.log(e);
         });
     },
+    retrieveAreas() {
+      AreaDataService.getAll()
+        .then((response) => {
+          this.origin_areas = response.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
   },
   mounted() {
     this.retrieveProjectUsers();
-
+    this.retrieveAreas();
   },
 };
 </script>

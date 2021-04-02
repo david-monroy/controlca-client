@@ -164,7 +164,7 @@
                     v-model="temp_product_id"
                     :items="origin_products_rename"
                     label="Producto"
-                    item-text="completeName"
+                    item-text="name"
                     item-value="id"
                     dense
                     required
@@ -667,8 +667,20 @@ export default {
           }
       },
       validateStep2(){
-          if (this.projectData.products.length < 1){
-              this.errorMessage = "Debes añadir al menos un (1) producto."
+          let check;
+          let checked = 0;
+
+          this.areas_list.forEach(area => {
+              check = false;
+              this.projectData.products.forEach(product => {
+                  if (product.area == area) check = true
+              });
+              if (check) checked += 1;
+          });
+
+
+          if (checked < this.areas_list.length) {
+              this.errorMessage = "Debes añadir al menos un (1) producto a cada área.";
               this.alertError = true;
           } else this.formStep = 3;
       },

@@ -7,6 +7,11 @@
         <v-row>
           <v-col cols="12" class="item-list-projects"
           v-if="currentUser.id == 1">
+            <v-card v-if="projects.length < 1" class="mx-auto">
+              <v-card-text>
+                <h5>No hay proyectos registrados en el sistema.</h5>
+              </v-card-text>
+            </v-card>
             <div
               v-for="item in projects"
               :key="item.id"
@@ -27,6 +32,11 @@
           </v-col>
           <v-col cols="12" class="item-list-projects"
           v-else>
+            <v-card v-if="projectsByLeader.length < 1" class="mx-auto">
+              <v-card-text>
+                <h5>No hay proyectos registrados por usted en el sistema.</h5>
+              </v-card-text>
+            </v-card>
             <div
               v-for="item in projectsByLeader"
               :key="item.id"
