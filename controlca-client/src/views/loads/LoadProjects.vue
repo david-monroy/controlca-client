@@ -31,9 +31,11 @@
                         <v-row class="pb-0 mb-0 form-row" >
                             <v-col md="6" cols="12" class="py-0">
                             <v-select
-                                v-model="payload.area"
-                                :items="project_products_areas"
+                                v-model="payload.area_id"
+                                :items="project_areas"
                                 label="Área"
+                                item-text="name"
+                                item-value="id"
                                 dense
                                 required
                             ></v-select>
@@ -41,7 +43,7 @@
                             <v-col md="6" cols="12" class="py-0">
                             <v-select
                                 v-model="payload.product_id"
-                                :items="project_products"
+                                :items="area_products"
                                 label="Producto"
                                 item-text="name"
                                 item-value="id"
@@ -158,7 +160,7 @@ import ProjectDataService from "../../services/ProjectDataService";
 import ProjectUserDataService from "../../services/ProjectUserDataService";
 import ProductDataService from "../../services/ProductDataService";
 import UserDataService from "../../services/UserDataService";
-
+import AreaDataService from "../../services/AreaDataService";
 export default {
   name: "load-projects",
   data() {
@@ -166,6 +168,7 @@ export default {
       origin_projects: [],
       origin_project_users: [],
       origin_products: [],
+      origin_areas: [],
       origin_users: [],
       currentProjectId: "",
       currentProjectName: "",
@@ -229,27 +232,25 @@ export default {
         });
         return projects;
     },
-    project_products_areas(){
+    project_areas(){
         let areas = [];
         let project_id = this.currentProjectId;
         this.origin_projects.forEach(project => {
             if (project_id == project.id){
-                 project.products.forEach(prod => {
-                    areas.push(prod.project_product.area);
+                 project.project_areas.forEach(area => {
+                    areas.push(area);
                  });      
             }            
         });
         return areas;
     },
-    project_products(){
+    area_products(){
         let products = [];
-        let project_id = this.currentProjectId;
-        this.origin_projects.forEach(project => {
-            if (project_id == project.id){
-                 project.products.forEach(prod => {
-                        if (this.payload.area == prod.project_product.area){
-                            products.push(prod);
-                        }
+        // let project_id = this.currentProjectId;
+        this.origin_areas.forEach(area => {
+            if (area.id == this.payload.area_id){
+                 area.products.forEach(prod => {
+                  products.push(prod);
                     
                  });      
             }            
@@ -300,7 +301,7 @@ export default {
         this.currentProjectName = itemName;
         this.currentProjectCode = itemCode;
         this.loadDialog = true;
-        console.log(itemId);
+        console.log(itemId, itemName, itemCode);
     },
 
     retrieveUser() {
@@ -360,6 +361,15 @@ export default {
           console.log(e);
         });
     },
+    retrieveAreas() {
+      AreaDataService.getAll()
+        .then((response) => {
+          this.origin_areas = response.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     formatDate (date) {
         if (!date) return null
 
@@ -383,6 +393,7 @@ export default {
     this.retrieveProjects();
     this.retrieveProjectUsers();
     this.retrieveProducts();
+    this.retrieveAreas();
     this.retrieveUser();
   },
 };

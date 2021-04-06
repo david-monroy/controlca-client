@@ -15,14 +15,19 @@
       
       <div class="project-card-chips my-2">
           <v-chip
-            class="ma-0" small label
+            class="ma-0 text-center" small label
             >
-            {{code}}
+          {{code}}
           </v-chip>
           <v-chip
-            class="ma-0 ml-2 color-chip" small label
+            class="ma-0 ml-2 color-chip text-center" small label
             >
-            {{areas}} áreas
+          {{status}}
+          </v-chip>
+          <v-chip
+            class="ma-0 ml-2 text-center" small label
+            >
+          {{areas}} áreas
           </v-chip>
       </div>
       

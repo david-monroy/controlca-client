@@ -9,6 +9,14 @@ class OfferUserDataService {
     return http.post("/offer_users/addLoad", data);
   }
 
+  update(id, data) {
+    return http.put(`/offer_users/${id}`, data);
+  }
+
+  delete(id) {
+    return http.delete(`/offer_users/${id}`);
+  }
+
 }
 
 export default new OfferUserDataService();

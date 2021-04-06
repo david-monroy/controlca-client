@@ -50,9 +50,9 @@ export default {
         route: "load-offers",
       },
       {
-        id: 2,
+        id: 3,
         name: "Administración",
-        route: "load-admin",
+        route: "load-administration",
       }
     ]
   })

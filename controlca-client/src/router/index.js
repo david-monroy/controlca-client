@@ -41,11 +41,11 @@ export default new Router({
       name: "offers-add",
       component: () => import("../views/offers/OfferAdd.vue"),
     },
-    // {
-    //   path: "/offers/:id",
-    //   name: "offers-details",
-    //   component: () => import("../views/offers/OfferDetails.vue"),
-    // },
+    {
+      path: "/offers/:id",
+      name: "offers-details",
+      component: () => import("../views/offers/OfferDetails.vue"),
+    },
     {
       path: "/users",
       name: "users",
@@ -75,6 +75,11 @@ export default new Router({
       path: "/load-offers",
       name: "load-offers",
       component: () => import("../views/loads/LoadOffers.vue"),
+    },
+    {
+      path: "/load-administration",
+      name: "load-administration",
+      component: () => import("../views/loads/LoadAdministration.vue"),
     },
     {
       path: '/',
