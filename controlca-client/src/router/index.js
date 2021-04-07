@@ -82,6 +82,16 @@ export default new Router({
       component: () => import("../views/loads/LoadAdministration.vue"),
     },
     {
+      path: "/reports",
+      name: "reports",
+      component: () => import("../views/reports/ReportsList.vue"),
+    },
+    {
+      path: "/reports/:id",
+      name: "project-report",
+      component: () => import("../views/reports/ProjectReport.vue"),
+    },
+    {
       path: '/',
       component: Login
     },    

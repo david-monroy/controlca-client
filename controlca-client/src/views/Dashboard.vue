@@ -66,7 +66,7 @@ export default {
         name: "Reportes",
         icon: "mdi-align-vertical-bottom",
         rol: 3,
-        route: "",
+        route: "reports",
       },
     ]
   })

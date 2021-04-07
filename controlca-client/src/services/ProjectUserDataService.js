@@ -9,6 +9,10 @@ class ProjectUserDataService {
     return http.post("/project_users/addLoad", data);
   }
 
+  addBitacora(data) {
+    return http.post("/project_users/addBitacora", data);
+  }
+
   update(id, data) {
     return http.put(`/project_users/${id}`, data);
   }

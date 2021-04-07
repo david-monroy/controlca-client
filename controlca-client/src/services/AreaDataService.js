@@ -17,8 +17,8 @@ class AreaDataService {
     return http.post("/areas/addProduct", data);
   }
 
-  updateProduct(data) {
-    return http.post("/areas/updateProduct", data);
+  updateProduct(id, data) {
+    return http.put(`/areas/updateProduct/${id}`, data);
   }
 
   update(id, data) {

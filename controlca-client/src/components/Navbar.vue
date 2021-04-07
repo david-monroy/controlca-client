@@ -25,7 +25,7 @@
             <router-link to="/loads" class="nav-link">Cargar Horas</router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/" class="nav-link">Reportes</router-link>
+            <router-link to="/reports" class="nav-link">Reportes</router-link>
           </li>
 
           <li class="nav-item">
