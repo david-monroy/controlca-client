@@ -15,19 +15,19 @@
       
       <div class="project-card-chips my-2">
           <v-chip
-            class="ma-0 text-center" small label
+            class="ma-0 text-left" small label
             >
           {{code}}
           </v-chip>
           <v-chip
-            class="ma-0 ml-2 color-chip text-center" small label
+            class="ma-0 ml-2 color-chip text-left" small label
             >
           {{status}}
           </v-chip>
           <v-chip
-            class="ma-0 ml-2 text-center" small label
+            class="ma-0 ml-2 text-left" small label
             >
-          {{areas}} áreas
+          ${{total_budget}}
           </v-chip>
       </div>
       
@@ -119,7 +119,7 @@
             </v-expansion-panel>
         </v-expansion-panels>
 
-        <v-expansion-panels focusable class="px-5">
+        <v-expansion-panels focusable class="px-5 mb-2">
             <v-expansion-panel>
                 <v-expansion-panel-header>Colaboradores ({{users.length}})</v-expansion-panel-header>
                 <v-expansion-panel-content>
@@ -150,6 +150,37 @@
                             <td class="text-center">{{ user.lastname }}</td>
                             <td class="text-center">{{ user.project_user.roster }}</td>
                             <td class="text-center">0</td>
+                            </tr>
+                        </tbody>
+                        </template>
+                    </v-simple-table>
+                </v-expansion-panel-content>
+            </v-expansion-panel>
+        </v-expansion-panels>
+
+        <v-expansion-panels focusable class="px-5">
+            <v-expansion-panel>
+                <v-expansion-panel-header>Presupuesto (${{total_budget}})</v-expansion-panel-header>
+                <v-expansion-panel-content>
+                    <v-simple-table max-height="240px" >
+                        <template v-slot:default>
+                        <thead >
+                            <tr>
+                            <th class="text-center">
+                                Rubro
+                            </th>
+                            <th class="text-center">
+                                Precio
+                            </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                            v-for="(bud,u) in budgets"
+                            :key="u"
+                            >
+                            <td class="text-center">{{ bud.area }}</td>
+                            <td class="text-center">${{ bud.price }}</td>
                             </tr>
                         </tbody>
                         </template>
@@ -237,6 +268,7 @@ export default {
     products: Array,
     users: Array,
     id: Number,
+    budgets: Array,
   },
   data: () => ({
       dialog: false,
@@ -281,6 +313,13 @@ export default {
         }
       });
       return products;
+    },
+    total_budget(){
+        let total = 0;
+        this.budgets.forEach(b => {
+            total += b.price;
+        });
+        return total;
     }
   },
   methods: {

@@ -228,7 +228,7 @@ export default {
     },
     worked_hours_percent(){
         let percent = (this.total_worked_hours * 100)/this.total_estimated_hours;
-        return percent.toFixed(1);
+        return percent.toFixed(0);
     },
     project_advance(){
         let completed = 0;
@@ -240,7 +240,7 @@ export default {
             total += 1;
         });
         let percent = (completed * 100)/total;
-        return percent.toFixed(1);
+        return percent.toFixed(0);
     },
     users_worked_hours(){
       let users = [];

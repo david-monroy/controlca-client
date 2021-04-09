@@ -28,7 +28,15 @@
 
       <v-divider></v-divider>
 
-      <v-stepper-step step="4">
+      <v-stepper-step
+        :complete="formStep > 4"
+        step="4">
+        Presupuesto
+      </v-stepper-step>
+
+      <v-divider></v-divider>
+
+      <v-stepper-step step="5">
         Confirmar
       </v-stepper-step>
     </v-stepper-header>
@@ -334,7 +342,58 @@
                 </v-btn>
         </div>
       </v-stepper-content>
+
       <v-stepper-content step="4">
+        <v-row class="pa-0 ma-0 form-row-rol text-center mb-5">
+            <h5 class="ma-0">Indique el presupuesto para cada rubro,</h5>
+            <h6>si no aplica, mantenga en cero (0).</h6>
+        </v-row>
+        <v-row class="pa-0 ma-0 form-row-rol">
+              <v-col md="4" cols="12" class="py-0 mx-auto">
+                <v-text-field
+                    v-model="budget[0].price"
+                    label="Suministro"
+                    prefix="$"
+                    type="number"
+                ></v-text-field>
+              </v-col>
+              <v-col md="4" cols="12" class="py-0 mx-auto">
+                <v-text-field
+                    v-model="budget[1].price"
+                    label="Instalación"
+                    prefix="$"
+                    type="number"
+                ></v-text-field>
+              </v-col>
+              <v-col md="4" cols="12" class="py-0 mx-auto">
+                <v-text-field
+                    v-model="budget[2].price"
+                    label="Gastos adicionales"
+                    prefix="$"
+                    type="number"
+                ></v-text-field>
+              </v-col>
+        </v-row>
+
+        <div style="display: flex; justify-content: space-between">
+            <v-btn text color="red"
+            @click="confirmCancel = true">
+                Cancelar
+            </v-btn>
+            <v-btn text color="primary"
+            @click="formStep = 3">
+                Regresar
+            </v-btn>
+            <v-btn
+                color="primary"
+                @click="validateStep4()"
+                >
+                Siguiente
+                </v-btn>
+        </div>
+      </v-stepper-content>
+
+      <v-stepper-content step="5">
 
         <div class="no-items-label mb-3 pa-5">
             <p class="text-body-2 ma-0">Confirme la información a registrar.</p>
@@ -451,6 +510,37 @@
                 </v-expansion-panel-content>
             </v-expansion-panel>
         </v-expansion-panels>
+
+        <v-expansion-panels focusable class="pa-0 mb-5">
+            <v-expansion-panel>
+                <v-expansion-panel-header>Presupuesto</v-expansion-panel-header>
+                <v-expansion-panel-content>
+                    <v-simple-table max-height="240px" >
+                        <template v-slot:default>
+                        <thead >
+                            <tr>
+                            <th class="text-center">
+                                Rubro
+                            </th>
+                            <th class="text-center">
+                                Precio
+                            </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                            v-for="(bud,w) in budget"
+                            :key="w"
+                            >
+                            <td class="text-center">{{ bud.area }}</td>
+                            <td class="text-center">${{ bud.price }}</td>
+                            </tr>
+                        </tbody>
+                        </template>
+                    </v-simple-table>
+                </v-expansion-panel-content>
+            </v-expansion-panel>
+        </v-expansion-panels>
         
 
         <div style="display: flex; justify-content: space-between">
@@ -526,6 +616,7 @@ import ProductDataService from "../../services/ProductDataService";
 import UserDataService from "../../services/UserDataService";
 import ProjectDataService from "../../services/ProjectDataService";
 import AreaDataService from "../../services/AreaDataService";
+import BudgetDataService from "../../services/BudgetDataService";
 export default {
   name: "projects-add",
   data: () => ({
@@ -572,6 +663,21 @@ export default {
       confirmWorkers: false,
       confirmCancel: false,
       counter: 1,
+
+      budget: [
+          {
+              area: "Suministro",
+              price: 0
+          },
+          {
+              area: "Instalación",
+              price: 0
+          },
+          {
+              area: "Gastos adicionales",
+              price: 0
+          }
+      ]
   }),
   computed: {
     currentUser() {    
@@ -621,6 +727,13 @@ export default {
             worker.completeName = worker.name + " " + worker.lastname;
         });
         return data;
+    },
+    total_budget(){
+        let total = 0;
+        this.budget.forEach(b => {
+            total = total + b.price;
+        });
+        return total;
     }
   },
   methods: {
@@ -691,6 +804,9 @@ export default {
           if (this.projectData.workers.length < 2){
               this.confirmWorkers = true;
           } else this.formStep = 4;
+      },
+      validateStep4(){
+            this.formStep = 5;
       },
       retrieveProducts() {
       ProductDataService.getAll()
@@ -863,6 +979,22 @@ export default {
                 });
         });
 
+        let budget_payload = null;
+        for (let bindex = 0; bindex < this.budget.length; bindex++) {
+            budget_payload = {
+                area: this.budget[bindex].area,
+                price: this.budget[bindex].price,
+                project: project_id.data.id,
+            }
+            BudgetDataService.create(budget_payload)
+                .then(response => {
+                console.log(response.data);
+                })
+                .catch(e => {
+                console.log(e);
+                });
+        }
+
         this.goRoute("projects");
 
     },
@@ -884,7 +1016,7 @@ export default {
 
 <style>
     .stepper-project{
-        width: 60%;
+        width: 80%;
     }
     .add-product-section{
         border: 1px solid lightgray;
