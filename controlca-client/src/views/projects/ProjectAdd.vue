@@ -345,6 +345,9 @@
                     <strong>Código: </strong> <p>{{projectData.code}}</p>
                 </div>
                 <div>
+                    <strong>Nombre: </strong> <p>{{projectData.name}}</p>
+                </div>
+                <div>
                     <strong>Áreas: </strong> <p>{{projectData.areas}}</p>
                 </div>
                 <div>

@@ -84,6 +84,18 @@
                     </v-menu>
                 </v-col>
             </v-row>
+            <v-row>
+            <v-col md="12" cols="12" class="py-0">
+                    <div class="form-group">
+                        <v-textarea
+                            v-model="load.observations"
+                            filled height="100"
+                            label="Observaciones (opcional)"
+                            required
+                        ></v-textarea>
+                    </div>
+                </v-col>
+            </v-row>
             <v-btn class="simple-btn mt-5 mx-auto btn-block w-75" @click="saveLoad()">
                 Cargar horas
             </v-btn>
@@ -115,6 +127,28 @@
             </v-btn>
           </template>
     </v-snackbar>
+    <v-snackbar
+          v-model="alertError"
+          type="error"
+          top
+          :timeout="timeout"
+          color="error"
+        >
+          <strong class="body-1 font-weight-bold">
+            {{errorMessage}}
+          </strong>
+          <template v-slot:action="{ attrs }">
+            <v-btn
+              dark
+              icon
+              color="white"
+              v-bind="attrs"
+              @click="alertError = false"
+            >
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </template>
+    </v-snackbar>
       </v-card>
     </v-col>
   </v-row>
@@ -130,7 +164,8 @@ export default {
           type: null,
           hours: null,
           initial_date: null,
-          final_date: null
+          final_date: null,
+          observations: null,
       },
       load_types: [
           "Mejoramiento profesional",
@@ -148,8 +183,13 @@ export default {
       finalDateFormatted: this.formatDate(new Date().toISOString().substr(0, 10)),
       menu2: false,
 
-      alertSucces: false,
+      alertSuccess: false,
       successMessage: "",
+      timeout: 4000,
+
+      alertError: false,
+      errorMessage: "",
+      actual_date: new Date(),
       }
   },
   computed: {
@@ -174,20 +214,58 @@ export default {
             observations: this.load.observations,
         }
         console.log(loadPayload);
+        let f = (this.actual_date);
+        console.log(f);
+        var parts =this.date.split('-');
+        var mydate = new Date(parts[0], parts[1] - 1, parts[2]);
+        console.log(mydate.toDateString());
 
-        LoadAdminDataService.create(loadPayload)
-            .then(response => {
+        if (this.load.type == "Vacaciones") {
+          if (!this.load.type) {
+            this.alertError = true;
+            this.errorMessage = "Por favor, indica el tipo."
+          } else if (this.dateFormatted > this.finalDateFormatted) {
+            this.alertError = true;
+            this.errorMessage = "La fecha de inicio no puede ser mayor a la final."
+          } else {
+            LoadAdminDataService.create(loadPayload)
+              .then(response => {
 
-                console.log(response.data);
-            })
-            .catch(e => {
-            console.log(e);
-            });
+                  console.log(response.data);
+              })
+              .catch(e => {
+              console.log(e);
+              });
 
-        this.loadDialog = false;
-        this.successMessage = "Se han cargado las horas correctamente";
-        this.alertSuccess = true;
+              this.loadDialog = false;
+              this.successMessage = "Se han cargado las horas correctamente";
+              this.alertSuccess = true;
+          }
+          } else {
+          if (!this.load.type) {
+            this.alertError = true;
+            this.errorMessage = "Por favor, indica el tipo."
+          } else if (!this.load.hours) {
+            this.alertError = true;
+            this.errorMessage = "Por favor, indica las horas."
+          } else if (mydate.getTime() > f.getTime()) {
+            this.alertError = true;
+            this.errorMessage = "No puedes cargar horas futuras para este tipo."
+          } else {
+            LoadAdminDataService.create(loadPayload)
+              .then(response => {
 
+                  console.log(response.data);
+              })
+              .catch(e => {
+              console.log(e);
+              });
+
+              this.loadDialog = false;
+              this.successMessage = "Se han cargado las horas correctamente";
+              this.alertSuccess = true;
+          }
+        }
       },
       formatDate (date) {
         if (!date) return null
@@ -201,6 +279,9 @@ export default {
         const [month, day, year] = date.split('/')
         return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
       },
+      goRoute(route) {
+      this.$router.push("/" + route);
+    },
   },
   watch: {
       date () {

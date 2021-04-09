@@ -103,6 +103,7 @@
         <template>
               <v-dialog v-model="productsDialog" max-width="600px">
                 <v-card class="pa-6 pb-2">
+                  <p class="mb-2" style="color: gray; font-size: 14px">* Sólo el líder puede actualizar esta información.</p>
                     <v-simple-table
                         fixed-header
                         height="300px"
@@ -131,8 +132,14 @@
                                 <td>{{ item.area_name }}</td>
                                 <td>{{ item.code }}</td>
                                 <td>{{ item.name }}</td>
-                                <td class="text-center">
+                                <td v-if="currentUser.id == projectData.leader_id" class="text-center">
                                     <v-simple-checkbox
+                                    v-model="item.area_product.completed"
+                                    ></v-simple-checkbox>
+                                </td>
+                                <td v-else class="text-center">
+                                    <v-simple-checkbox
+                                    disabled
                                     v-model="item.area_product.completed"
                                     ></v-simple-checkbox>
                                 </td>
@@ -241,11 +248,14 @@ export default {
       this.projectData.working_users.forEach(worker => {
         load_hours = 0;
         this.origin_project_users.forEach(pu => {
-          if (worker.id == pu.worker_id) {
+          if (pu.project_id == this.projectData.id) {
+            if (worker.id == pu.worker_id) {
             pu.loads.forEach(load => {
               load_hours += load.hours;
             });
           }
+          }
+          
         });
         worker.load_hours = load_hours;
         worker.load_hours_percent = ((load_hours*100)/this.total_worked_hours).toFixed(1);

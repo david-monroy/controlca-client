@@ -57,23 +57,21 @@
         </v-expansion-panels>
         <div class="item-bitacora py-2">
             <div v-for="item in project_bitacoras" :key="item.id" >
-            <v-expansion-panels focusable class="px-5 my-2">
-            <v-expansion-panel>
-                <v-expansion-panel-header class="px-4 py-2">
-                    <v-chip
-                        class="ma-2 bitacora-chip text-center primary"
-                        small
-                        label
-                    >
-                        {{item.date}}
-                    </v-chip>
-                    <p class="ma-0">{{item.user_name}} {{item.user_lastname}}</p>
-                </v-expansion-panel-header>
-                <v-expansion-panel-content class="py-2 px-4">
-                    {{item.note}}
-                </v-expansion-panel-content>
-            </v-expansion-panel>
-        </v-expansion-panels>
+                <div class="bitacora-item">
+                    <div class="bitacora-header">
+                        <v-chip
+                            class="ma-2 bitacora-chip text-center primary"
+                            small
+                            label
+                        >
+                            {{item.date}}
+                        </v-chip>
+                        <p class="ma-0 primary--text"><strong>{{item.user_name}} {{item.user_lastname}}</strong></p>
+                    </div>
+                    <div class="bitacora-note pl-2">
+                        {{item.note}}
+                    </div>
+                </div>
         </div>
         </div>
         
@@ -222,5 +220,13 @@ export default {
     }
     .bitacora-chip{
         max-width: 16%;
+    }
+    .bitacora-header{
+        display: flex;
+        align-items: center
+    }
+    .bitacora-item {
+        border-bottom: 1px lightgray solid;
+        padding: 15px 0;
     }
 </style>

@@ -152,6 +152,28 @@
             </v-btn>
           </template>
         </v-snackbar>
+        <v-snackbar
+          v-model="alertError"
+          type="error"
+          top
+          :timeout="timeout"
+          color="error"
+        >
+          <strong class="body-1 font-weight-bold">
+            {{errorMessage}}
+          </strong>
+          <template v-slot:action="{ attrs }">
+            <v-btn
+              dark
+              icon
+              color="white"
+              v-bind="attrs"
+              @click="alertError = false"
+            >
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </template>
+    </v-snackbar>
   </v-row>
 </template>
 
@@ -201,7 +223,11 @@ export default {
 
       date: new Date().toISOString().substr(0, 10),
       dateFormatted: this.formatDate(new Date().toISOString().substr(0, 10)),
-      menu1: false
+      menu1: false,
+
+      alertError: false,
+      errorMessage: "",
+      actual_date: new Date(),
     };
   },
   computed: {
@@ -280,20 +306,39 @@ export default {
             product: this.payload.product_id,
         }
         console.log(loadPayload);
+        let f = (this.actual_date);
+        console.log(f);
+        var parts =this.date.split('-');
+        var mydate = new Date(parts[0], parts[1] - 1, parts[2]);
+        console.log(mydate.toDateString());
 
-        ProjectUserDataService.addLoad(loadPayload)
-            .then(response => {
+        if (!this.payload.area_id) {
+            this.alertError = true;
+            this.errorMessage = "Por favor, indica el área."
+          } else if (!this.payload.product_id) {
+            this.alertError = true;
+            this.errorMessage = "Por favor, indica el producto."
+          } else if (!this.payload.hours) {
+            this.alertError = true;
+            this.errorMessage = "Por favor, indica las horas."
+          } else if (mydate.getTime() > f.getTime()) {
+            this.alertError = true;
+            this.errorMessage = "No puedes cargar horas futuras."
+          } else {
+            ProjectUserDataService.addLoad(loadPayload)
+                .then(response => {
 
-                console.log(response.data);
-            })
-            .catch(e => {
-            console.log(e);
-            });
+                    console.log(response.data);
+                })
+                .catch(e => {
+                console.log(e);
+                });
 
-        this.loadDialog = false;
-        this.successMessage = "Se han cargado las horas correctamente";
-        this.alertSuccess = true;
-        location.reload();
+            this.loadDialog = false;
+            this.successMessage = "Se han cargado las horas correctamente";
+            this.alertSuccess = true;
+            location.reload();
+          }
     },
 
     openLoadDialog(itemId, itemName, itemCode){
