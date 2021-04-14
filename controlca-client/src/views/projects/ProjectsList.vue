@@ -26,6 +26,7 @@
                 :users="item.working_users"
                 :leader="item.leader"
                 :id="item.id"
+                :budgets="item.budgets"
               >
               </ProjectCard>
             </div>
@@ -105,6 +106,7 @@ export default {
         .catch((e) => {
           console.log(e);
         });
+        console.log(this.projectsByLeader);
     },
     goRoute(route) {
       this.$router.push("/" + route);

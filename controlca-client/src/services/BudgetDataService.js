@@ -13,6 +13,10 @@ class BudgetDataService {
     return http.post("/budgets", data);
   }
 
+  load(data) {
+    return http.post("/budgets/load", data);
+  }
+
   update(id, data) {
     return http.put(`/budgets/${id}`, data);
   }

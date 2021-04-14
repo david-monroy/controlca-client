@@ -1,14 +1,36 @@
 <template>
-    <v-row align="center" class="list px-3 mt-2 mx-auto">
-    <v-col cols="12" sm="12">
+    <v-row align="center" class="list mt-1 mx-auto">
+    <v-col cols="12" sm="12" class="pa-0">
       <v-card class="mx-auto p-3" tile>
         <h4 class="primary--text text-center">{{projectData.name}} - {{projectData.code}}
         </h4>
         <div class="report-main">
             <div class="report-indicators">
                 <div class="report-item">
-                    <h6 class="text-center ma-0">Horas trabajadas/estimadas:</h6>
-                    <p class="my-2">{{total_worked_hours}}/{{total_estimated_hours}}</p>
+                    <div class="display: flex; justify-content: center">
+                    <h6 class="text-center ma-0" style="display: inline">Horas:</h6>
+                    <v-tooltip
+                      v-model="show_hours"
+                      right 
+                      style="display: inline"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          icon
+                          v-bind="attrs"
+                          v-on="on"
+                          x-small
+                          class="pl-2 pb-1"
+                        >
+                          <v-icon color="grey lighten-1">
+                            mdi-information
+                          </v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Trabajadas/estimadas</span>
+                    </v-tooltip>
+                  </div>
+                    <p class="my-1">{{total_worked_hours}}/{{total_estimated_hours}}</p>
                     <v-progress-circular 
                         :value="worked_hours_percent"
                         :size="70"
@@ -17,13 +39,13 @@
                         class="report-progress mt-0">
                         {{worked_hours_percent}}%
                     </v-progress-circular>
-                    
+                    <v-btn @click="goRoute('load-projects')" x-small class="btn simple-btn mt-2">cargar horas</v-btn>
                 </div>
                 <div class="report-item mt-2">
                   <div class="display: flex; justify-content: center">
                     <h6 class="text-center ma-0" style="display: inline">Avance del proyecto:</h6>
                     <v-tooltip
-                      v-model="show"
+                      v-model="show_advance"
                       right 
                       style="display: inline"
                     >
@@ -58,7 +80,7 @@
                   <div class="display: flex; justify-content: center">
                     <h6 class="text-center ma-0" style="display: inline">Usuarios en el proyecto:</h6>
                     <v-tooltip
-                      v-model="show2"
+                      v-model="show_users"
                       right 
                       style="display: inline"
                     >
@@ -93,6 +115,70 @@
                       </div>
                 </div>
             </div>
+            <div class="report-indicators">
+                <div class="report-item mb-2" v-for="(bud,b) in projectData.budgets" :key="b">
+                  <div class="display: flex; justify-content: center">
+                    <h6 class="text-center ma-0" style="display: inline">{{bud.area}}:</h6>
+                    <v-tooltip
+                      v-model="show_budget"
+                      right 
+                      style="display: inline"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          icon
+                          v-bind="attrs"
+                          v-on="on"
+                          x-small
+                          class="pl-2 pb-1"
+                        >
+                          <v-icon color="grey lighten-1">
+                            mdi-information
+                          </v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Pagado/presupuestado</span>
+                    </v-tooltip>
+                  </div>
+                  <div v-if="bud.area=='Suministro' && bud.price!=0" style="display: flex; flex-direction: column; align-items: center">
+                  <p class="my-1">{{bud.paid}}/{{bud.price}} ($USD)</p>
+                    <v-progress-circular 
+                        :value="budget_suministro"
+                        :size="70"
+                        :width="7"
+                        color="primary"
+                        class="report-progress mt-0">
+                        {{budget_suministro}}%
+                    </v-progress-circular>
+                    <v-btn @click="showPaybox(bud.id, bud.area, bud.price, bud.paid)" x-small class="btn simple-btn mt-2">cuadro de pago</v-btn>
+                  </div>
+                  <div v-if="bud.area=='Instalación' && bud.price!=0" style="display: flex; flex-direction: column; align-items: center">
+                  <p class="my-1">{{bud.paid}}/{{bud.price}} ($USD)</p>
+                    <v-progress-circular 
+                        :value="budget_instalacion"
+                        :size="70"
+                        :width="7"
+                        color="primary"
+                        class="report-progress mt-0">
+                        {{budget_instalacion}}%
+                    </v-progress-circular>
+                    <v-btn @click="showPaybox(bud.id, bud.area, bud.price, bud.paid)" x-small class="btn simple-btn mt-2">cuadro de pago</v-btn>
+                  </div>
+                  <div v-if="bud.area=='Gastos adicionales' && bud.price!=0" style="display: flex; flex-direction: column; align-items: center">
+                  <p class="my-1">{{bud.paid}}/{{bud.price}} ($USD)</p>
+                    <v-progress-circular 
+                        :value="budget_adicionales"
+                        :size="70"
+                        :width="7"
+                        color="primary"
+                        class="report-progress mt-0">
+                        {{budget_adicionales}}%
+                    </v-progress-circular>
+                    <v-btn @click="showPaybox(bud.id, bud.area, bud.price, bud.paid)" x-small class="btn simple-btn mt-2">cuadro de pago</v-btn>
+                  </div>
+                </div>
+                
+            </div>
             <div class="report-bitacora pa-4">
               <Bitacora
                 :project="projectData"
@@ -101,7 +187,139 @@
             </div>
         </div>
         <template>
-              <v-dialog v-model="productsDialog" max-width="600px">
+              <v-dialog v-model="payboxDialog" max-width="800px">
+                <v-card class="pa-6 pb-2">
+                  <p class="mb-2" style="color: gray; font-size: 14px">* Sólo el líder puede actualizar esta información.</p>
+                    <v-simple-table
+                        fixed-header
+                        height="300px"
+                    >
+                        <thead>
+                            <tr>
+                            <th class="text-left">
+                                Fecha
+                            </th>
+                            <th class="text-left">
+                                Descripción
+                            </th>
+                            <th class="text-center">
+                                Monto pagado
+                            </th>
+                            <th class="text-center">
+                                Por pagar
+                            </th>
+                            <th class="text-center">
+                                Presupuestado
+                            </th>
+                            <th class="text-center">
+                                Observaciones
+                            </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                            v-for="item in load_budgets_area"
+                            :key="item.id"
+                            >
+                                <td>{{ item.date }}</td>
+                                <td>{{ item.description }}</td>
+                                <td class="text-center">${{ item.paid }}</td>
+                                <td class="text-center">${{ item.to_pay }}</td>
+                                <td class="text-center">${{ item.budget }}</td>
+                                <td class="text-center">{{ item.observations }}</td>
+                                <!-- <td v-if="currentUser.id == projectData.leader_id" class="text-center">
+                                    <v-simple-checkbox
+                                    v-model="item.area_product.completed"
+                                    ></v-simple-checkbox>
+                                </td> -->
+                                <!-- <td v-else class="text-center">
+                                    <v-simple-checkbox
+                                    disabled
+                                    v-model="item.area_product.completed"
+                                    ></v-simple-checkbox>
+                                </td> -->
+                            </tr>
+                        </tbody>
+                    </v-simple-table>
+                    <v-expansion-panels focusable class="px-5 mt-2 mb-5" v-if="currentUser.id == projectData.leader_id">
+            <v-expansion-panel>
+                <v-expansion-panel-header>Cargar pago</v-expansion-panel-header>
+                <v-expansion-panel-content class="py-4">
+                  <v-row class="pa-0 ma-0 form-row-rol">
+                    <v-col md="6" cols="12" class="py-0">
+                      <v-menu
+                        ref="menu"
+                        v-model="menu"
+                        :close-on-content-click="false"
+                        transition="scale-transition"
+                        offset-y
+                        max-width="290px"
+                        min-width="auto"
+                        >
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-text-field
+                                v-model="dateFormatted"
+                                label="Fecha"
+                                hint="MM/DD/AAAA"
+                                persistent-hint
+                                prepend-icon="mdi-calendar"
+                                v-bind="attrs"
+                                @blur="date = parseDate(dateFormatted)"
+                                v-on="on"
+                            ></v-text-field>
+                        </template>
+                        <v-date-picker
+                            v-model="date"
+                            no-title
+                            @input="menu = false"
+                        ></v-date-picker>
+                    </v-menu>
+                    </v-col>
+              <v-col md="6" cols="12" class="py-0">
+                <v-text-field
+                    v-model="temp_load_description"
+                    label="Descripción"
+                    type="text"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row class="pa-0 ma-0 form-row-rol">
+              <v-col md="6" cols="12" class="py-0 mx-auto">
+                <v-text-field
+                    v-model="temp_load_budget"
+                    label="Monto presupuestado"
+                    prefix="$"
+                    type="number"
+                ></v-text-field>
+              </v-col>
+              <v-col md="6" cols="12" class="py-0 mx-auto">
+                <v-text-field
+                    v-model="temp_load_paid"
+                    label="Monto a pagar"
+                    prefix="$"
+                    type="number"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row class="pa-0 ma-0 form-row-rol mt-7">
+              <v-col md="12" cols="12" class="py-0 mx-auto">
+                <v-textarea
+                    v-model="temp_load_observations"
+                    label="Observaciones (opcional)"
+                    type="text"
+                    height="40"
+                ></v-textarea>
+              </v-col>
+        </v-row>
+        <v-btn class="simple-btn mt-2 mx-auto btn-block w-75" @click="loadPay()">
+          Cargar pago
+        </v-btn>
+        </v-expansion-panel-content>
+        </v-expansion-panel>
+        </v-expansion-panels>
+                </v-card>
+              </v-dialog>
+              <v-dialog v-model="productsDialog" max-width="500px">
                 <v-card class="pa-6 pb-2">
                   <p class="mb-2" style="color: gray; font-size: 14px">* Sólo el líder puede actualizar esta información.</p>
                     <v-simple-table
@@ -154,6 +372,50 @@
           </template>
       </v-card>
     </v-col>
+    <v-snackbar
+          v-model="alertSuccess"
+          type="success"
+          top
+          :timeout="timeout"
+          color="success"
+        >
+          <strong class="body-1 font-weight-bold">
+            {{successMessage}}
+          </strong>
+          <template v-slot:action="{ attrs }">
+            <v-btn
+              dark
+              icon
+              color="white"
+              v-bind="attrs"
+              @click="alertSuccess = false"
+            >
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </template>
+        </v-snackbar>
+        <v-snackbar
+          v-model="alertError"
+          type="error"
+          top
+          :timeout="timeout"
+          color="error"
+        >
+          <strong class="body-1 font-weight-bold">
+            {{errorMessage}}
+          </strong>
+          <template v-slot:action="{ attrs }">
+            <v-btn
+              dark
+              icon
+              color="white"
+              v-bind="attrs"
+              @click="alertError = false"
+            >
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </template>
+    </v-snackbar>
     </v-row>
 </template>
 
@@ -163,6 +425,8 @@ import ProjectUserDataService from "../../services/ProjectUserDataService";
 import ProjectDataService from "../../services/ProjectDataService";
 import AreaDataService from "../../services/AreaDataService";
 import Bitacora from "../../components/reports/Bitacora.vue";
+import BudgetDataService from "../../services/BudgetDataService";
+import LoadBudgetDataService from "../../services/LoadBudgetDataService";
 export default {
   name: "project-report",
   components: {
@@ -173,13 +437,45 @@ export default {
       origin_users: [],
       origin_project_users: [],
       origin_areas: [],
+      origin_budgets: [],
+      origin_load_budgets: [],
       projectData: null,
       productsDialog: false,
-      show: false,
-      show2: false,
+
+      show_hours: false,
+      show_advance: false,
+      show_users: false,
+      show_budget: false,
+
+      temp_budget: 0,
+      temp_budget_paid: 0,
+      temp_budget_area: 0,
+      temp_budget_price: 0,
+      temp_budget_paid_new: 0,
+
+      temp_load_observations: null,
+      temp_load_budget: null,
+      temp_load_paid: null,
+      temp_load_description: null,
+
+      payboxDialog: false,
+
+      timeout: 4000,
+      alertSuccess: false,
+      successMessage: "",
+      alertError: false,
+      errorMessage: "",
+
+      date: new Date().toISOString().substr(0, 10),
+      dateFormatted: this.formatDate(new Date().toISOString().substr(0, 10)),
+      menu: false,
+      actual_date: new Date(),
     }
   },
   computed: {
+    computedDateFormatted () {
+        return this.formatDate(this.date)
+      },
     currentUser() {      
       return this.$store.state.auth.user;
     },
@@ -262,14 +558,159 @@ export default {
         users.push(worker)
       });
       return users;
+    },
+    budget_suministro(){
+      let price = 0;
+      let paid = 0;
+      this.origin_budgets.forEach(bud => {
+        if (bud.area == "Suministro" && bud.project_id == this.projectData.id){
+          this.origin_load_budgets.forEach(load => {
+            if (load.budget_id == bud.id){
+              paid += load.paid;
+            }
+          });
+          price = bud.price
+        }
+      });
+      let percent = (paid * 100)/price;
+      return percent.toFixed(0); 
+    },
+    budget_instalacion(){
+      let price = 0;
+      let paid = 0;
+      this.origin_budgets.forEach(bud => {
+        if (bud.area == "Instalación" && bud.project_id == this.projectData.id){
+          this.origin_load_budgets.forEach(load => {
+            if (load.budget_id == bud.id){
+              paid += load.paid;
+            }
+          });
+          price = bud.price
+        }
+      });
+      let percent = (paid * 100)/price;
+      return percent.toFixed(0);
+    },
+    budget_adicionales(){
+      let price = 0;
+      let paid = 0;
+      this.origin_budgets.forEach(bud => {
+        if (bud.area == "Gastos adicionales" && bud.project_id == this.projectData.id){
+          this.origin_load_budgets.forEach(load => {
+            if (load.budget_id == bud.id){
+              paid += load.paid;
+            }
+          });
+          price = bud.price
+        }
+      });
+      let percent = (paid * 100)/price;
+      return percent.toFixed(0);
+    },
+    load_budgets_area(){
+      let loads = [];
+      this.origin_load_budgets.forEach(load => {
+        this.projectData.budgets.forEach(bud => {
+          if (load.budget_id == bud.id){
+            if (load.area == this.temp_budget_area){
+              load.to_pay = load.budget - load.paid;
+              loads.push(load);
+            }
+          }
+        });
+      });
+      return loads;
     }
   },
   methods: {
+    savePaid(){
+      if (this.temp_budget_paid_new > 0){
+        let paid_new_integer = parseInt(this.temp_budget_paid_new, 10);
+            let data = {
+              paid: this.temp_budget_paid + paid_new_integer,
+            };
+            BudgetDataService.update(this.temp_budget, data)
+              .then((response) => {
+                  console.log(response.data);
+                  })
+                  .catch((e) => {
+                  console.log(e);
+                  });
+
+            this.payboxDialog = false;
+            this.successMessage = "Se ha marcado el pago correctamente. Espere a que actualice.";
+            this.alertSuccess = true;
+            location.reload();
+      } else {
+        this.errorMessage = "Introduce una cantidad mayor a cero (0)."
+        this.alertError = true;
+      }
+      
+    },
     goRoute(route) {
       this.$router.push("/" + route);
     },
     goReports(id) {
       this.$router.push("/reports/" + id);
+    },
+    showPaybox(id, area, price, paid){
+      this.temp_budget = id;
+      this.temp_budget_area = area;
+      this.temp_budget_price = price;
+      this.temp_budget_paid = paid
+      this.payboxDialog = true;
+    },
+    loadPay(){
+      let loadPayload = null;
+        console.log(loadPayload);
+        let f = (this.actual_date);
+        console.log(f);
+        var parts =this.date.split('-');
+        var mydate = new Date(parts[0], parts[1] - 1, parts[2]);
+        console.log(mydate.toDateString());
+
+        if (mydate.getTime() > f.getTime()) {
+            this.alertError = true;
+            this.errorMessage = "No puedes cargar días futuros."
+        } else {
+          this.projectData.budgets.forEach(bud => {
+            if (bud.area == this.temp_budget_area) {
+              loadPayload = {
+                  date: this.dateFormatted,
+                  observations: this.temp_load_observations,
+                  description: this.temp_load_description,
+                  budget: this.temp_load_budget,
+                  paid: this.temp_load_paid,
+                  budget_id: bud.id,
+                  area: this.temp_budget_area,
+              }
+              BudgetDataService.load(loadPayload)
+              .then(response => {
+                  console.log(response.data);
+              })
+              .catch(e => {
+              console.log(e);
+              });
+
+              let paid_new_integer = parseInt(this.temp_load_paid, 10);
+            let data = {
+              paid: this.temp_budget_paid + paid_new_integer,
+            };
+            BudgetDataService.update(this.temp_budget, data)
+              .then((response) => {
+                  console.log(response.data);
+                  })
+                  .catch((e) => {
+                  console.log(e);
+                  });
+
+            this.payboxDialog = false;
+            this.successMessage = "Se ha marcado el pago correctamente. Espere a que actualice.";
+            this.alertSuccess = true;
+            location.reload();
+            }       
+          });  
+        }
     },
     saveChanges(){
         this.area_products.forEach(product => {
@@ -313,6 +754,24 @@ export default {
           console.log(e);
         });
     },
+    retrieveBudgets() {
+      BudgetDataService.getAll()
+        .then((response) => {
+          this.origin_budgets = response.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+    retrieveLoadBudgets() {
+      LoadBudgetDataService.getAll()
+        .then((response) => {
+          this.origin_load_budgets = response.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     getProject(id) {
       ProjectDataService.get(id)
         .then((response) => {
@@ -323,12 +782,31 @@ export default {
           console.log(e);
         });
     },
+    formatDate (date) {
+        if (!date) return null
+
+        const [year, month, day] = date.split('-')
+        return `${month}/${day}/${year}`
+      },
+      parseDate (date) {
+        if (!date) return null
+
+        const [month, day, year] = date.split('/')
+        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+      },
   },
+  watch: {
+      date () {
+        this.dateFormatted = this.formatDate(this.date)
+      },
+    },
   mounted() {
     this.retrieveUsers();
     this.retrieveAreas();
     this.retrieveProjectUsers();
     this.getProject(this.$route.params.id);
+    this.retrieveBudgets();
+    this.retrieveLoadBudgets();
   },
 };
 </script>
@@ -339,12 +817,15 @@ export default {
     }
     .report-indicators{
         flex: 1;
-        background-color: #ecebe5a4;
+        /* background-color: #ecebe5a4; */
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 20px;
+        padding: 10px;
         border-radius: 8px;
+    }
+    .report-budget{
+        flex: 1;
     }
     .report-bitacora{
         flex: 2;
