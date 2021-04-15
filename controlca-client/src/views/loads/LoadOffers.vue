@@ -93,9 +93,50 @@
                   </v-card-actions>
                 </v-card>
               </v-dialog>
+              <v-dialog v-model="historyDialog" max-width="700px">
+                <v-card class="pa-10 pb-2">
+                    <div class="mx-auto pb-2">
+                        <p class="primary--text text-center">Historial en {{currentOfferName}} - {{currentOfferCode}}</p>
+                    </div>
+                    <v-simple-table
+                        fixed-header
+                        height="300px"
+                    >
+                        <thead>
+                            <tr>
+                            <th class="text-left">
+                                Fecha
+                            </th>
+                            <th class="text-left">
+                                Horas
+                            </th>
+                            <th class="text-left">
+                                Observaciones
+                            </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                            v-for="item in history_loads"
+                            :key="item.id"
+                            >
+                                <td>{{ item.date }}</td>
+                                <td>{{ item.hours }}</td>
+                                <td>{{ item.observations }}</td>
+                            </tr>
+                        </tbody>
+                    </v-simple-table>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn class="secondary--text" text @click="historyDialog = false">cerrar</v-btn>
+                    <v-spacer></v-spacer>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
           </template>
           <template v-slot:[`item.actions`]="{ item }">
             <v-icon small @click="openLoadDialog(item.id, item.name, item.code)" class="mr-2 primary--text">mdi-plus-circle</v-icon>
+            <v-icon small @click="openHistoryDialog(item.id, item.name, item.code)" class="mr-2">mdi-history</v-icon>
           </template>
         </v-data-table>
 
@@ -158,7 +199,7 @@
 import OfferDataService from "../../services/OfferDataService";
 import OfferUserDataService from "../../services/OfferUserDataService";
 import UserDataService from "../../services/UserDataService";
-
+import LoadOfferDataService from "../../services/LoadOfferDataService";
 export default {
   name: "load-offers",
   data() {
@@ -166,6 +207,7 @@ export default {
       origin_offers: [],
       origin_offer_users: [],
       origin_users: [],
+      origin_loads: [],
       currentOfferId: "",
       currentOfferName: "",
       currentOfferCode: "",
@@ -176,7 +218,7 @@ export default {
       headers: [
         { text: "Nombre", align: "start", sortable: true, value: "name" },
         { text: "Código", value: "code", sortable: true },
-        { text: "Department", value: "department", sortable: true },
+        { text: "Departamento", value: "department", sortable: true },
         { text: "Rol", value: "offer_user.roster", sortable: true },
         { text: "Horas trabajadas", value: "worked_hours", sortable: true },
         { text: 'Cargar', value: 'actions', sortable: false },
@@ -189,6 +231,7 @@ export default {
       },
 
       loadDialog: false,
+      historyDialog: false,
 
       // Snackbar
       timeout: 4000,
@@ -241,6 +284,15 @@ export default {
       });
       return ou_id
     },
+    history_loads(){
+      let loads = [];
+      this.origin_loads.forEach(load => {
+          if (load.offer_user.worker_id == this.currentUser.id && load.offer_user.offer_id == this.currentOfferId) {
+                loads.push(load);  
+          }
+      });
+      return loads.reverse();
+    }
   },
 
   methods: {
@@ -291,6 +343,14 @@ export default {
         console.log(itemId);
     },
 
+    openHistoryDialog(itemId, itemName, itemCode){
+        this.currentOfferId = itemId;
+        this.currentOfferName = itemName;
+        this.currentOfferCode = itemCode;
+        this.historyDialog = true;
+        console.log(itemId, itemName, itemCode);
+    },
+
     retrieveUser() {
       UserDataService.get(this.currentUser.id)
         .then((response) => {
@@ -305,6 +365,16 @@ export default {
       OfferDataService.getAll()
         .then((response) => {
           this.origin_offers = response.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+
+    retrieveLoads() {
+      LoadOfferDataService.getAll()
+        .then((response) => {
+          this.origin_loads = response.data;
         })
         .catch((e) => {
           console.log(e);
@@ -362,6 +432,7 @@ export default {
     this.retrieveOffers();
     this.retrieveOfferUsers();
     this.retrieveUser();
+    this.retrieveLoads();
   },
 };
 </script>

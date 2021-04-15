@@ -111,7 +111,51 @@
                     </v-btn>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn class="secondary--text" text @click="loadDialog = false">Cancelar</v-btn>
+                    <v-btn class="secondary--text" text @click="historyDialog = false">Cancelar</v-btn>
+                    <v-spacer></v-spacer>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+              <v-dialog v-model="historyDialog" max-width="700px">
+                <v-card class="pa-10 pb-2">
+                    <div class="mx-auto pb-2">
+                        <p class="primary--text text-center">Historial en {{currentProjectName}} - {{currentProjectCode}}</p>
+                    </div>
+                    <v-simple-table
+                        fixed-header
+                        height="300px"
+                    >
+                        <thead>
+                            <tr>
+                            <th class="text-left">
+                                Fecha
+                            </th>
+                            <th class="text-left">
+                                Horas
+                            </th>
+                            <th class="text-left">
+                                Producto
+                            </th>
+                            <th class="text-left">
+                                Observaciones
+                            </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                            v-for="item in history_loads"
+                            :key="item.id"
+                            >
+                                <td>{{ item.date }}</td>
+                                <td>{{ item.hours }}</td>
+                                <td>{{ item.product_name }}</td>
+                                <td>{{ item.observations }}</td>
+                            </tr>
+                        </tbody>
+                    </v-simple-table>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn class="secondary--text" text @click="historyDialog = false">cerrar</v-btn>
                     <v-spacer></v-spacer>
                   </v-card-actions>
                 </v-card>
@@ -119,6 +163,7 @@
           </template>
           <template v-slot:[`item.actions`]="{ item }">
             <v-icon small @click="openLoadDialog(item.id, item.name, item.code)" class="mr-2 primary--text">mdi-plus-circle</v-icon>
+            <v-icon small @click="openHistoryDialog(item.id, item.name, item.code)" class="mr-2">mdi-history</v-icon>
           </template>
         </v-data-table>
 
@@ -183,6 +228,7 @@ import ProjectUserDataService from "../../services/ProjectUserDataService";
 import ProductDataService from "../../services/ProductDataService";
 import UserDataService from "../../services/UserDataService";
 import AreaDataService from "../../services/AreaDataService";
+import LoadDataService from "../../services/LoadDataService";
 export default {
   name: "load-projects",
   data() {
@@ -192,6 +238,7 @@ export default {
       origin_products: [],
       origin_areas: [],
       origin_users: [],
+      origin_loads: [],
       currentProjectId: "",
       currentProjectName: "",
       currentProjectCode: "",
@@ -215,6 +262,7 @@ export default {
       },
 
       loadDialog: false,
+      historyDialog: false,
 
       // Snackbar
       timeout: 4000,
@@ -292,6 +340,20 @@ export default {
       });
       return pu_id
     },
+    history_loads(){
+      let loads = [];
+      this.origin_loads.forEach(load => {
+          if (load.project_user.worker_id == this.currentUser.id && load.project_user.project_id == this.currentProjectId) {
+            this.origin_products.forEach(op => {
+              if (op.id == load.product_id) {
+                load.product_name = op.name;
+                loads.push(load);
+              }
+            });        
+          }
+      });
+      return loads.reverse();
+    }
   },
 
   methods: {
@@ -346,6 +408,14 @@ export default {
         this.currentProjectName = itemName;
         this.currentProjectCode = itemCode;
         this.loadDialog = true;
+        console.log(itemId, itemName, itemCode);
+    },
+
+    openHistoryDialog(itemId, itemName, itemCode){
+        this.currentProjectId = itemId;
+        this.currentProjectName = itemName;
+        this.currentProjectCode = itemCode;
+        this.historyDialog = true;
         console.log(itemId, itemName, itemCode);
     },
 
@@ -415,6 +485,15 @@ export default {
           console.log(e);
         });
     },
+    retrieveLoads() {
+      LoadDataService.getAll()
+        .then((response) => {
+          this.origin_loads = response.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     formatDate (date) {
         if (!date) return null
 
@@ -440,6 +519,7 @@ export default {
     this.retrieveProducts();
     this.retrieveAreas();
     this.retrieveUser();
+    this.retrieveLoads();
   },
 };
 </script>

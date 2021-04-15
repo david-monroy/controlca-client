@@ -99,12 +99,61 @@
             <v-btn class="simple-btn mt-5 mx-auto btn-block w-75" @click="saveLoad()">
                 Cargar horas
             </v-btn>
+            <v-btn class="simple-btn mt-5 mx-auto btn-block w-50" @click="openHistoryDialog()">
+                <v-icon small class="mr-2">mdi-history</v-icon>
+                Historial
+            </v-btn>
             <v-card-actions>
             <v-spacer></v-spacer>
                 <v-btn class="secondary--text" text @click="goRoute('loads')">Regresar</v-btn>
             <v-spacer></v-spacer>
             </v-card-actions>
         </div>
+        <v-dialog v-model="historyDialog" max-width="700px">
+                <v-card class="pa-10 pb-2">
+                    <div class="mx-auto pb-2">
+                        <p class="primary--text text-center">Historial de horas administrativas</p>
+                    </div>
+                    <v-simple-table
+                        fixed-header
+                        height="300px"
+                    >
+                        <thead>
+                            <tr>
+                            <th class="text-left">
+                                Fecha
+                            </th>
+                            <th class="text-left">
+                                Horas/Fecha final
+                            </th>
+                            <th class="text-left">
+                                Tipo
+                            </th>
+                            <th class="text-left">
+                                Observaciones
+                            </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                            v-for="item in history_loads"
+                            :key="item.id"
+                            >
+                                <td>{{ item.initial_date }}</td>
+                                <td v-if="item.type=='Vacaciones'">{{ item.final_date }}</td>
+                                <td v-else>{{ item.hours }}</td>
+                                <td>{{ item.type }}</td>
+                                <td>{{ item.observations }}</td>
+                            </tr>
+                        </tbody>
+                    </v-simple-table>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn class="secondary--text" text @click="historyDialog = false">cerrar</v-btn>
+                    <v-spacer></v-spacer>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
         <v-snackbar
           v-model="alertSuccess"
           type="success"
@@ -176,6 +225,8 @@ export default {
           "Vacaciones"
       ],
 
+      origin_loads: [],
+
       date: new Date().toISOString().substr(0, 10),
       dateFormatted: this.formatDate(new Date().toISOString().substr(0, 10)),
       menu1: false,
@@ -186,6 +237,7 @@ export default {
       alertSuccess: false,
       successMessage: "",
       timeout: 4000,
+      historyDialog: false,
 
       alertError: false,
       errorMessage: "",
@@ -202,6 +254,15 @@ export default {
     currentUser() {      
       return this.$store.state.auth.user;
     },
+    history_loads(){
+      let loads = [];
+      this.origin_loads.forEach(load => {
+          if (load.user_id == this.currentUser.id ) {
+                loads.push(load);  
+          }
+      });
+      return loads.reverse();
+    }
   },
   methods: {
       saveLoad(){
@@ -240,6 +301,7 @@ export default {
               this.loadDialog = false;
               this.successMessage = "Se han cargado las horas correctamente";
               this.alertSuccess = true;
+              location.reload();
           }
           } else {
           if (!this.load.type) {
@@ -267,6 +329,18 @@ export default {
           }
         }
       },
+      openHistoryDialog(){
+        this.historyDialog = true;
+    },
+    retrieveLoads() {
+      LoadAdminDataService.getAll()
+        .then((response) => {
+          this.origin_loads = response.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
       formatDate (date) {
         if (!date) return null
 
@@ -291,6 +365,9 @@ export default {
         this.finalDateFormatted = this.formatDate(this.finalDate)
       },
     },
+    mounted(){
+      this.retrieveLoads();
+    }
 };
 </script>
 
