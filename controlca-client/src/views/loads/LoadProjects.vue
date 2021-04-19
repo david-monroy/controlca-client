@@ -162,8 +162,8 @@
               </v-dialog>
           </template>
           <template v-slot:[`item.actions`]="{ item }">
-            <v-icon small @click="openLoadDialog(item.id, item.name, item.code)" class="mr-2 primary--text">mdi-plus-circle</v-icon>
-            <v-icon small @click="openHistoryDialog(item.id, item.name, item.code)" class="mr-2">mdi-history</v-icon>
+            <v-icon small @click="openLoadDialog(item.id, item.name, item.code)" class="mr-2 primary--text text-center">mdi-plus-circle</v-icon>
+            <v-icon small @click="openHistoryDialog(item.id, item.name, item.code)" class="mr-2 text-center">mdi-history</v-icon>
           </template>
         </v-data-table>
 
@@ -252,7 +252,7 @@ export default {
         { text: "Áreas", value: "areas", sortable: true },
         { text: "Rol", value: "project_user.roster", sortable: true },
         { text: "Horas trabajadas", value: "worked_hours", sortable: true },
-        { text: 'Cargar', value: 'actions', sortable: false },
+        { text: 'Acciones', value: 'actions', sortable: false },
       ],
       expanded: [],
       singleExpand: true,

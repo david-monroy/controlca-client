@@ -6,6 +6,7 @@
         </h4>
         <div class="report-main">
             <div class="report-indicators">
+              <h5 class="lightgray--text text-center mt-4 mb-3">Avances</h5>
                 <div class="report-item">
                     <div class="display: flex; justify-content: center">
                     <h6 class="text-center ma-0" style="display: inline">Horas:</h6>
@@ -116,6 +117,7 @@
                 </div>
             </div>
             <div class="report-indicators">
+              <h5 class="lightgray--text text-center mt-4 mb-3">Presupuesto</h5>
                 <div class="report-item mb-2" v-for="(bud,b) in projectData.budgets" :key="b">
                   <div class="display: flex; justify-content: center">
                     <h6 class="text-center ma-0" style="display: inline">{{bud.area}}:</h6>

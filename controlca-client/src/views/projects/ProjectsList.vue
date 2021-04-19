@@ -6,7 +6,7 @@
       <v-card-text>
         <v-row>
           <v-col cols="12" class="item-list-projects"
-          v-if="currentUser.id == 1">
+          v-if="currentUser.rol_id == 1">
             <v-card v-if="projects.length < 1" class="mx-auto">
               <v-card-text>
                 <h5>No hay proyectos registrados en el sistema.</h5>

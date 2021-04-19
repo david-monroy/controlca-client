@@ -144,7 +144,7 @@
                         <tbody>
                             <tr
                             v-for="(user,u) in users"
-                            :key="u"
+                            :key="u" 
                             >
                             <td class="text-center">{{ user.name }}</td>
                             <td class="text-center">{{ user.lastname }}</td>
