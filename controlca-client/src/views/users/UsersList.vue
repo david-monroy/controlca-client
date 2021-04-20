@@ -20,7 +20,7 @@
           :search="search"
         >
           <template v-slot:top>
-              <v-dialog v-model="dialogDelete" max-width="500px">
+              <v-dialog v-model="dialogDelete" max-width="700px">
                 <v-card>
                   <v-card-title class="body-1 mx-auto">¿Seguro que desea eliminar a {{userToDeleteName}} {{userToDeleteLastname}}?</v-card-title>
                   <v-card-actions>
@@ -55,7 +55,10 @@
             <v-expansion-panel>
                 <v-expansion-panel-header>Proyectos involucrado ({{currentUserInfo.working_projects.length}})</v-expansion-panel-header>
                 <v-expansion-panel-content>
-                    <v-simple-table max-height="240px" >
+                  <div v-if="currentUserInfo.working_projects.length == 0">
+                    <p class="my-3">{{currentUserInfo.name}} {{currentUserInfo.lastname}} no está asociado/a a ningún proyecto.</p>
+                  </div>
+                    <v-simple-table max-height="240px" v-else>
                         <template v-slot:default>
                         <thead >
                             <tr>
@@ -71,6 +74,9 @@
                             <th class="text-center">
                                 Rol
                             </th>
+                            <th class="text-center">
+                                Estatus
+                            </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -82,6 +88,8 @@
                             <td class="text-center">{{ working_project.name }}</td>
                             <td class="text-center">{{ working_project.areas }}</td>
                             <td class="text-center">{{ working_project.project_user.roster }}</td>
+                            <td v-if="working_project.project_user.status == true" class="text-center">Activo</td>
+                            <td v-else class="text-center red--text">Inactivo</td>
                             </tr>
                         </tbody>
                         </template>
@@ -94,7 +102,10 @@
             <v-expansion-panel>
                 <v-expansion-panel-header>Ofertas involucrado ({{currentUserInfo.working_offers.length}})</v-expansion-panel-header>
                 <v-expansion-panel-content>
-                    <v-simple-table max-height="240px" >
+                  <div v-if="currentUserInfo.working_offers.length == 0">
+                    <p class="my-3">{{currentUserInfo.name}} {{currentUserInfo.lastname}} no está asociado/a a ninguna oferta.</p>
+                  </div>
+                    <v-simple-table max-height="240px" v-else>
                         <template v-slot:default>
                         <thead >
                             <tr>
@@ -140,9 +151,38 @@
       
 
           <template v-slot:[`item.actions`]="{ item }">
-            <v-icon small @click="openInfo(item.id)" class="mr-2 primary--text">mdi-folder-search</v-icon>
-            <v-icon small @click="editUser(item.id)" class="mr-2">mdi-pencil</v-icon>
-            <v-icon small @click="openDelete(item.id, item.name, item.lastname)" class="red--text">mdi-delete</v-icon>
+            <v-tooltip
+                top 
+                style="display: inline"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon small v-bind="attrs" v-on="on"
+                @click="openInfo(item.id)" class="mr-2 primary--text">mdi-folder-search</v-icon>
+              </template>
+              <span>Proyectos</span>
+            </v-tooltip>
+
+            <v-tooltip
+                top 
+                style="display: inline"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon small v-bind="attrs" v-on="on"
+                @click="editUser(item.id)" class="mr-2">mdi-pencil</v-icon>
+              </template>
+              <span>Editar</span>
+            </v-tooltip>
+
+            <v-tooltip
+                top 
+                style="display: inline"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon small v-bind="attrs" v-on="on"
+                @click="openDelete(item.id, item.name, item.lastname)" class="red--text">mdi-delete</v-icon>
+              </template>
+              <span>Eliminar</span>
+            </v-tooltip>
           </template>
         </v-data-table>
 
@@ -204,6 +244,8 @@ export default {
         { text: "Permisos", value: "rol.name", sortable: true },
         { text: 'Acciones', value: 'actions', sortable: false },
       ],
+
+      show_folder: false,
 
       dialogDelete: false,
       userToDelete: "",

@@ -2,7 +2,7 @@
   <div>
 <v-dialog
       v-model="dialog"
-      width="500"
+      width="700"
     >
       <template v-slot:activator="{ on, attrs }">
         <v-card 
@@ -139,6 +139,9 @@
                             <th class="text-center">
                                 Horas completadas
                             </th>
+                            <th class="text-center">
+                                Estatus
+                            </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -150,6 +153,8 @@
                             <td class="text-center">{{ user.lastname }}</td>
                             <td class="text-center">{{ user.project_user.roster }}</td>
                             <td class="text-center">0</td>
+                            <td v-if="user.project_user.status == true" class="text-center">Activo</td>
+                            <td v-else class="text-center red--text">Inactivo</td>
                             </tr>
                         </tbody>
                         </template>

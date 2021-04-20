@@ -28,7 +28,16 @@
 
       <v-divider></v-divider>
 
-      <v-stepper-step step="4">
+      <v-stepper-step
+        :complete="formStep > 4"
+        step="4"
+      >
+        Presupuesto
+      </v-stepper-step>
+
+      <v-divider></v-divider>
+
+      <v-stepper-step step="5">
         Confirmar
       </v-stepper-step>
     </v-stepper-header>
@@ -79,6 +88,7 @@
                         label="Número de áreas de trabajo"
                         placeholder="0"
                         type="number"
+                        readonly
                         required
                     ></v-text-field>
                 </div>
@@ -128,9 +138,6 @@
                             <th class="text-center">
                                 Horas estimadas
                             </th>
-                            <th class="text-center">
-                                Eliminar
-                            </th>
                             </tr>
                     </thead>
                     <tbody>
@@ -142,10 +149,15 @@
                         <td class="text-center">{{ product.code }}</td>
                         <td class="text-center">{{ product.name }}</td>
                         <td class="text-center">{{ product.estimated_hours }}</td>
-                        <td class="text-center">
-                            <v-icon small class="text-center" 
-                            color="red" @click="removeProduct(p)">mdi-delete</v-icon>
-                        </td>
+                        </tr>
+                        <tr
+                        v-for="(product,p) in new_project_products"
+                        :key="p"
+                        >
+                        <td class="text-center">{{ product.area_name }}</td>
+                        <td class="text-center">{{ product.code }}</td>
+                        <td class="text-center">{{ product.name }}</td>
+                        <td class="text-center">{{ product.estimated_hours }}</td>
                         </tr>
                     </tbody>
                     </template>
@@ -156,7 +168,7 @@
         </div>
         <v-expansion-panels focusable class="px-5 mt-2 mb-5">
             <v-expansion-panel>
-                <v-expansion-panel-header>Añadir producto</v-expansion-panel-header>
+                <v-expansion-panel-header>Añadir nuevo producto</v-expansion-panel-header>
                 <v-expansion-panel-content class="py-4">
             <v-row class="pa-0 ma-0 form-row-rol">
                 <v-col md="6" cols="12" class="py-0">
@@ -238,7 +250,7 @@
                                 Rol
                             </th>
                             <th class="text-center">
-                                Eliminar
+                                Estatus
                             </th>
                             </tr>
                     </thead>
@@ -247,17 +259,29 @@
                         v-for="(worker,w) in project_workers"
                         :key="w"
                         >
-                        <td class="text-center">{{ worker.name }}</td>
-                        <td class="text-center">{{ worker.lastname }}</td>
-                        <td class="text-center">{{ worker.roster }}</td>
-                        <td v-if="w>0" class="text-center">
-                            <v-icon small class="text-center" 
-                            color="red" @click="removeWorker(w, worker.id)">mdi-delete</v-icon>
-                        </td>
-                        <td v-else class="text-center">
-                            <v-icon small class="text-center" 
-                            color="red" @click="removeWorker(w, worker.id)">mdi-delete</v-icon>
-                        </td>
+                          <td class="text-center">{{ worker.name }}</td>
+                          <td class="text-center">{{ worker.lastname }}</td>
+                          <td class="text-center">{{ worker.roster }}</td>
+                          <td class="text-center">
+                            <v-simple-checkbox
+                            v-model="worker.project_user.status"
+                            class="primary--text"
+                            ></v-simple-checkbox>
+                          </td>
+                        </tr>
+                        <tr
+                        v-for="(worker,w) in new_project_workers"
+                        :key="w"
+                        >
+                          <td class="text-center">{{ worker.name }}</td>
+                          <td class="text-center">{{ worker.lastname }}</td>
+                          <td class="text-center">{{ worker.roster }}</td>
+                          <td class="text-center">
+                            <v-simple-checkbox
+                            v-model="worker.status"
+                            class="primary--text"
+                            ></v-simple-checkbox>
+                          </td>
                         </tr>
                     </tbody>
                     </template>
@@ -342,7 +366,58 @@
                 </v-btn>
         </div>
       </v-stepper-content>
+
       <v-stepper-content step="4">
+        <v-row class="pa-0 ma-0 form-row-rol text-center mb-5">
+            <h5 class="ma-0">Indique el presupuesto para cada rubro,</h5>
+            <h6>si no aplica, mantenga en cero (0).</h6>
+        </v-row>
+        <v-row class="pa-0 ma-0 form-row-rol">
+              <v-col md="4" cols="12" class="py-0 mx-auto">
+                <v-text-field
+                    v-model="projectData.budgets[0].price"
+                    label="Suministro"
+                    prefix="$"
+                    type="number"
+                ></v-text-field>
+              </v-col>
+              <v-col md="4" cols="12" class="py-0 mx-auto">
+                <v-text-field
+                    v-model="projectData.budgets[1].price"
+                    label="Instalación"
+                    prefix="$"
+                    type="number"
+                ></v-text-field>
+              </v-col>
+              <v-col md="4" cols="12" class="py-0 mx-auto">
+                <v-text-field
+                    v-model="projectData.budgets[2].price"
+                    label="Gastos adicionales"
+                    prefix="$"
+                    type="number"
+                ></v-text-field>
+              </v-col>
+        </v-row>
+
+        <div style="display: flex; justify-content: space-between">
+            <v-btn text color="red"
+            @click="confirmCancel = true">
+                Cancelar
+            </v-btn>
+            <v-btn text color="primary"
+            @click="formStep = 3">
+                Regresar
+            </v-btn>
+            <v-btn
+                color="primary"
+                @click="validateStep4()"
+                >
+                Siguiente
+                </v-btn>
+        </div>
+      </v-stepper-content>
+
+      <v-stepper-content step="5">
 
         <div class="no-items-label mb-3 pa-5">
             <p class="text-body-2 ma-0">Confirme la información a actualizar.</p>
@@ -367,7 +442,7 @@
 
         <v-expansion-panels focusable class="pa-0 mb-2">
             <v-expansion-panel>
-                <v-expansion-panel-header>Productos ({{project_products.length}})</v-expansion-panel-header>
+                <v-expansion-panel-header>Productos</v-expansion-panel-header>
                 <v-expansion-panel-content>
                     <v-simple-table max-height="240px" >
                         <template v-slot:default>
@@ -385,9 +460,6 @@
                             <th class="text-center">
                                 Horas estimadas
                             </th>
-                            <th class="text-center">
-                                Eliminar
-                            </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -399,11 +471,16 @@
                             <td class="text-center">{{ product.code }}</td>
                             <td class="text-center">{{ product.name }}</td>
                             <td class="text-center">{{ product.estimated_hours }}</td>
-                            <td class="text-center">
-                            <v-icon small class="text-center" 
-                            color="red" @click="removeProduct(p)">mdi-delete</v-icon>
-                            </td>
                             </tr>
+                            <tr
+                        v-for="(product,p) in new_project_products"
+                        :key="p"
+                        >
+                        <td class="text-center">{{ product.area_name }}</td>
+                        <td class="text-center">{{ product.code }}</td>
+                        <td class="text-center">{{ product.name }}</td>
+                        <td class="text-center">{{ product.estimated_hours }}</td>
+                        </tr>
                         </tbody>
                         </template>
                     </v-simple-table>
@@ -413,7 +490,7 @@
 
         <v-expansion-panels focusable class="pa-0 mb-5">
             <v-expansion-panel>
-                <v-expansion-panel-header>Involucrados ({{project_workers.length}})</v-expansion-panel-header>
+                <v-expansion-panel-header>Involucrados</v-expansion-panel-header>
                 <v-expansion-panel-content>
                     <v-simple-table max-height="240px" >
                         <template v-slot:default>
@@ -429,7 +506,7 @@
                                 Rol
                             </th>
                             <th class="text-center">
-                                Eliminar
+                                Estatus
                             </th>
                             </tr>
                         </thead>
@@ -441,14 +518,28 @@
                             <td class="text-center">{{ worker.name }}</td>
                             <td class="text-center">{{ worker.lastname }}</td>
                             <td class="text-center">{{ worker.roster }}</td>
-                            <td v-if="w>0" class="text-center">
-                                <v-icon small class="text-center" 
-                                color="red" @click="removeWorker(w, worker.id)">mdi-delete</v-icon>
-                            </td>
-                            <td v-else class="text-center">
-                                <v-icon small class="text-center" disabled
-                                color="red" @click="removeWorker(w, worker.id)">mdi-delete</v-icon>
-                            </td>
+                            <td class="text-center">
+                            <v-simple-checkbox
+                            disabled
+                            v-model="worker.project_user.status"
+                            class="primary--text"
+                            ></v-simple-checkbox>
+                          </td>
+                            </tr>
+                            <tr
+                            v-for="(worker,w) in new_project_workers"
+                            :key="w"
+                            >
+                            <td class="text-center">{{ worker.name }}</td>
+                            <td class="text-center">{{ worker.lastname }}</td>
+                            <td class="text-center">{{ worker.roster }}</td>
+                            <td class="text-center">
+                            <v-simple-checkbox
+                            disabled
+                            v-model="worker.status"
+                            class="primary--text"
+                            ></v-simple-checkbox>
+                          </td>
                             </tr>
                         </tbody>
                         </template>
@@ -457,6 +548,36 @@
             </v-expansion-panel>
         </v-expansion-panels>
         
+        <v-expansion-panels focusable class="pa-0 mb-5">
+            <v-expansion-panel>
+                <v-expansion-panel-header>Presupuesto</v-expansion-panel-header>
+                <v-expansion-panel-content>
+                    <v-simple-table max-height="240px" >
+                        <template v-slot:default>
+                        <thead >
+                            <tr>
+                            <th class="text-center">
+                                Rubro
+                            </th>
+                            <th class="text-center">
+                                Precio
+                            </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                            v-for="(bud,w) in projectData.budgets"
+                            :key="w"
+                            >
+                            <td class="text-center">{{ bud.area }}</td>
+                            <td class="text-center">${{ bud.price }}</td>
+                            </tr>
+                        </tbody>
+                        </template>
+                    </v-simple-table>
+                </v-expansion-panel-content>
+            </v-expansion-panel>
+        </v-expansion-panels>
 
         <div style="display: flex; justify-content: space-between">
             <v-btn text color="red"
@@ -464,7 +585,7 @@
                 Cancelar
             </v-btn>
             <v-btn text color="primary"
-            @click="formStep = 3">
+            @click="formStep = 4">
                 Regresar
             </v-btn>
             <v-btn
@@ -533,6 +654,7 @@ import AreaDataService from "../../services/AreaDataService";
 import UserDataService from "../../services/UserDataService";
 import ProjectUserDataService from "../../services/ProjectUserDataService";
 import ProductDataService from "../../services/ProductDataService";
+import BudgetDataService from "../../services/BudgetDataService";
 export default {
   name: "project-details",
   data: () => ({
@@ -552,7 +674,10 @@ export default {
       temp_worker_roster: null,
 
       project_products: [],
+      new_project_products: [],
+
       project_workers: [],
+      new_project_workers: [],
 
       workers_to_delete: [],
 
@@ -628,7 +753,6 @@ export default {
         });
         return data;
     },
-
   },
   methods: {
 
@@ -649,6 +773,7 @@ export default {
       let workers = [];
         this.projectData.working_users.forEach(worker => {
             worker.roster = worker.project_user.roster;
+            worker.status = worker.project_user.status;
             worker.toAdd = true;
             workers.push(worker);
         });
@@ -706,6 +831,9 @@ export default {
               this.confirmWorkers = true;
           } else this.formStep = 4;
       },
+      validateStep4(){
+            this.formStep = 5;
+      },
       retrieveProjects() {
       ProjectDataService.getAll()
         .then((response) => {
@@ -745,7 +873,7 @@ export default {
                         product_code = op.code;
                     } 
                 });
-                this.project_products.push({
+                this.new_project_products.push({
                     id: this.temp_product_id, 
                     estimated_hours: this.temp_product_estimated_hours,
                     name: product_name,
@@ -782,11 +910,12 @@ export default {
                         worker_lastname = op.lastname;
                     } 
                 });
-                this.project_workers.push({
+                this.new_project_workers.push({
                     id: this.temp_worker_id, 
                     roster: this.temp_worker_roster,
                     name: worker_name,
                     lastname: worker_lastname,
+                    status: true,
                 });
             } else {
                this.errorMessage = "Ya está agregado."
@@ -833,61 +962,85 @@ export default {
         });
 
         let project_user_id = 0;
-        let new_loads = [];
+        let pu_data = null;
 
         // ACTUALIZAR WORKERS
-        for (let index = 0; index < this.origin_project_users.length; index++) {
-          for (let j = 0; j < this.project_workers.length; j++) {
-            if (this.origin_project_users[index].project_id == this.projectData.id){
-              if (this.origin_project_users[index].worker_id == this.project_workers[j].id){
-                project_user_id = this.origin_project_users[index].id;
-                data = {
-                  roster: this.project_workers[j].roster
+        for (let j = 0; j < this.project_workers.length; j++) {
+          project_user_id = this.project_workers[j].project_user.id;
+                pu_data = {
+                  status: this.project_workers[j].project_user.status
                 }
-                if (this.origin_project_users[index].loads.length > 0){
-                  new_loads = this.origin_project_users[index].loads;
-                  console.log(new_loads);
-                }
-                this.project_workers[j].toAdd = false;
-                ProjectUserDataService.update(project_user_id, data)
+                ProjectUserDataService.update(project_user_id, pu_data)
                 .then((response) => {
-                  console.log("deleted " + response.data.id);
+                  console.log("updated " + response.data.id);
                 })
                 .catch((e) => {
                   console.log(e);
                 });
-              } else {
-                this.workers_to_delete.forEach(wd => {
-                  if (this.origin_project_users[index].worker_id == wd){
-                    ProjectUserDataService.delete(this.origin_project_users[index].id)
-                      .then(response => {
-                      console.log("deleted " + response.data.id);
-                      })
-                      .catch(e => {
-                      console.log(e);
-                      });
-                  }
+        } 
+
+        // NUEVOS WORKERS
+        let workerData = null
+        for (let index = 0; index < this.new_project_workers.length; index++) {
+          workerData = {
+                project: this.projectData.id,
+                worker: this.new_project_workers[index].id,
+                roster: this.new_project_workers[index].roster,
+            }
+            console.log(workerData);
+
+            ProjectDataService.addUser(workerData)
+                .then(response => {
+                console.log(response.data);
+                })
+                .catch(e => {
+                console.log(e);
                 });
-                let workerData = null;    
-                  workerData = {
-                      project: this.projectData.id,
-                      worker: this.project_workers[j].id,
-                      roster: this.project_workers[j].roster,
-                  }
-
-                  ProjectDataService.addUser(workerData)
-                      .then(response => {
-                      console.log("added " + response.data.id);
-                      })
-                      .catch(e => {
-                      console.log(e);
-                      });
-                } 
-            } 
-          }        
           
-        }    
+        } 
 
+        // NUEVOS PRODUCTS
+        let productData = null;
+        for (let i = 0; i < this.projectData.project_areas.length; i++) {
+            for (let index = 0; index < this.new_project_products.length; index++) {
+                
+                if (this.new_project_products[index].area_name == this.projectData.project_areas[i].name){
+                
+                    productData = {
+                        product: this.new_project_products[index].id,
+                        estimated_hours: this.new_project_products[index].estimated_hours,
+                        area: this.projectData.project_areas[i].id
+                    }
+
+                    console.log(productData);
+
+                    AreaDataService.addProduct(productData)
+                        .then(response => {
+                        console.log(response.data);
+                        })
+                        .catch(e => {
+                        console.log(e);
+                        });
+                }
+            }
+        }
+
+        // PRESUPUESTO
+        let budget_payload = null;
+        for (let bindex = 0; bindex < this.projectData.budgets.length; bindex++) {
+            budget_payload = {
+                area: this.projectData.budgets[bindex].area,
+                price: this.projectData.budgets[bindex].price,
+                project: this.projectData.id,
+            }
+            BudgetDataService.update(this.projectData.budgets[bindex].id, budget_payload)
+                .then(response => {
+                console.log(response.data);
+                })
+                .catch(e => {
+                console.log(e);
+                });
+        }
         this.goRoute("projects");
 
     },
@@ -926,7 +1079,7 @@ export default {
 
 <style>
     .stepper-project{
-        width: 60%;
+        width: 80%;
     }
     .add-product-section{
         border: 1px solid lightgray;

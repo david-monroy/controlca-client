@@ -29,7 +29,7 @@ export default new Router({
     {
       path: "/projects/:id",
       name: "projects-details",
-      component: () => import("../views/projects/ProjectDetails_new.vue"),
+      component: () => import("../views/projects/ProjectDetails.vue"),
     },
     {
       path: "/offers",

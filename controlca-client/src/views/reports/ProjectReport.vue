@@ -1,7 +1,6 @@
 <template>
-    <v-row align="center" class="list mt-1 mx-auto">
-    <v-col cols="12" sm="12" class="pa-0">
-      <v-card class="mx-auto p-3" tile>
+<div id="report">
+      <v-card class="mx-auto p-3 main-card-report" tile>
         <h4 class="primary--text text-center">{{projectData.name}} - {{projectData.code}}
         </h4>
         <div class="report-main">
@@ -373,7 +372,6 @@
               </v-dialog>
           </template>
       </v-card>
-    </v-col>
     <v-snackbar
           v-model="alertSuccess"
           type="success"
@@ -418,7 +416,7 @@
             </v-btn>
           </template>
     </v-snackbar>
-    </v-row>
+</div>
 </template>
 
 <script>
@@ -817,6 +815,10 @@ export default {
     .report-main{
         display: flex;
     }
+    .main-card-report{
+    width: 100%  !important;
+    padding: 30px;
+  }
     .report-indicators{
         flex: 1;
         /* background-color: #ecebe5a4; */

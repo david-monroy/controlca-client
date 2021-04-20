@@ -98,7 +98,10 @@
                     <div class="mx-auto pb-2">
                         <p class="primary--text text-center">Historial en {{currentOfferName}} - {{currentOfferCode}}</p>
                     </div>
-                    <v-simple-table
+                    <div v-if="history_loads.length == 0">
+                      <p>Aún no has cargado horas a esta oferta.</p>
+                    </div>
+                    <v-simple-table v-else
                         fixed-header
                         height="300px"
                     >
@@ -135,8 +138,27 @@
               </v-dialog>
           </template>
           <template v-slot:[`item.actions`]="{ item }">
-            <v-icon small @click="openLoadDialog(item.id, item.name, item.code)" class="mr-2 primary--text">mdi-plus-circle</v-icon>
-            <v-icon small @click="openHistoryDialog(item.id, item.name, item.code)" class="mr-2">mdi-history</v-icon>
+            <v-tooltip
+                top 
+                style="display: inline"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon small v-bind="attrs" v-on="on"
+                @click="openLoadDialog(item.id, item.name, item.code)" class="mr-2 primary--text">mdi-plus-circle</v-icon>
+              </template>
+              <span>Cargar horas</span>
+            </v-tooltip>
+
+            <v-tooltip
+                top 
+                style="display: inline"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon small v-bind="attrs" v-on="on"
+                @click="openHistoryDialog(item.id, item.name, item.code)" class="mr-2">mdi-history</v-icon>
+              </template>
+              <span>Historial</span>
+            </v-tooltip>
           </template>
         </v-data-table>
 
@@ -212,7 +234,7 @@ export default {
       currentOfferName: "",
       currentOfferCode: "",
       loadOfferHours: 'load-offer-hours',
-      goBack: "dashboard",
+      goBack: "loads",
       title: "",
       search: "",
       headers: [

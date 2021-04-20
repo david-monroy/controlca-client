@@ -590,4 +590,5 @@ export default {
     padding-top: 0;
     margin-top: 22px;
 }
+
 </style>
