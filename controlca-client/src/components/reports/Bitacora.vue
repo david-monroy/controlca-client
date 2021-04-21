@@ -219,7 +219,8 @@ export default {
         border-radius: 8px;
     }
     .bitacora-chip{
-        max-width: 16%;
+        max-width: 20%;
+
     }
     .bitacora-header{
         display: flex;

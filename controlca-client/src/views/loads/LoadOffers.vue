@@ -107,13 +107,13 @@
                     >
                         <thead>
                             <tr>
-                            <th class="text-left">
+                            <th class="text-center">
                                 Fecha
                             </th>
-                            <th class="text-left">
+                            <th class="text-center">
                                 Horas
                             </th>
-                            <th class="text-left">
+                            <th class="text-center">
                                 Observaciones
                             </th>
                             </tr>
@@ -123,9 +123,10 @@
                             v-for="item in history_loads"
                             :key="item.id"
                             >
-                                <td>{{ item.date }}</td>
-                                <td>{{ item.hours }}</td>
-                                <td>{{ item.observations }}</td>
+                                <td class="text-center">{{ item.date }}</td>
+                                <td class="text-center">{{ item.hours }}</td>
+                                <td v-if="item.observations != null" class="text-center">{{ item.observations }}</td>
+                                <td v-else class="text-center">-</td>
                             </tr>
                         </tbody>
                     </v-simple-table>

@@ -46,5 +46,10 @@
     background-color: #55b300 !important;
   }
 
-
+  @media only screen and (max-width: 600px) {
+    #app{
+      background-color: lightgray;
+      min-height: 1000px;
+  }
+  }
 
