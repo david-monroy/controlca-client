@@ -1,0 +1,55 @@
+#app{
+    background-color: lightgray;
+    min-height: 600px;
+}
+
+.rounded-card{
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+}
+
+.primary-color{
+  background-color: #55b300 !important;
+}
+
+.primary-color:hover{
+  background-color: #3f8303 !important;
+}
+
+/* BOTONES */
+
+.simple-btn{
+    background-color: #55b300 !important;
+    transition: 0.3s !important;
+    color: white !important;
+    border: none !important;
+  }
+  .simple-btn:hover{
+    background-color: #3f8303 !important;
+  }
+
+  .simple-btn-back{
+    background-color: rgba(124, 119, 119, 0.753) !important;
+    transition: 0.3s !important;
+    color: white !important;
+  }
+
+  .buttons{
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* SNACKBARS */
+
+  .success-snackbar{
+    background-color: #55b300 !important;
+  }
+
+  @media only screen and (max-width: 600px) {
+    #app{
+      background-color: lightgray;
+      min-height: 1000px;
+  }
+  }
+
