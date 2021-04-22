@@ -122,6 +122,47 @@
             </v-btn>
       </v-form>
     </div>
+
+              <v-dialog v-model="userDialog" max-width="500px">
+                <v-card class="pa-10 pb-2">
+                    <div class="mx-auto pb-2">
+                        <p class="primary--text text-center">El nombre de usuario 
+                          {{this.user.name.toLowerCase()}}.{{this.user.lastname.toLowerCase()}} 
+                          ya está registrado.</p>
+                        <p>Por favor, ingrese un segundo apellido para diferenciarlo.</p>
+                    </div>
+                    <div>
+                    
+                        <v-row class="pb-0 mb-0 form-row" >
+
+                            <v-col md="6" cols="12" class="py-0">
+                                <v-text-field
+                                    v-model="second_lastname"
+                                    label="Segundo apellido"
+                                    name="second_lastname"
+                                ></v-text-field>
+                            </v-col>
+                            <v-col md="6" cols="12" class="py-0">
+                                <v-text-field
+                                    v-model="username"
+                                    label="Nuevo nombre de usuario"
+                                    name="username"
+                                    readonly
+                                ></v-text-field>
+                            </v-col>
+                        </v-row>
+                    </div>   
+                    <v-btn class="simple-btn mt-2 mx-auto btn-block w-75" @click="saveUser()">
+                        Registrar
+                    </v-btn>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn class="secondary--text" text @click="cancelUser()">Cancelar</v-btn>
+                    <v-spacer></v-spacer>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+
     <v-snackbar
           v-model="alertSuccess"
           type="success"
@@ -215,14 +256,27 @@ export default {
       successMessage: "Usuario registrado satisfactoriamente.",
       alertError: false,
       errorMessage: null,
+
+      origin_users: [],
+      second_lastname: null,
+      userDialog: false,
   }),
   computed: {
     username: function(){
-      let un = this.user.name + "." + this.user.lastname;
+      let un;
+      if (this.second_lastname){
+        un = this.user.name + "." + this.user.lastname + "." + this.second_lastname;
+      } else {
+        un = this.user.name + "." + this.user.lastname;
+      }
       return un.toLowerCase();
     }
   },
   methods: {
+    cancelUser(){
+      this.userDialog = false;
+      this.second_lastname = null;
+    },
     saveUser() {
       var data = {
         name: this.user.name,
@@ -235,7 +289,17 @@ export default {
 
       let validatedForm = this.$refs.registerForm.validate();
 
-      if (this.matchPassword()){
+      let itExists = false;
+      this.origin_users.forEach(user => {
+        if (user.username == data.username) {
+          itExists = true;
+        }
+      });
+
+      if (itExists){
+        this.userDialog = true;
+      } else {
+        if (this.matchPassword()){
           if (validatedForm){
             UserDataService.create(data)
                 .then(response => {
@@ -246,7 +310,10 @@ export default {
                 .catch(e => {
                 console.log(e);
                 });
+            this.successMessage = "Usuario registrado exitosamente.";
             this.alertSuccess = true;
+            
+            this.userDialog = false;
             this.reset();
           }else{
             this.alertError = true;
@@ -256,6 +323,7 @@ export default {
             this.alertError = true;
             this. errorMessage = "¡Las contraseñas no coinciden!";
         }
+      }
     },
 
     goRoute(route) {
@@ -266,7 +334,15 @@ export default {
       this.submitted = false;
       this.user = {};
     },
-
+    retrieveUsers() {
+      UserDataService.getAll()
+        .then((response) => {
+          this.origin_users = response.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     retrieveRols() {
       RolDataService.getAll()
         .then((response) => {
@@ -291,6 +367,7 @@ export default {
   },
   mounted() {
     this.retrieveRols();
+    this.retrieveUsers();
   },
 };
 </script>

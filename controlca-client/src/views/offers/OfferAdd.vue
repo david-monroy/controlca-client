@@ -403,7 +403,7 @@ export default {
             if (worker.rol.name == "Administrador") {
                 data.push(worker);
             }
-            worker.completeName = worker.name + " " + worker.lastname;
+            worker.completeName = worker.name + " " + worker.lastname + " (" + worker.username + ")";
         });
         return data;
     },

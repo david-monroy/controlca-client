@@ -10,26 +10,29 @@
         @click="goRoute(route)"
         outlined
         >
-    <v-card-title class="p-0 body-1 font-weight-bold "> {{ name }} </v-card-title>
+    <v-card-title class="p-0 body-1 font-weight-bold project-card-title"> {{ name }} </v-card-title>
     <v-card-text class="p-0">
-      
+      <div style="display: flex;">
+        <h4 class="p-0 body-1 font-weight-bold project-card-title-mobile"> {{ name }}</h4>
       <div class="project-card-chips my-2">
           <v-chip
-            class="ma-0 text-left" small label
+            class="ma-0 text-left project-card-chips-code" small label
             >
           {{code}}
           </v-chip>
           <v-chip
-            class="ma-0 ml-2 color-chip text-left" small label
+            class="ma-0 ml-2 color-chip text-left project-card-chips-status" small label
             >
           {{status}}
           </v-chip>
           <v-chip
-            class="ma-0 ml-2 text-left" small label
+            class="ma-0 ml-2 text-left project-card-chips-budget" small label
             >
           ${{total_budget}}
           </v-chip>
       </div>
+      </div>
+      
       
 
       <div class="project-card-info">
@@ -74,7 +77,8 @@
           
         </v-card-text>
         <v-card-text class="mb-2 pb-0 body-2">
-          <p><strong>Total de horas trabajadas: </strong>{{worked_hours}}</p> 
+          <p class="mb-1" ><strong>Total de horas trabajadas: </strong>{{worked_hours}}/{{total_estimated_hours}}</p> 
+          <p v-if="worked_hours_percent > 85" style="color: red"><v-icon style="color: red">mdi-alert-octagon</v-icon> ¡Según la estimación, ya se han cargado el {{worked_hours_percent}}% de las horas!</p>
         </v-card-text>
         <v-card-text class="mb-2 pb-0 body-2" v-if="description">
           <p><strong>Descripción: </strong>{{description}}</p> 
@@ -136,9 +140,9 @@
                             <th class="text-center">
                                 Rol
                             </th>
-                            <th class="text-center">
+                            <!-- <th class="text-center">
                                 Horas completadas
-                            </th>
+                            </th> -->
                             <th class="text-center">
                                 Estatus
                             </th>
@@ -152,7 +156,7 @@
                             <td class="text-center">{{ user.name }}</td>
                             <td class="text-center">{{ user.lastname }}</td>
                             <td class="text-center">{{ user.project_user.roster }}</td>
-                            <td class="text-center">0</td>
+                            <!-- <td class="text-center">0</td> -->
                             <td v-if="user.project_user.status == true" class="text-center">Activo</td>
                             <td v-else class="text-center red--text">Inactivo</td>
                             </tr>
@@ -165,7 +169,7 @@
 
         <v-expansion-panels focusable class="px-5">
             <v-expansion-panel>
-                <v-expansion-panel-header>Presupuesto (${{total_budget}})</v-expansion-panel-header>
+                <v-expansion-panel-header>Presupuesto (USD$ {{total_budget}})</v-expansion-panel-header>
                 <v-expansion-panel-content>
                     <v-simple-table max-height="240px" >
                         <template v-slot:default>
@@ -210,6 +214,13 @@
             Editar
           </v-btn>
           <v-spacer></v-spacer>
+          <v-btn
+            color="primary"
+            text
+            @click="goReports()"
+          >
+            Reportes
+          </v-btn>
           <v-btn
             color="primary"
             text
@@ -296,6 +307,19 @@ export default {
       timeout: 4000,
   }),
   computed: {
+    area_products(){
+        let products = [];
+        // let project_id = this.currentProjectId;
+        this.origin_areas.forEach(area => {
+            if (area.project_id == this.id){
+                 area.products.forEach(prod => {
+                  prod.area_name = area.name;
+                  products.push(prod);
+                 });      
+            }            
+        });
+        return products;
+    },
     worked_hours(){
       let hours = 0;
       this.origin_project_users.forEach(pu => {
@@ -306,6 +330,17 @@ export default {
         }
       });
       return hours;
+    },
+    total_estimated_hours(){
+        let hours = 0;
+        this.area_products.forEach(prod => {
+            hours += prod.area_product.estimated_hours;
+        });
+        return hours;
+    },
+    worked_hours_percent(){
+        let percent = (this.worked_hours * 100)/this.total_estimated_hours;
+        return percent.toFixed(0);
     },
     project_products(){
       let products = [];
@@ -330,6 +365,9 @@ export default {
   methods: {
     goRoute(route) {
       this.$router.push("/" + route);
+    },
+    goReports() {
+      this.$router.push("/reports/" + this.id);
     },
     openDialog(){
         this.dialog = true;
@@ -389,7 +427,7 @@ export default {
 
 <style>
     .project-card{
-        width: 236px;
+        width: 250px;
         max-height: 240px;
         border: 1px solid #00917c  !important;
         padding: 8px;
@@ -419,4 +457,25 @@ export default {
         background-color: #00917c !important;
         color: white !important;
     }
+    .project-card-title-mobile{
+      display: none;
+    }
+
+     @media only screen and (max-width: 992px) {
+       .project-card{
+       width: 800px !important;
+        max-height: 240px;
+        border: 1px solid #00917c  !important;
+        padding: 8px;
+        background-color:rgb(247, 245, 245) !important;
+    }
+
+    .project-card-title-mobile{
+      display: inline;
+    }
+
+    .project-card-info, .project-card-title{
+        display: none;
+    }
+     }
 </style>

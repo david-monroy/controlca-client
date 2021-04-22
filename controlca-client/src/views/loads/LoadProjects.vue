@@ -407,6 +407,12 @@ export default {
           } else if (!this.payload.hours) {
             this.alertError = true;
             this.errorMessage = "Por favor, indica las horas."
+          } else if (this.payload.hours < 1) {
+            this.alertError = true;
+            this.errorMessage = "Por favor, indica más de una (1) hora."
+          } else if (this.payload.hours > 24) {
+            this.alertError = true;
+            this.errorMessage = "No puedes registrar más de 24 horas en un día."
           } else if (mydate.getTime() > f.getTime()) {
             this.alertError = true;
             this.errorMessage = "No puedes cargar horas futuras."

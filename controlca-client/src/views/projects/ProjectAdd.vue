@@ -63,7 +63,7 @@
                         v-model="projectData.code"
                         label="Código"
                         name="code"
-                        v-mask="'####'"
+                        v-mask="'#######'"
                         type="number"
                     ></v-text-field>
                 </div>
@@ -353,7 +353,7 @@
                 <v-text-field
                     v-model="budget[0].price"
                     label="Suministro"
-                    prefix="$"
+                    prefix="USD$"
                     type="number"
                 ></v-text-field>
               </v-col>
@@ -361,7 +361,7 @@
                 <v-text-field
                     v-model="budget[1].price"
                     label="Instalación"
-                    prefix="$"
+                    prefix="USD$"
                     type="number"
                 ></v-text-field>
               </v-col>
@@ -369,8 +369,9 @@
                 <v-text-field
                     v-model="budget[2].price"
                     label="Gastos adicionales"
-                    prefix="$"
+                    prefix="USD$"
                     type="number"
+                    hint="Transporte, horas hombre, biáticos, etc."
                 ></v-text-field>
               </v-col>
         </v-row>
@@ -706,7 +707,7 @@ export default {
             if (worker.rol.name == "Administrador") {
                 data.push(worker);
             }
-            worker.completeName = worker.name + " " + worker.lastname;
+            worker.completeName = worker.name + " " + worker.lastname + " (" + worker.username + ")";
         });
         return data;
     },
@@ -738,10 +739,12 @@ export default {
   },
   methods: {
       codeIsCorrect(){
-          if (this.projectData.code > 6999 && this.projectData.code < 8000) 
-              return true;
-          if (this.projectData.code > 3999 && this.projectData.code < 5000) 
-              return true;
+          if (this.projectData.code > 999){
+              let char = this.projectData.code.toString().split("",1);
+              if (char == "4" || char == "7"){
+                  return true;
+              }        
+          }
           return false;
       },
       validateStep1(){
@@ -755,7 +758,7 @@ export default {
               this.errorMessage = "Al menos debe tener un (1) área de trabajo."
               this.alertError = true;
           } else if (!this.codeIsCorrect()) {
-              this.errorMessage = "Verifique que el código inicie con 4 o 7, y que tenga cuatro (4) dígitos"
+              this.errorMessage = "Verifique que el código inicie con 4 o 7, y que tenga al menos cuatro (4) dígitos"
               this.alertError = true;
           } else {
               let itExists = false;

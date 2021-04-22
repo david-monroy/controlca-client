@@ -120,16 +120,16 @@
                     >
                         <thead>
                             <tr>
-                            <th class="text-left">
+                            <th class="text-center">
                                 Fecha
                             </th>
-                            <th class="text-left">
+                            <th class="text-center">
                                 Horas/Fecha final
                             </th>
-                            <th class="text-left">
+                            <th class="text-center">
                                 Tipo
                             </th>
-                            <th class="text-left">
+                            <th class="text-center">
                                 Observaciones
                             </th>
                             </tr>
@@ -139,11 +139,12 @@
                             v-for="item in history_loads"
                             :key="item.id"
                             >
-                                <td>{{ item.initial_date }}</td>
-                                <td v-if="item.type=='Vacaciones'">{{ item.final_date }}</td>
-                                <td v-else>{{ item.hours }}</td>
-                                <td>{{ item.type }}</td>
-                                <td>{{ item.observations }}</td>
+                                <td class="text-center">{{ item.initial_date }}</td>
+                                <td class="text-center" v-if="item.type=='Vacaciones'">{{ item.final_date }}</td>
+                                <td class="text-center" v-else>{{ item.hours }}</td>
+                                <td class="text-center">{{ item.type }}</td>
+                                <td class="text-center" v-if="item.observations != null" >{{ item.observations }}</td>
+                                <td  v-else class="text-center">-</td>
                             </tr>
                         </tbody>
                     </v-simple-table>
@@ -326,6 +327,7 @@ export default {
               this.loadDialog = false;
               this.successMessage = "Se han cargado las horas correctamente";
               this.alertSuccess = true;
+              location.reload();
           }
         }
       },

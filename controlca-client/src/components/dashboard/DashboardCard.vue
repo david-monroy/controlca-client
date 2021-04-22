@@ -30,4 +30,5 @@ export default {
 
 <style>
 @import "../../styles/components/dashboard.css";
+
 </style>

@@ -136,4 +136,21 @@ export default {
     flex-wrap: wrap;
   }
 
+  /* @media only screen and (max-width: 992px) {
+
+    .item-list-projects{
+    display: flex;
+    width: 700px;
+    justify-content: flex-start;
+    min-height: 450px;
+    padding: 0 8px;
+    align-items: flex-start;
+    flex-direction: column;
+    flex-wrap: nowrap;
+  } 
+
+  } */
+
+  
+
 </style>
