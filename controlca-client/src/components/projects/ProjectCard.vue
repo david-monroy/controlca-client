@@ -25,11 +25,11 @@
             >
           {{status}}
           </v-chip>
-          <v-chip
+          <!-- <v-chip
             class="ma-0 ml-2 text-left project-card-chips-budget" small label
             >
           ${{total_budget}}
-          </v-chip>
+          </v-chip> -->
       </div>
       </div>
       

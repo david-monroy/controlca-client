@@ -121,7 +121,7 @@
                   <div class="display: flex; justify-content: center">
                     <h6 class="text-center ma-0" style="display: inline">{{bud.area}}:</h6>
                     <v-tooltip
-                      v-model="show_budget"
+
                       right 
                       style="display: inline"
                     >
@@ -188,8 +188,11 @@
             </div>
         </div>
         <template>
-              <v-dialog v-model="payboxDialog" max-width="800px">
+              <v-dialog v-model="payboxDialog" max-width="1000px">
                 <v-card class="pa-6 pb-2">
+                  <div class="mx-auto pb-2">
+                        <p class="primary--text text-center">Cuadro de pago de {{temp_budget_area}}</p>
+                    </div>
                   <p class="mb-2" style="color: gray; font-size: 14px">* Sólo el líder puede actualizar esta información.</p>
                     <v-simple-table
                         fixed-header
@@ -213,6 +216,9 @@
                                 Presupuestado
                             </th>
                             <th class="text-center">
+                                Estatus
+                            </th>
+                            <th class="text-center">
                                 Observaciones
                             </th>
                             </tr>
@@ -224,10 +230,12 @@
                             >
                                 <td>{{ item.date }}</td>
                                 <td>{{ item.description }}</td>
-                                <td class="text-center">${{ item.paid }}</td>
-                                <td class="text-center">${{ item.to_pay }}</td>
-                                <td class="text-center">${{ item.budget }}</td>
-                                <td class="text-center">{{ item.observations }}</td>
+                                <td class="text-center">${{ item.paid.toFixed(2) }}</td>
+                                <td class="text-center">${{ item.to_pay.toFixed(2) }}</td>
+                                <td class="text-center">${{ item.budget.toFixed(2) }}</td>
+                                <td class="text-center">{{ item.status }}</td>
+                                <td v-if="item.observations != null" class="text-center">{{ item.observations }}</td>
+                                <td v-else class="text-center">-</td>
                                 <!-- <td v-if="currentUser.id == projectData.leader_id" class="text-center">
                                     <v-simple-checkbox
                                     v-model="item.area_product.completed"
@@ -302,10 +310,42 @@
                 ></v-text-field>
               </v-col>
             </v-row>
+            <v-row class="pa-0 ma-0 form-row-rol">
+              <v-col md="12" cols="12" class="py-0 mx-auto">
+                <v-radio-group
+                  v-model="temp_load_status"
+                  class="mx-auto" style="display: flex; justify-content: center"
+                  row
+                >
+                  <v-radio class="mb-0"
+                    label="Pendiente"
+                    value="Pendiente"
+                  ></v-radio>
+                  <v-radio class="mb-0"
+                    label="Completado"
+                    value="Completado"
+                  ></v-radio>
+                  <v-radio class="mb-0"
+                    label="No aplica"
+                    value="No aplica"
+                  ></v-radio>
+                </v-radio-group>
+              </v-col>
+            </v-row>
             <v-row class="pa-0 ma-0 form-row-rol mt-7">
               <v-col md="12" cols="12" class="py-0 mx-auto">
                 <v-textarea
+                    v-if="temp_load_status=='Completado'"
+                    class="mt-2"
                     v-model="temp_load_observations"
+                    label="Observaciones"
+                    type="text"
+                    height="40"
+                    readonly
+                ></v-textarea>
+                <v-textarea
+                    v-else
+                    v-model="temp_load_observations_pendiente"
                     label="Observaciones (opcional)"
                     type="text"
                     height="40"
@@ -453,10 +493,11 @@ export default {
       temp_budget_price: 0,
       temp_budget_paid_new: 0,
 
-      temp_load_observations: null,
       temp_load_budget: null,
       temp_load_paid: null,
       temp_load_description: null,
+      temp_load_status: null,
+      temp_load_observations_pendiente: null,
 
       payboxDialog: false,
 
@@ -476,6 +517,16 @@ export default {
     computedDateFormatted () {
         return this.formatDate(this.date)
       },
+    temp_load_observations(){
+      let value = null;
+      let saved = this.temp_load_budget - this.temp_load_paid;
+      if (this.temp_load_status=="Completado"){
+        value = "Se ahorraron $" + saved.toFixed(2);
+      } else {
+        value = this.temp_load_observations_pendiente;
+      }
+      return value;
+    },
     currentUser() {      
       return this.$store.state.auth.user;
     },
@@ -613,7 +664,8 @@ export default {
         this.projectData.budgets.forEach(bud => {
           if (load.budget_id == bud.id){
             if (load.area == this.temp_budget_area){
-              load.to_pay = load.budget - load.paid;
+              if (load.paid > load.budget) load.to_pay = 0;
+              else load.to_pay = load.budget - load.paid;
               loads.push(load);
             }
           }
@@ -683,6 +735,7 @@ export default {
                   paid: this.temp_load_paid,
                   budget_id: bud.id,
                   area: this.temp_budget_area,
+                  status: this.temp_load_status,
               }
               BudgetDataService.load(loadPayload)
               .then(response => {
@@ -692,9 +745,9 @@ export default {
               console.log(e);
               });
 
-              let paid_new_integer = parseInt(this.temp_load_paid, 10);
+              let paid_new_float = parseFloat(this.temp_load_paid);
             let data = {
-              paid: this.temp_budget_paid + paid_new_integer,
+              paid: this.temp_budget_paid + paid_new_float,
             };
             BudgetDataService.update(this.temp_budget, data)
               .then((response) => {
@@ -850,5 +903,8 @@ export default {
       padding: 10px 14px;
       border-radius: 6px;
       font-size: 14px;
+    }
+    .v-radio .v-label {
+      margin: 0 !important;
     }
 </style>
