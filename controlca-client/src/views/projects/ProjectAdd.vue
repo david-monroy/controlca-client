@@ -196,7 +196,10 @@
                 ></v-text-field>
               </v-col>
         </v-row>
-        <v-btn class="simple-btn mt-2 mx-auto btn-block w-75" @click="addProductToProject()">
+        <v-btn class="simple-btn mt-2 mx-auto btn-block w-75 d-none d-sm-flex" @click="addProductToProject()">
+          Añadir al proyecto
+        </v-btn>
+        <v-btn class="simple-btn mt-2 mx-auto btn-block w-100 d-flex d-sm-none" @click="addProductToProject()">
           Añadir al proyecto
         </v-btn>
         </v-expansion-panel-content>
@@ -214,11 +217,18 @@
             </v-btn>
             <v-btn
                 color="primary"
+                class="d-none d-sm-flex"
                 @click="validateStep2()"
                 >
                 Siguiente
                 </v-btn>
         </div>
+        <v-btn
+                color="primary" class="d-flex d-sm-none mx-auto w-100"
+                @click="validateStep2()"
+                >
+                Siguiente
+                </v-btn>
       </v-stepper-content>
 
       <v-stepper-content step="3">
@@ -318,7 +328,10 @@
                 
               </v-col>
             </v-row>
-        <v-btn class="simple-btn mt-2 mx-auto btn-block w-75" @click="addWorkerToProject()">
+        <v-btn class="simple-btn mt-2 mx-auto btn-block w-75 d-none d-sm-flex" @click="addWorkerToProject()">
+          Añadir al proyecto
+        </v-btn>
+        <v-btn class="simple-btn mt-2 mx-auto btn-block w-100 d-flex d-sm-none" @click="addWorkerToProject()">
           Añadir al proyecto
         </v-btn>
         </v-expansion-panel-content>
@@ -335,12 +348,18 @@
                 Regresar
             </v-btn>
             <v-btn
-                color="primary"
+                color="primary" class="d-none d-sm-flex"
                 @click="validateStep3()"
                 >
                 Siguiente
                 </v-btn>
         </div>
+        <v-btn
+                color="primary" class="d-flex d-sm-none mx-auto w-100"
+                @click="validateStep3()"
+                >
+                Siguiente
+                </v-btn>
       </v-stepper-content>
 
       <v-stepper-content step="4">
@@ -386,12 +405,18 @@
                 Regresar
             </v-btn>
             <v-btn
-                color="primary"
+                color="primary" class="d-none d-sm-flex"
                 @click="validateStep4()"
                 >
                 Siguiente
                 </v-btn>
         </div>
+        <v-btn
+                color="primary" class="d-flex d-sm-none mx-auto w-100"
+                @click="validateStep4()"
+                >
+                Siguiente
+                </v-btn>
       </v-stepper-content>
 
       <v-stepper-content step="5">
@@ -554,12 +579,18 @@
                 Regresar
             </v-btn>
             <v-btn
-                color="primary"
+                color="primary" class="d-none d-sm-flex"
                 @click="saveProject()"
                 >
                 Guardar
                 </v-btn>
         </div>
+        <v-btn
+                color="primary" class="d-flex d-sm-none mx-auto w-100"
+                @click="saveProject()"
+                >
+                Guardar
+                </v-btn>
       </v-stepper-content>
     </v-stepper-items>
   </v-stepper>
@@ -1035,5 +1066,10 @@ export default {
   .no-items-label{
       background-color: rgba(219, 214, 214, 0.301);
       border-radius: 10px;
+  }
+  @media only screen and (max-width: 992px) {
+      .stepper-project{
+        width: 100%;
+    }
   }
 </style>

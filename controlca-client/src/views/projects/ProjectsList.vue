@@ -61,7 +61,10 @@
         </v-row>
       </v-card-text>
       <v-card-actions>
-        <v-btn class="simple-btn mt-2 mx-auto w-50" @click="goRoute(addProject)">
+        <v-btn class="simple-btn my-2 mx-auto w-50 d-none d-sm-flex" @click="goRoute(addProject)">
+          Registrar Proyecto
+        </v-btn>
+        <v-btn class="simple-btn my-2 mx-auto w-75 d-flex d-sm-none" @click="goRoute(addProject)">
           Registrar Proyecto
         </v-btn>
       </v-card-actions>
@@ -82,6 +85,7 @@ export default {
     projects: [],
     addProject: 'projects-add',
     projectsByLeader: [],
+    goBack: 'project-offer'
   }),
   computed: {
     currentUser() {      
@@ -136,7 +140,7 @@ export default {
     flex-wrap: wrap;
   }
 
-  /* @media only screen and (max-width: 992px) {
+  @media only screen and (max-width: 992px) {
 
     .item-list-projects{
     display: flex;
@@ -149,7 +153,7 @@ export default {
     flex-wrap: nowrap;
   } 
 
-  } */
+  }
 
   
 

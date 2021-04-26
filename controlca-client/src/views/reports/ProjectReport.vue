@@ -187,6 +187,12 @@
               ></Bitacora>
             </div>
         </div>
+        <div class="report-bitacora-mobile pa-0">
+              <Bitacora
+                :project="projectData"
+                :project_users="users_worked_hours"
+              ></Bitacora>
+            </div>
         <template>
               <v-dialog v-model="payboxDialog" max-width="1000px">
                 <v-card class="pa-6 pb-2">
@@ -887,6 +893,9 @@ export default {
     .report-bitacora{
         flex: 2;
     }
+    .report-bitacora-mobile{
+        display: none;
+    }
     .report-item{
         border: solid 1px #636060;
         padding: 10px;
@@ -906,5 +915,13 @@ export default {
     }
     .v-radio .v-label {
       margin: 0 !important;
+    }
+    @media only screen and (max-width: 992px) {
+      .report-bitacora{
+        display: none;
+    }
+    .report-bitacora-mobile{
+        display: block;
+    }
     }
 </style>

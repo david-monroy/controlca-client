@@ -189,10 +189,18 @@
       </v-card>
     </v-col>
     <div class="buttons">
-      <v-btn class="btn-block w-50 my-2 mx-auto simple-btn" @click="goRoute(addUser)">
+      <v-btn class="btn-block w-50 my-2 mx-auto simple-btn d-none d-sm-flex"
+      @click="goRoute(addUser)">
         Registrar Usuario
       </v-btn>
-      <v-btn class="btn-block w-25 mx-auto simple-btn-back" @click="goRoute(goBack)">
+      <v-btn class="btn-block w-75 my-2 mx-auto simple-btn  d-flex d-sm-none"
+      @click="goRoute(addUser)">
+        Registrar Usuario
+      </v-btn>
+      <v-btn class="btn-block w-25 mx-auto simple-btn-back d-none d-sm-flex" @click="goRoute(goBack)">
+        Regresar
+      </v-btn>
+      <v-btn class="btn-block w-75 mb-3 mx-auto simple-btn-back d-flex d-sm-none" @click="goRoute(goBack)">
         Regresar
       </v-btn>
     </div>

@@ -186,7 +186,10 @@
                 
               </v-col>
             </v-row>
-        <v-btn class="simple-btn mt-2 mx-auto btn-block w-75" @click="addWorkerToOffer()">
+        <v-btn class="simple-btn mt-2 mx-auto btn-block w-75 d-none d-sm-flex" @click="addWorkerToOffer()">
+          Añadir a la oferta
+        </v-btn>
+        <v-btn class="simple-btn mt-2 mx-auto btn-block w-100 d-flex d-sm-none" @click="addWorkerToOffer()">
           Añadir a la oferta
         </v-btn>
         </v-expansion-panel-content>
@@ -203,12 +206,18 @@
                 Regresar
             </v-btn>
             <v-btn
-                color="primary"
+                color="primary" class="d-none d-sm-flex"
                 @click="validateStep2()"
                 >
                 Siguiente
                 </v-btn>
         </div>
+        <v-btn
+                color="primary" class="d-flex d-sm-none mx-auto w-100"
+                @click="validateStep2()"
+                >
+                Siguiente
+                </v-btn>
       </v-stepper-content>
       <v-stepper-content step="3">
 
@@ -290,12 +299,18 @@
                 Regresar
             </v-btn>
             <v-btn
-                color="primary"
+                color="primary" class="d-none d-sm-flex"
                 @click="saveOffer()"
                 >
                 Guardar
                 </v-btn>
         </div>
+        <v-btn
+                color="primary" class="d-flex d-sm-none mx-auto w-100"
+                @click="saveOffer()"
+                >
+                Guardar
+                </v-btn>
       </v-stepper-content>
     </v-stepper-items>
   </v-stepper>
@@ -590,5 +605,10 @@ export default {
     padding-top: 0;
     margin-top: 22px;
 }
+@media only screen and (max-width: 992px) {
+      .stepper-offer{
+        width: 100%;
+    }
+  }
 
 </style>

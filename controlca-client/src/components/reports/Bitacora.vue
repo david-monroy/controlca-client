@@ -60,9 +60,14 @@
                 <div class="bitacora-item">
                     <div class="bitacora-header">
                         <v-chip
-                            class="ma-2 bitacora-chip text-center primary"
+                            class="ma-2 bitacora-chip text-center primary d-none d-sm-flex"
                             small
                             label
+                        >
+                            {{item.date}}
+                        </v-chip>
+                        <v-chip
+                            class="ma-4 bitacora-chip bitacora-chip-mobile text-center primary d-flex d-sm-none"
                         >
                             {{item.date}}
                         </v-chip>
@@ -229,5 +234,8 @@ export default {
     .bitacora-item {
         border-bottom: 1px lightgray solid;
         padding: 15px 0;
+    }
+    .bitacora-chip-mobile{
+        min-width: 94px !important;
     }
 </style>

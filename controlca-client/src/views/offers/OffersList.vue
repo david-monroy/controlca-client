@@ -57,7 +57,10 @@
         </v-row>
       </v-card-text>
       <v-card-actions>
-        <v-btn class="simple-btn mt-2 mx-auto w-50" @click="goRoute(addOffer)">
+        <v-btn class="simple-btn mt-2 mx-auto w-50 d-none d-sm-flex" @click="goRoute(addOffer)">
+          Registrar Oferta
+        </v-btn>
+        <v-btn class="simple-btn mt-2 mx-auto w-75 d-flex d-sm-none" @click="goRoute(addOffer)">
           Registrar Oferta
         </v-btn>
       </v-card-actions>
@@ -130,5 +133,17 @@ export default {
     flex-direction: row;
     flex-wrap: wrap;
   }
+  @media only screen and (max-width: 992px) {
+    .item-list-offers{
+    display: flex;
+    justify-content: flex-start;
+    min-height: 450px;
+    padding: 0;
+    align-items: flex-start;
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+  }
+
 
 </style>
