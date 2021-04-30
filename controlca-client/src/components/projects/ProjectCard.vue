@@ -366,7 +366,7 @@ export default {
         this.budgets.forEach(b => {
             total += b.price;
         });
-        return total;
+        return total.toFixed(2);
     }
   },
   methods: {

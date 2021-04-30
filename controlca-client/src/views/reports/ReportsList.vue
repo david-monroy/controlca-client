@@ -12,12 +12,16 @@
             hide-details
           ></v-text-field>
         </v-card-title>
+        <div v-if="origin_projects.length < 1">
+          <p>No hay ningún proyecto registrado en el sistema.</p>
+        </div>
         <v-data-table
           :headers="headers"
           :items="origin_projects"
           :hide-default-footer="false"
           :items-per-page="5"
           :search="search"
+          v-else
         >
         <template v-slot:[`item.actions`]="{ item }">
             <v-btn @click="goReports(item.id)" x-small class="btn simple-btn xs">ver</v-btn>
@@ -39,12 +43,16 @@
             hide-details
           ></v-text-field>
         </v-card-title>
+        <div v-if="currentUserNew.working_projects.length < 1">
+          <p>No estás involucrado a ningún proyecto.</p>
+        </div>
         <v-data-table
           :headers="headers"
           :items="currentUserNew.working_projects"
           :hide-default-footer="false"
           :items-per-page="5"
           :search="search"
+          v-else
         >
         <template v-slot:[`item.actions`]="{ item }">
             <v-btn @click="goReports(item.id)" x-small class="btn simple-btn xs">ver</v-btn>

@@ -390,7 +390,7 @@
                     label="Gastos adicionales"
                     prefix="USD$"
                     type="number"
-                    hint="Transporte, horas hombre, biáticos, etc."
+                    hint="Transporte, horas hombre, envíos, viáticos, etc."
                 ></v-text-field>
               </v-col>
         </v-row>
@@ -1050,7 +1050,7 @@ export default {
 
 <style>
     .stepper-project{
-        width: 80%;
+        width: 90%;
     }
     .add-product-section{
         border: 1px solid lightgray;
@@ -1066,6 +1066,15 @@ export default {
   .no-items-label{
       background-color: rgba(219, 214, 214, 0.301);
       border-radius: 10px;
+  }
+  .v-application--is-ltr .v-text-field .v-label {
+    transform-origin: top left;
+    padding-left: 10px;
+    }
+    .v-input input {
+      max-height: 32px;
+      padding-left: 8px;
+      padding-right: 8px;
   }
   @media only screen and (max-width: 992px) {
       .stepper-project{

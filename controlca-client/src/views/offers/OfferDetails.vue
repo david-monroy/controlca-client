@@ -663,5 +663,13 @@ export default {
         border-radius: 10px;
         padding: 8px;
     }
+    .v-input input {
+      max-height: 32px;
+      padding-left: 8px;
+  }
+    .v-application--is-ltr .v-text-field .v-label {
+    transform-origin: top left;
+    padding-left: 10px;
+    }
 
 </style>

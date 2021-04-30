@@ -605,6 +605,14 @@ export default {
     padding-top: 0;
     margin-top: 22px;
 }
+.v-application--is-ltr .v-text-field .v-label {
+    transform-origin: top left;
+    padding-left: 10px;
+    }
+    .v-input input {
+      max-height: 32px;
+      padding-left: 8px;
+  }
 @media only screen and (max-width: 992px) {
       .stepper-offer{
         width: 100%;

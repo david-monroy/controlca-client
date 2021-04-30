@@ -13,12 +13,16 @@
             
           ></v-text-field>
         </v-card-title>
+        <div v-if="user_offers.length < 1">
+          <p>No estás involucrado a ningún proyecto.</p>
+        </div>
         <v-data-table
           :headers="headers"
           :items="user_offers"
           :hide-default-footer="false"
           :items-per-page="5"
           :search="search"
+          v-else
         >
 
         <template v-slot:top>

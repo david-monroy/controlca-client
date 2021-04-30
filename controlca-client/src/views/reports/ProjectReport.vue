@@ -341,7 +341,7 @@
             <v-row class="pa-0 ma-0 form-row-rol mt-7">
               <v-col md="12" cols="12" class="py-0 mx-auto">
                 <v-textarea
-                    v-if="temp_load_status=='Completado'"
+                    v-if="temp_load_status=='Completado' || temp_load_status=='Pendiente'"
                     class="mt-2"
                     v-model="temp_load_observations"
                     label="Observaciones"
@@ -528,6 +528,8 @@ export default {
       let saved = this.temp_load_budget - this.temp_load_paid;
       if (this.temp_load_status=="Completado"){
         value = "Se ahorraron $" + saved.toFixed(2);
+      } else if (this.temp_load_status=="Pendiente"){
+        value = "Faltan por pagar $" + saved.toFixed(2);
       } else {
         value = this.temp_load_observations_pendiente;
       }
