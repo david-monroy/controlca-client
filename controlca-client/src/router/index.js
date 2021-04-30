@@ -86,10 +86,16 @@ export default new Router({
       name: "reports",
       component: () => import("../views/reports/ReportsList.vue"),
     },
+    
     {
       path: "/reports/:id",
       name: "project-report",
       component: () => import("../views/reports/ProjectReport.vue"),
+    },
+    {
+      path: "/offer_reports/:id",
+      name: "offer-report",
+      component: () => import("../views/reports/OfferReport.vue"),
     },
     {
       path: '/',

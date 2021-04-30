@@ -40,20 +40,20 @@ export default {
   },
   data: () => ({
       dashItems: [
-      {
+        {
         id: 1,
-        name: "Proyectos",
-        icon: "mdi-tools",
-        rol: 2,
-        route: "projects",
-      },
-      {
-        id: 2,
         name: "Ofertas",
         icon: "mdi-file-multiple",
         rol: 2,
         route: "offers",
-      }
+      },
+      {
+        id: 2,
+        name: "Proyectos",
+        icon: "mdi-tools",
+        rol: 2,
+        route: "projects",
+      }    
     ]
   })
 };

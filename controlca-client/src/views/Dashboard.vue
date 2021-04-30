@@ -42,7 +42,7 @@ export default {
       dashItems: [
       {
         id: 1,
-        name: "Proyectos y Ofertas",
+        name: "Ofertas y Proyectos",
         icon: "mdi-folder-multiple",
         rol: 2,
         route: "project_offer",
