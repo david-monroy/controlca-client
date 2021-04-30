@@ -56,7 +56,7 @@
             </v-expansion-panel>
         </v-expansion-panels>
         <div class="item-bitacora py-2">
-            <div v-for="item in project_bitacoras" :key="item.id" >
+            <div v-for="item in offer_bitacoras" :key="item.id" >
                 <div class="bitacora-item">
                     <div class="bitacora-header">
                         <v-chip
@@ -86,10 +86,10 @@
 <script>
 import UserDataService from "../../services/UserDataService";
 // import ProjectDataService from "../../services/ProjectDataService";
-import ProjectUserDataService from "../../services/ProjectUserDataService";
-import BitacoraDataService from "../../services/BitacoraDataService";
+import OfferUserDataService from "../../services/OfferUserDataService";
+import BitacoraOfferDataService from "../../services/BitacoraOfferDataService";
 export default {
-    name: "bitacora",
+    name: "offer-bitacora",
     data() {
         return {
             note: null,
@@ -102,8 +102,8 @@ export default {
         }
     },
     props: {
-        project: Object,
-        project_users: Array,
+        offer: Object,
+        offer_users: Array,
     },
     computed: {
       currentUser() {      
@@ -112,14 +112,14 @@ export default {
       computedDateFormatted () {
         return this.formatDate(this.date)
       },
-      project_bitacoras(){
+      offer_bitacoras(){
           let bitacoras = [];
           let name = "";
           let lastname = "";
           this.origin_bitacoras.forEach(bitacora => {
-              if (bitacora.project_user.project_id == this.project.id){
+              if (bitacora.offer_user.offer_id == this.offer.id){
                   this.origin_users.forEach(user => {
-                      if (bitacora.project_user.worker_id == user.id){
+                      if (bitacora.offer_user.worker_id == user.id){
                           name = user.name;
                           lastname = user.lastname;
                       }
@@ -131,10 +131,10 @@ export default {
           });
           return bitacoras.reverse();
       },
-      project_user_id(){
+      offer_user_id(){
         let pu_id = 0;
-        this.origin_project_users.forEach(pu => {
-            if ((this.currentUser.id == pu.worker_id) && (this.project.id == pu.project_id)){
+        this.origin_offer_users.forEach(pu => {
+            if ((this.currentUser.id == pu.worker_id) && (this.offer.id == pu.offer_id)){
             pu_id = pu.id;
             }
         });
@@ -145,13 +145,13 @@ export default {
       saveBitacora(){
         
         let payload = {
-            project_user: this.project_user_id,
+            offer_user: this.offer_user_id,
             date: this.dateFormatted,
             note: this.note,
         }
         console.log(payload);
 
-        ProjectUserDataService.addBitacora(payload)
+        OfferUserDataService.addBitacora(payload)
             .then(response => {
 
                 console.log(response.data);
@@ -178,7 +178,7 @@ export default {
         return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
       },
       retrieveBitacoras() {
-      BitacoraDataService.getAll()
+      BitacoraOfferDataService.getAll()
         .then((response) => {
           this.origin_bitacoras = response.data;
         })
@@ -186,10 +186,10 @@ export default {
           console.log(e);
         });
     },
-    retrieveProjectUsers() {
-      ProjectUserDataService.getAll()
+    retrieveOfferUsers() {
+      OfferUserDataService.getAll()
         .then((response) => {
-          this.origin_project_users = response.data;
+          this.origin_offer_users = response.data;
         })
         .catch((e) => {
           console.log(e);
@@ -212,7 +212,7 @@ export default {
     },
     mounted() {
         this.retrieveBitacoras();
-        this.retrieveProjectUsers();
+        this.retrieveOfferUsers();
         this.retrieveUsers();
     }
 }

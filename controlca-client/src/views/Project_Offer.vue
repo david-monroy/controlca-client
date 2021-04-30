@@ -1,11 +1,11 @@
 <template>
-  <div id="dashboard">
+  <div id="dashboard-po">
     <v-card
-    class="mx-auto dashboard-main-card"
+    class="mx-auto dashboard-po-main-card"
     >
       <v-card-text>
         <v-row>
-          <v-col cols="12" class="dashboard-item-list">
+          <v-col cols="12" class="dashboard-po-item-list">
             <div
               v-for="item in dashItems"
               :key="item.id"
@@ -40,20 +40,20 @@ export default {
   },
   data: () => ({
       dashItems: [
-      {
+        {
         id: 1,
-        name: "Proyectos",
-        icon: "mdi-tools",
-        rol: 2,
-        route: "projects",
-      },
-      {
-        id: 2,
         name: "Ofertas",
         icon: "mdi-file-multiple",
         rol: 2,
         route: "offers",
-      }
+      },
+      {
+        id: 2,
+        name: "Proyectos",
+        icon: "mdi-tools",
+        rol: 2,
+        route: "projects",
+      }    
     ]
   })
 };

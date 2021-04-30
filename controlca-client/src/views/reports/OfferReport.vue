@@ -1,84 +1,14 @@
 <template>
 <div id="report">
       <v-card class="mx-auto p-3 main-card-report" tile>
-        <h4 class="primary--text text-center">{{projectData.name}} - {{projectData.code}}
+        <h4 class="primary--text text-center">{{offerData.name}} - {{offerData.code}}
         </h4>
         <div class="report-main">
             <div class="report-indicators">
               <h5 class="lightgray--text text-center mt-4 mb-3">Avances</h5>
-                <div class="report-item">
-                    <div class="display: flex; justify-content: center">
-                    <h6 class="text-center ma-0" style="display: inline">Horas:</h6>
-                    <v-tooltip
-                      v-model="show_hours"
-                      right 
-                      style="display: inline"
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-btn
-                          icon
-                          v-bind="attrs"
-                          v-on="on"
-                          x-small
-                          class="pl-2 pb-1"
-                        >
-                          <v-icon color="grey lighten-1">
-                            mdi-information
-                          </v-icon>
-                        </v-btn>
-                      </template>
-                      <span>Trabajadas/estimadas</span>
-                    </v-tooltip>
-                  </div>
-                    <p class="my-1">{{total_worked_hours}}/{{total_estimated_hours}}</p>
-                    <v-progress-circular 
-                        :value="worked_hours_percent"
-                        :size="70"
-                        :width="7"
-                        color="primary"
-                        class="report-progress mt-0">
-                        {{worked_hours_percent}}%
-                    </v-progress-circular>
-                    <v-btn @click="goRoute('load-projects')" x-small class="btn simple-btn mt-2">cargar horas</v-btn>
-                </div>
                 <div class="report-item mt-2">
                   <div class="display: flex; justify-content: center">
-                    <h6 class="text-center ma-0" style="display: inline">Avance del proyecto:</h6>
-                    <v-tooltip
-                      v-model="show_advance"
-                      right 
-                      style="display: inline"
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-btn
-                          icon
-                          v-bind="attrs"
-                          v-on="on"
-                          x-small
-                          class="pl-2 pb-1"
-                        >
-                          <v-icon color="grey lighten-1">
-                            mdi-information
-                          </v-icon>
-                        </v-btn>
-                      </template>
-                      <span>En función a <br>los productos <br> completados.</span>
-                    </v-tooltip>
-                  </div>
-                    
-                    <v-progress-circular 
-                        :value="project_advance"
-                        :size="70"
-                        :width="7"
-                        color="primary"
-                        class="report-progress mt-0">
-                        {{project_advance}}%
-                    </v-progress-circular>
-                    <v-btn @click="productsDialog = true" x-small class="btn simple-btn mt-2">ver productos</v-btn>
-                </div>
-                <div class="report-item mt-2">
-                  <div class="display: flex; justify-content: center">
-                    <h6 class="text-center ma-0" style="display: inline">Usuarios en el proyecto:</h6>
+                    <h6 class="text-center ma-0" style="display: inline">Usuarios en la oferta:</h6>
                     <v-tooltip
                       v-model="show_users"
                       right 
@@ -101,7 +31,7 @@
                     </v-tooltip>
                   </div>
                       <div v-for="item in users_worked_hours" :key="item.id" class="item-user">
-                        <p class="ma-0 text-center w-100 mb-1">{{item.name}} {{item.lastname}} <span class="secondary--text">- {{item.project_user.roster}}</span> </p>
+                        <p class="ma-0 text-center w-100 mb-1">{{item.name}} {{item.lastname}} <span class="secondary--text">- {{item.offer_user.roster}}</span> </p>
                         <v-progress-linear
                           v-model="item.load_hours_percent"
                           color="primary"
@@ -117,83 +47,7 @@
             </div>
             <div class="report-indicators">
               <h5 class="lightgray--text text-center mt-4 mb-3">Presupuesto</h5>
-                <div  v-for="(bud,b) in projectData.budgets" :key="b">
-                  <div v-if="bud.area=='Suministro' && bud.price!=0" class="report-item mb-2">
-                    <div class="display: flex; justify-content: center">
-                      <h6 class="text-center ma-0" style="display: inline">{{bud.area}}:</h6>
-                      <v-tooltip
-
-                        right 
-                        style="display: inline"
-                      >
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-btn
-                            icon
-                            v-bind="attrs"
-                            v-on="on"
-                            x-small
-                            class="pl-2 pb-1"
-                          >
-                            <v-icon color="grey lighten-1">
-                              mdi-information
-                            </v-icon>
-                          </v-btn>
-                        </template>
-                        <span>Pagado/presupuestado</span>
-                      </v-tooltip>
-                    </div>
-                    <div style="display: flex; flex-direction: column; align-items: center">
-                      <p class="my-1">{{bud.paid}}/{{bud.price}} ($USD)</p>
-                      <v-progress-circular 
-                          :value="budget_suministro"
-                          :size="70"
-                          :width="7"
-                          color="primary"
-                          class="report-progress mt-0">
-                          {{budget_suministro}}%
-                      </v-progress-circular>
-                      <v-btn @click="showPaybox(bud.id, bud.area, bud.price, bud.paid)" x-small class="btn simple-btn mt-2">cuadro de pago</v-btn>
-                    </div>
-                  </div>
-
-                  <div v-if="bud.area=='Instalación' && bud.price!=0" class="report-item mb-2">
-                    <div class="display: flex; justify-content: center">
-                      <h6 class="text-center ma-0" style="display: inline">{{bud.area}}:</h6>
-                      <v-tooltip
-
-                        right 
-                        style="display: inline"
-                      >
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-btn
-                            icon
-                            v-bind="attrs"
-                            v-on="on"
-                            x-small
-                            class="pl-2 pb-1"
-                          >
-                            <v-icon color="grey lighten-1">
-                              mdi-information
-                            </v-icon>
-                          </v-btn>
-                        </template>
-                        <span>Pagado/presupuestado</span>
-                      </v-tooltip>
-                    </div>
-                    <div style="display: flex; flex-direction: column; align-items: center">
-                      <p class="my-1">{{bud.paid}}/{{bud.price}} ($USD)</p>
-                      <v-progress-circular 
-                          :value="budget_instalacion"
-                          :size="70"
-                          :width="7"
-                          color="primary"
-                          class="report-progress mt-0">
-                          {{budget_instalacion}}%
-                      </v-progress-circular>
-                      <v-btn @click="showPaybox(bud.id, bud.area, bud.price, bud.paid)" x-small class="btn simple-btn mt-2">cuadro de pago</v-btn>
-                    </div>
-                  </div>
-
+                <div  v-for="(bud,b) in offerData.budget_offers" :key="b">
                   <div v-if="bud.area=='Gastos adicionales' && bud.price!=0" class="report-item mb-2">
                     <div class="display: flex; justify-content: center">
                       <h6 class="text-center ma-0" style="display: inline">{{bud.area}}:</h6>
@@ -231,60 +85,22 @@
                       <v-btn @click="showPaybox(bud.id, bud.area, bud.price, bud.paid)" x-small class="btn simple-btn mt-2">cuadro de pago</v-btn>
                     </div>
                   </div>
-
-                  <div v-if="bud.area=='Ingeniería' && bud.price!=0" class="report-item mb-2">
-                    <div class="display: flex; justify-content: center">
-                      <h6 class="text-center ma-0" style="display: inline">{{bud.area}}:</h6>
-                      <v-tooltip
-
-                        right 
-                        style="display: inline"
-                      >
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-btn
-                            icon
-                            v-bind="attrs"
-                            v-on="on"
-                            x-small
-                            class="pl-2 pb-1"
-                          >
-                            <v-icon color="grey lighten-1">
-                              mdi-information
-                            </v-icon>
-                          </v-btn>
-                        </template>
-                        <span>Pagado/presupuestado</span>
-                      </v-tooltip>
-                    </div>
-                    <div style="display: flex; flex-direction: column; align-items: center">
-                      <p class="my-1">{{bud.paid}}/{{bud.price}} ($USD)</p>
-                      <v-progress-circular 
-                          :value="budget_ingenieria"
-                          :size="70"
-                          :width="7"
-                          color="primary"
-                          class="report-progress mt-0">
-                          {{budget_ingenieria}}%
-                      </v-progress-circular>
-                      <v-btn @click="showPaybox(bud.id, bud.area, bud.price, bud.paid)" x-small class="btn simple-btn mt-2">cuadro de pago</v-btn>
-                    </div>
-                  </div>
                   
                 </div>
                 
             </div>
             <div class="report-bitacora pa-4">
-              <Bitacora
-                :project="projectData"
-                :project_users="users_worked_hours"
-              ></Bitacora>
+              <BitacoraOffer
+                :offer="offerData"
+                :offer_users="users_worked_hours"
+              ></BitacoraOffer>
             </div>
         </div>
         <div class="report-bitacora-mobile pa-0">
-              <Bitacora
-                :project="projectData"
-                :project_users="users_worked_hours"
-              ></Bitacora>
+              <BitacoraOffer
+                :offer="offerData"
+                :offer_users="users_worked_hours"
+              ></BitacoraOffer>
             </div>
         <template>
               <v-dialog v-model="payboxDialog" max-width="1000px">
@@ -335,7 +151,7 @@
                                 <td class="text-center">{{ item.status }}</td>
                                 <td v-if="item.observations != null" class="text-center">{{ item.observations }}</td>
                                 <td v-else class="text-center">-</td>
-                                <!-- <td v-if="currentUser.id == projectData.leader_id" class="text-center">
+                                <!-- <td v-if="currentUser.id == offerData.leader_id" class="text-center">
                                     <v-simple-checkbox
                                     v-model="item.area_product.completed"
                                     ></v-simple-checkbox>
@@ -349,7 +165,7 @@
                             </tr>
                         </tbody>
                     </v-simple-table>
-                    <v-expansion-panels focusable class="px-5 mt-2 mb-5" v-if="currentUser.id == projectData.leader_id">
+                    <v-expansion-panels focusable class="px-5 mt-2 mb-5" v-if="currentUser.id == offerData.leader_id">
             <v-expansion-panel>
                 <v-expansion-panel-header>Cargar pago</v-expansion-panel-header>
                 <v-expansion-panel-content class="py-4">
@@ -490,7 +306,7 @@
                                 <td>{{ item.area_name }}</td>
                                 <td>{{ item.code }}</td>
                                 <td>{{ item.name }}</td>
-                                <td v-if="currentUser.id == projectData.leader_id" class="text-center">
+                                <td v-if="currentUser.id == offerData.leader_id" class="text-center">
                                     <v-simple-checkbox
                                     v-model="item.area_product.completed"
                                     ></v-simple-checkbox>
@@ -560,26 +376,23 @@
 
 <script>
 import UserDataService from "../../services/UserDataService";
-import ProjectUserDataService from "../../services/ProjectUserDataService";
-import ProjectDataService from "../../services/ProjectDataService";
-import AreaDataService from "../../services/AreaDataService";
-import Bitacora from "../../components/reports/Bitacora.vue";
-import BudgetDataService from "../../services/BudgetDataService";
-import LoadBudgetDataService from "../../services/LoadBudgetDataService";
+import OfferUserDataService from "../../services/OfferUserDataService";
+import OfferDataService from "../../services/OfferDataService";
+import BitacoraOffer from "../../components/reports/BitacoraOffer.vue";
+import BudgetOfferDataService from "../../services/BudgetOfferDataService";
+import LoadBudgetOfferDataService from "../../services/LoadBudgetOfferDataService";
 export default {
-  name: "project-report",
+  name: "offer-report",
   components: {
-    Bitacora,
+    BitacoraOffer,
   },
   data() {
     return {
       origin_users: [],
-      origin_project_users: [],
-      origin_areas: [],
+      origin_offer_users: [],
       origin_budgets: [],
       origin_load_budgets: [],
-      projectData: null,
-      productsDialog: false,
+      offerData: null,
 
       show_hours: false,
       show_advance: false,
@@ -631,42 +444,10 @@ export default {
     currentUser() {      
       return this.$store.state.auth.user;
     },
-    project_areas(){
-        let areas = [];
-        let project_id = this.currentProjectId;
-        this.origin_projects.forEach(project => {
-            if (project_id == project.id){
-                 project.project_areas.forEach(area => {
-                    areas.push(area);
-                 });      
-            }            
-        });
-        return areas;
-    },
-    area_products(){
-        let products = [];
-        // let project_id = this.currentProjectId;
-        this.origin_areas.forEach(area => {
-            if (area.project_id == this.projectData.id){
-                 area.products.forEach(prod => {
-                  prod.area_name = area.name;
-                  products.push(prod);
-                 });      
-            }            
-        });
-        return products;
-    },
-    total_estimated_hours(){
-        let hours = 0;
-        this.area_products.forEach(prod => {
-            hours += prod.area_product.estimated_hours;
-        });
-        return hours;
-    },
     total_worked_hours(){
       let hours = 0;
-      this.origin_project_users.forEach(pu => {
-        if (this.projectData.id == pu.project_id){
+      this.origin_offer_users.forEach(pu => {
+        if (this.offerData.id == pu.offer_id){
           pu.loads.forEach(load => {
             hours = hours + load.hours;
           });
@@ -674,29 +455,13 @@ export default {
       });
       return hours;
     },
-    worked_hours_percent(){
-        let percent = (this.total_worked_hours * 100)/this.total_estimated_hours;
-        return percent.toFixed(0);
-    },
-    project_advance(){
-        let completed = 0;
-        let total = 0;
-        this.area_products.forEach(prod => {
-            if (prod.area_product.completed){
-                completed += 1;
-            }
-            total += 1;
-        });
-        let percent = (completed * 100)/total;
-        return percent.toFixed(0);
-    },
     users_worked_hours(){
       let users = [];
       let load_hours;
-      this.projectData.working_users.forEach(worker => {
+      this.offerData.working_users.forEach(worker => {
         load_hours = 0;
-        this.origin_project_users.forEach(pu => {
-          if (pu.project_id == this.projectData.id) {
+        this.origin_offer_users.forEach(pu => {
+          if (pu.offer_id == this.offerData.id) {
             if (worker.id == pu.worker_id) {
             pu.loads.forEach(load => {
               load_hours += load.hours;
@@ -711,61 +476,13 @@ export default {
       });
       return users;
     },
-    budget_suministro(){
-      let price = 0;
-      let paid = 0;
-      this.origin_budgets.forEach(bud => {
-        if (bud.area == "Suministro" && bud.project_id == this.projectData.id){
-          this.origin_load_budgets.forEach(load => {
-            if (load.budget_id == bud.id){
-              paid += load.paid;
-            }
-          });
-          price = bud.price
-        }
-      });
-      let percent = (paid * 100)/price;
-      return percent.toFixed(0); 
-    },
-    budget_instalacion(){
-      let price = 0;
-      let paid = 0;
-      this.origin_budgets.forEach(bud => {
-        if (bud.area == "Instalación" && bud.project_id == this.projectData.id){
-          this.origin_load_budgets.forEach(load => {
-            if (load.budget_id == bud.id){
-              paid += load.paid;
-            }
-          });
-          price = bud.price
-        }
-      });
-      let percent = (paid * 100)/price;
-      return percent.toFixed(0);
-    },
     budget_adicionales(){
       let price = 0;
       let paid = 0;
       this.origin_budgets.forEach(bud => {
-        if (bud.area == "Gastos adicionales" && bud.project_id == this.projectData.id){
+        if (bud.area == "Gastos adicionales" && bud.offer_id == this.offerData.id){
           this.origin_load_budgets.forEach(load => {
-            if (load.budget_id == bud.id){
-              paid += load.paid;
-            }
-          });
-          price = bud.price
-        }
-      });
-      let percent = (paid * 100)/price;
-      return percent.toFixed(0);
-    },
-    budget_ingenieria(){
-      let price = 0;
-      let paid = 0;
-      this.origin_budgets.forEach(bud => {
-        if (bud.area == "Ingeniería" && bud.project_id == this.projectData.id){
-          this.origin_load_budgets.forEach(load => {
-            if (load.budget_id == bud.id){
+            if (load.budget_offer_id == bud.id){
               paid += load.paid;
             }
           });
@@ -778,8 +495,8 @@ export default {
     load_budgets_area(){
       let loads = [];
       this.origin_load_budgets.forEach(load => {
-        this.projectData.budgets.forEach(bud => {
-          if (load.budget_id == bud.id){
+        this.offerData.budget_offers.forEach(bud => {
+          if (load.budget_offer_id == bud.id){
             if (load.area == this.temp_budget_area){
               if (load.paid > load.budget) load.to_pay = 0;
               else load.to_pay = load.budget - load.paid;
@@ -798,7 +515,7 @@ export default {
             let data = {
               paid: this.temp_budget_paid + paid_new_integer,
             };
-            BudgetDataService.update(this.temp_budget, data)
+            BudgetOfferDataService.update(this.temp_budget, data)
               .then((response) => {
                   console.log(response.data);
                   })
@@ -842,7 +559,7 @@ export default {
             this.alertError = true;
             this.errorMessage = "No puedes cargar días futuros."
         } else {
-          this.projectData.budgets.forEach(bud => {
+          this.offerData.budget_offers.forEach(bud => {
             if (bud.area == this.temp_budget_area) {
               loadPayload = {
                   date: this.dateFormatted,
@@ -850,11 +567,11 @@ export default {
                   description: this.temp_load_description,
                   budget: this.temp_load_budget,
                   paid: this.temp_load_paid,
-                  budget_id: bud.id,
+                  budget_offer_id: bud.id,
                   area: this.temp_budget_area,
                   status: this.temp_load_status,
               }
-              BudgetDataService.load(loadPayload)
+              BudgetOfferDataService.load(loadPayload)
               .then(response => {
                   console.log(response.data);
               })
@@ -866,7 +583,7 @@ export default {
             let data = {
               paid: this.temp_budget_paid + paid_new_float,
             };
-            BudgetDataService.update(this.temp_budget, data)
+            BudgetOfferDataService.update(this.temp_budget, data)
               .then((response) => {
                   console.log(response.data);
                   })
@@ -882,21 +599,6 @@ export default {
           });  
         }
     },
-    saveChanges(){
-        this.area_products.forEach(product => {
-            var data = {
-                completed: product.area_product.completed
-            };
-            AreaDataService.updateProduct(product.area_product.id, data)
-            .then((response) => {
-                console.log(response.data);
-                })
-                .catch((e) => {
-                console.log(e);
-                });
-        });
-        this.productsDialog = false;
-    },
     retrieveUsers() {
       UserDataService.getAll()
         .then((response) => {
@@ -906,8 +608,8 @@ export default {
           console.log(e);
         });
     },
-    retrieveProjectUsers() {
-      ProjectUserDataService.getAll()
+    retrieveOfferUsers() {
+      OfferUserDataService.getAll()
         .then((response) => {
           this.origin_project_users = response.data;
         })
@@ -915,17 +617,8 @@ export default {
           console.log(e);
         });
     },
-    retrieveAreas() {
-      AreaDataService.getAll()
-        .then((response) => {
-          this.origin_areas = response.data;
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
     retrieveBudgets() {
-      BudgetDataService.getAll()
+      BudgetOfferDataService.getAll()
         .then((response) => {
           this.origin_budgets = response.data;
         })
@@ -934,7 +627,7 @@ export default {
         });
     },
     retrieveLoadBudgets() {
-      LoadBudgetDataService.getAll()
+      LoadBudgetOfferDataService.getAll()
         .then((response) => {
           this.origin_load_budgets = response.data;
         })
@@ -942,10 +635,10 @@ export default {
           console.log(e);
         });
     },
-    getProject(id) {
-      ProjectDataService.get(id)
+    getOffer(id) {
+      OfferDataService.get(id)
         .then((response) => {
-          this.projectData = response.data;
+          this.offerData = response.data;
           console.log(response.data);
         })
         .catch((e) => {
@@ -972,9 +665,8 @@ export default {
     },
   mounted() {
     this.retrieveUsers();
-    this.retrieveAreas();
-    this.retrieveProjectUsers();
-    this.getProject(this.$route.params.id);
+    this.retrieveOfferUsers();
+    this.getOffer(this.$route.params.id);
     this.retrieveBudgets();
     this.retrieveLoadBudgets();
   },

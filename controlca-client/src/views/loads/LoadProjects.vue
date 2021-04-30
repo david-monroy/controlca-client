@@ -13,12 +13,16 @@
             
           ></v-text-field>
         </v-card-title>
+        <div v-if="user_projects.length < 1">
+          <p>No estás involucrado a ningún proyecto.</p>
+        </div>
         <v-data-table
           :headers="headers"
           :items="user_projects"
           :hide-default-footer="false"
           :items-per-page="5"
           :search="search"
+          v-else
         >
 
         <template v-slot:top>
@@ -194,7 +198,10 @@
       </v-card>
     </v-col>
     <div class="buttons">
-      <v-btn class="btn-block w-25 mx-auto simple-btn-back" @click="goRoute(goBack)">
+      <v-btn class="btn-block w-25 mx-auto simple-btn-back d-none d-sm-flex" @click="goRoute(goBack)">
+        Regresar
+      </v-btn>
+      <v-btn class="btn-block w-75 mx-auto simple-btn-back d-flex d-sm-none" @click="goRoute(goBack)">
         Regresar
       </v-btn>
     </div>

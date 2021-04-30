@@ -57,7 +57,7 @@
           </v-row>
           <input type="hidden" value="currentUser.id">
           <v-row class="pb-0 mb-0 form-row" >
-            <v-col md="6" cols="12" class="py-0">
+            <v-col md="4" cols="12" class="py-0">
                 <div class="form-group">
                     <v-text-field
                         v-model="projectData.code"
@@ -68,7 +68,18 @@
                     ></v-text-field>
                 </div>
             </v-col>
-            <v-col md="6" cols="12" class="py-0">
+            <v-col md="4" cols="12" class="py-0">
+                <div class="form-group select-type">
+                    <v-select
+                    v-model="temp_project_type"
+                    :items="origin_project_types"
+                    label="Tipo de proyecto"
+                    dense
+                    required
+                ></v-select>
+                </div>
+            </v-col>
+            <v-col md="4" cols="12" class="py-0">
                 <div class="form-group">
                     <v-text-field
                         v-model="projectData.areas"
@@ -125,6 +136,9 @@
                                 Nombre
                             </th>
                             <th class="text-center">
+                                Descripción
+                            </th>
+                            <th class="text-center">
                                 Horas estimadas
                             </th>
                             <th class="text-center">
@@ -140,6 +154,8 @@
                         <td class="text-center">{{ product.area }}</td>
                         <td class="text-center">{{ product.code }}</td>
                         <td class="text-center">{{ product.name }}</td>
+                        <td class="text-center" v-if="product.observations">{{ product.observations }}</td>
+                        <td class="text-center" v-else>-</td>
                         <td class="text-center">{{ product.estimated_hours }}</td>
                         <td class="text-center">
                             <v-icon small class="text-center" 
@@ -191,12 +207,15 @@
               <v-col md="6" cols="12" class="py-0 mx-auto">
                 <v-text-field
                     v-model="temp_product_obs"
-                    label="Observaciones (opcional)"
+                    label="Descripción (opcional)"
                     type="text"
                 ></v-text-field>
               </v-col>
         </v-row>
-        <v-btn class="simple-btn mt-2 mx-auto btn-block w-75" @click="addProductToProject()">
+        <v-btn class="simple-btn mt-2 mx-auto btn-block w-75 d-none d-sm-flex" @click="addProductToProject()">
+          Añadir al proyecto
+        </v-btn>
+        <v-btn class="simple-btn mt-2 mx-auto btn-block w-100 d-flex d-sm-none" @click="addProductToProject()">
           Añadir al proyecto
         </v-btn>
         </v-expansion-panel-content>
@@ -214,11 +233,18 @@
             </v-btn>
             <v-btn
                 color="primary"
+                class="d-none d-sm-flex"
                 @click="validateStep2()"
                 >
                 Siguiente
                 </v-btn>
         </div>
+        <v-btn
+                color="primary" class="d-flex d-sm-none mx-auto w-100"
+                @click="validateStep2()"
+                >
+                Siguiente
+                </v-btn>
       </v-stepper-content>
 
       <v-stepper-content step="3">
@@ -318,7 +344,10 @@
                 
               </v-col>
             </v-row>
-        <v-btn class="simple-btn mt-2 mx-auto btn-block w-75" @click="addWorkerToProject()">
+        <v-btn class="simple-btn mt-2 mx-auto btn-block w-75 d-none d-sm-flex" @click="addWorkerToProject()">
+          Añadir al proyecto
+        </v-btn>
+        <v-btn class="simple-btn mt-2 mx-auto btn-block w-100 d-flex d-sm-none" @click="addWorkerToProject()">
           Añadir al proyecto
         </v-btn>
         </v-expansion-panel-content>
@@ -335,12 +364,18 @@
                 Regresar
             </v-btn>
             <v-btn
-                color="primary"
+                color="primary" class="d-none d-sm-flex"
                 @click="validateStep3()"
                 >
                 Siguiente
                 </v-btn>
         </div>
+        <v-btn
+                color="primary" class="d-flex d-sm-none mx-auto w-100"
+                @click="validateStep3()"
+                >
+                Siguiente
+                </v-btn>
       </v-stepper-content>
 
       <v-stepper-content step="4">
@@ -348,8 +383,8 @@
             <h5 class="ma-0">Indique el presupuesto para cada rubro,</h5>
             <h6>si no aplica, mantenga en cero (0).</h6>
         </v-row>
-        <v-row class="pa-0 ma-0 form-row-rol">
-              <v-col md="4" cols="12" class="py-0 mx-auto">
+        <v-row class="pa-0 ma-0 form-row-rol" v-if="temp_project_type=='IPC'">
+              <v-col md="3" cols="12" class="py-0 mx-auto">
                 <v-text-field
                     v-model="budget[0].price"
                     label="Suministro"
@@ -357,7 +392,7 @@
                     type="number"
                 ></v-text-field>
               </v-col>
-              <v-col md="4" cols="12" class="py-0 mx-auto">
+              <v-col md="3" cols="12" class="py-0 mx-auto">
                 <v-text-field
                     v-model="budget[1].price"
                     label="Instalación"
@@ -365,13 +400,40 @@
                     type="number"
                 ></v-text-field>
               </v-col>
-              <v-col md="4" cols="12" class="py-0 mx-auto">
+              <v-col md="3" cols="12" class="py-0 mx-auto">
+                <v-text-field
+                    v-model="budget[3].price"
+                    label="Ingeniería"
+                    prefix="USD$"
+                    type="number"
+                ></v-text-field>
+              </v-col>
+              <v-col md="3" cols="12" class="py-0 mx-auto">
                 <v-text-field
                     v-model="budget[2].price"
                     label="Gastos adicionales"
                     prefix="USD$"
                     type="number"
-                    hint="Transporte, horas hombre, biáticos, etc."
+                    hint="Transporte, envíos, viáticos, etc."
+                ></v-text-field>
+              </v-col>
+        </v-row>
+        <v-row class="pa-0 ma-0 form-row-rol" v-else>
+              <v-col md="6" cols="12" class="py-0 mx-auto">
+                <v-text-field
+                    v-model="budget[3].price"
+                    label="Ingeniería"
+                    prefix="USD$"
+                    type="number"
+                ></v-text-field>
+              </v-col>
+              <v-col md="6" cols="12" class="py-0 mx-auto">
+                <v-text-field
+                    v-model="budget[2].price"
+                    label="Gastos adicionales"
+                    prefix="USD$"
+                    type="number"
+                    hint="Transporte, envíos, viáticos, etc."
                 ></v-text-field>
               </v-col>
         </v-row>
@@ -386,12 +448,18 @@
                 Regresar
             </v-btn>
             <v-btn
-                color="primary"
+                color="primary" class="d-none d-sm-flex"
                 @click="validateStep4()"
                 >
                 Siguiente
                 </v-btn>
         </div>
+        <v-btn
+                color="primary" class="d-flex d-sm-none mx-auto w-100"
+                @click="validateStep4()"
+                >
+                Siguiente
+                </v-btn>
       </v-stepper-content>
 
       <v-stepper-content step="5">
@@ -413,6 +481,10 @@
                 <div>
                     <strong>Líder: </strong> <p>{{currentUser.name}} {{currentUser.lastname}}</p>
                 </div>
+            </div>
+
+            <div class="mb-2 pb-0 body-2">
+                <p><strong>Tipo de proyecto: </strong>{{temp_project_type}}</p> 
             </div>
             
             <div class="mb-2 pb-0 body-2" v-if="projectData.description">
@@ -438,6 +510,9 @@
                                 Producto
                             </th>
                             <th class="text-center">
+                                Descripción
+                            </th>
+                            <th class="text-center">
                                 Horas estimadas
                             </th>
                             <th class="text-center">
@@ -453,6 +528,8 @@
                             <td class="text-center">{{ product.area }}</td>
                             <td class="text-center">{{ product.code }}</td>
                             <td class="text-center">{{ product.name }}</td>
+                            <td class="text-center" v-if="product.observations">{{ product.observations }}</td>
+                            <td class="text-center" v-else>-</td>
                             <td class="text-center">{{ product.estimated_hours }}</td>
                             <td class="text-center">
                             <v-icon small class="text-center" 
@@ -554,12 +631,18 @@
                 Regresar
             </v-btn>
             <v-btn
-                color="primary"
+                color="primary" class="d-none d-sm-flex"
                 @click="saveProject()"
                 >
                 Guardar
                 </v-btn>
         </div>
+        <v-btn
+                color="primary" class="d-flex d-sm-none mx-auto w-100"
+                @click="saveProject()"
+                >
+                Guardar
+                </v-btn>
       </v-stepper-content>
     </v-stepper-items>
   </v-stepper>
@@ -632,12 +715,19 @@ export default {
           workers: [],
       },
 
+      temp_project_type: null,
+
       roster_list: [
           "Director",
           "Gerente",
         //   "Líder",
           "Colaborador"
       ], 
+
+      origin_project_types: [
+          "Ingeniería",
+          "IPC"
+      ],
 
       origin_products: [],
       temp_product_id: null,
@@ -676,6 +766,10 @@ export default {
           },
           {
               area: "Gastos adicionales",
+              price: 0
+          },
+          {
+              area: "Ingeniería",
               price: 0
           }
       ]
@@ -753,6 +847,9 @@ export default {
               this.alertError = true;
           } else if (!this.projectData.code) {
               this.errorMessage = "Debes indicar el código del proyecto."
+              this.alertError = true;
+          } else if (!this.temp_project_type) {
+              this.errorMessage = "Debes indicar el tipo del proyecto."
               this.alertError = true;
           } else if (!this.projectData.areas || this.projectData.areas<1) {
               this.errorMessage = "Al menos debe tener un (1) área de trabajo."
@@ -850,6 +947,7 @@ export default {
                     name: product_name,
                     code: product_code,
                     area: this.temp_product_area,
+                    observations: this.temp_product_obs,
                 });
                 this.temp_product_id = "",
                 this.temp_product_estimated_hours = "",
@@ -922,6 +1020,7 @@ export default {
         name: this.projectData.name,
         description: this.projectData.description,
         code: this.projectData.code,
+        type: this.temp_project_type,
         areas: this.projectData.areas,
         leader: this.currentUser.id,
       };
@@ -1019,7 +1118,7 @@ export default {
 
 <style>
     .stepper-project{
-        width: 80%;
+        width: 90%;
     }
     .add-product-section{
         border: 1px solid lightgray;
@@ -1035,5 +1134,22 @@ export default {
   .no-items-label{
       background-color: rgba(219, 214, 214, 0.301);
       border-radius: 10px;
+  }
+  .v-application--is-ltr .v-text-field .v-label {
+    transform-origin: top left;
+    padding-left: 10px;
+    }
+    .v-input input {
+      max-height: 32px;
+      padding-left: 8px;
+      padding-right: 8px;
+  }
+  .select-type{
+      padding-top: 18px !important;
+  }
+  @media only screen and (max-width: 992px) {
+      .stepper-project{
+        width: 100%;
+    }
   }
 </style>

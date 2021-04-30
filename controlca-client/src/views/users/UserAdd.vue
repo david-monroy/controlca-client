@@ -113,11 +113,20 @@
 
             <v-btn @click="saveUser"
                 :disabled="!valid"
-                class="btn btn-success btn-block w-50 my-2 mx-auto simple-btn">
+                class="btn btn-success btn-block w-50 my-2 mx-auto simple-btn d-none d-sm-flex">
+                Registrar
+            </v-btn>
+            <v-btn @click="saveUser"
+                :disabled="!valid"
+                class="btn btn-success btn-block w-75 my-2 mx-auto simple-btn d-flex d-sm-none">
                 Registrar
             </v-btn>
             <v-btn @click="goRoute(back)"
-                class="btn-block w-25 mx-auto simple-btn-back mb-0">
+                class="btn-block w-25 mx-auto simple-btn-back mb-0 d-none d-sm-flex">
+                Regresar
+            </v-btn>
+            <v-btn @click="goRoute(back)"
+                class="btn-block w-75 mx-auto simple-btn-back mb-0 d-flex d-sm-none">
                 Regresar
             </v-btn>
       </v-form>
@@ -152,12 +161,13 @@
                             </v-col>
                         </v-row>
                     </div>   
-                    <v-btn class="simple-btn mt-2 mx-auto btn-block w-75" @click="saveUser()">
+                    <v-btn class="simple-btn mt-2 mx-auto btn-block w-75"
+                    @click="saveUser()">
                         Registrar
                     </v-btn>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn class="secondary--text" text @click="cancelUser()">Cancelar</v-btn>
+                    <v-btn class="secondary--text w-75" text @click="cancelUser()">Cancelar</v-btn>
                     <v-spacer></v-spacer>
                   </v-card-actions>
                 </v-card>

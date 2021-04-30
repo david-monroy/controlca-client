@@ -12,7 +12,7 @@
         >
     <v-card-title class="p-0 body-1 font-weight-bold project-card-title"> {{ name }} </v-card-title>
     <v-card-text class="p-0">
-      <div style="display: flex;">
+      <div style="display: flex; flex-direction: column">
         <h4 class="p-0 body-1 font-weight-bold project-card-title-mobile"> {{ name }}</h4>
       <div class="project-card-chips my-2">
           <v-chip
@@ -75,6 +75,9 @@
                 <strong>Status: </strong> <p>{{status}}</p>
             </div>
           
+        </v-card-text>
+        <v-card-text class="mb-2 pb-0 body-2">
+          <p><strong>Tipo de proyecto: </strong>{{type}}</p> 
         </v-card-text>
         <v-card-text class="mb-2 pb-0 body-2">
           <p class="mb-1" ><strong>Total de horas trabajadas: </strong>{{worked_hours}}/{{total_estimated_hours}}</p> 
@@ -222,13 +225,20 @@
             Reportes
           </v-btn>
           <v-btn
-            color="primary"
+            color="primary" class="d-none d-sm-flex"
             text
             @click="dialog = false"
           >
             Cerrar
           </v-btn>
         </v-card-actions>
+        <v-btn
+            color="primary" class="d-flex d-sm-none mx-auto w-100"
+            text
+            @click="dialog = false"
+          >
+            Cerrar
+          </v-btn>
         <template>
               <v-dialog v-model="dialogDelete" max-width="400px" class="pa-0">
                 <v-card style="display: flex; justify-content: center; flex-direction: column">
@@ -359,7 +369,7 @@ export default {
         this.budgets.forEach(b => {
             total += b.price;
         });
-        return total;
+        return total.toFixed(2);
     }
   },
   methods: {
@@ -463,11 +473,12 @@ export default {
 
      @media only screen and (max-width: 992px) {
        .project-card{
-       width: 800px !important;
+       width: 240px !important;
         max-height: 240px;
         border: 1px solid #00917c  !important;
         padding: 8px;
         background-color:rgb(247, 245, 245) !important;
+        margin-top: 5px !important;
     }
 
     .project-card-title-mobile{

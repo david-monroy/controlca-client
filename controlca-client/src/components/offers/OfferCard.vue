@@ -114,6 +114,37 @@
             </v-expansion-panel>
         </v-expansion-panels>
 
+        <v-expansion-panels focusable class="px-5 mt-2">
+            <v-expansion-panel>
+                <v-expansion-panel-header>Presupuesto (USD$ {{total_budget}})</v-expansion-panel-header>
+                <v-expansion-panel-content>
+                    <v-simple-table max-height="240px" >
+                        <template v-slot:default>
+                        <thead >
+                            <tr>
+                            <th class="text-center">
+                                Rubro
+                            </th>
+                            <th class="text-center">
+                                Precio
+                            </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                            v-for="(bud,u) in budgets"
+                            :key="u"
+                            >
+                            <td class="text-center">{{ bud.area }}</td>
+                            <td class="text-center">${{ bud.price }}</td>
+                            </tr>
+                        </tbody>
+                        </template>
+                    </v-simple-table>
+                </v-expansion-panel-content>
+            </v-expansion-panel>
+        </v-expansion-panels>
+
         <v-card-actions>
             <v-btn
             color="red"
@@ -191,6 +222,7 @@ export default {
     leader: Object,
     users: Array,
     id: Number,
+    budgets: Array,
   },
   data: () => ({
       dialog: false,
@@ -219,6 +251,13 @@ export default {
       });
       return hours;
     },
+    total_budget(){
+        let total = 0;
+        this.budgets.forEach(b => {
+            total += b.price;
+        });
+        return total.toFixed(2);
+    }
   },
   methods: {
     goRoute(route) {

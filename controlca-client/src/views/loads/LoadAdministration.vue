@@ -1,10 +1,10 @@
 <template>
   <v-row align="center" class="load-list px-3 mt-2 mx-auto">
     <v-col cols="12" sm="12">
-      <v-card class="mx-auto p-3" tile max-width="500px" style="display: flex; flex-direction: column; align-items: center">
-        <v-card-title> <span class="primary--text">Cargar horas administrativas</span>
+      <v-card class="mx-auto p-2" tile max-width="500px" style="display: flex; flex-direction: column; align-items: center">
+        <v-card-title> <span class="primary--text text-center">Cargar horas <br> administrativas</span>
         </v-card-title>
-        <div class="mt-5 px-10">
+        <div class="mt-5 px-8">
             <v-row class="pb-0 mb-0 form-row" >
                 <v-col md="12" cols="12" class="py-0">
                     <v-select
@@ -96,16 +96,24 @@
                     </div>
                 </v-col>
             </v-row>
-            <v-btn class="simple-btn mt-5 mx-auto btn-block w-75" @click="saveLoad()">
+            <v-btn class="simple-btn mt-5 mx-auto btn-block w-75 d-none d-sm-flex" @click="saveLoad()">
                 Cargar horas
             </v-btn>
-            <v-btn class="simple-btn mt-5 mx-auto btn-block w-50" @click="openHistoryDialog()">
+            <v-btn class="simple-btn mt-5 mx-auto btn-block w-100 d-flex d-sm-none" @click="saveLoad()">
+                Cargar horas
+            </v-btn>
+            <v-btn class="simple-btn mt-5 mx-auto btn-block w-50 d-none d-sm-flex" @click="openHistoryDialog()">
+                <v-icon small class="mr-2">mdi-history</v-icon>
+                Historial
+            </v-btn>
+            <v-btn class="simple-btn mt-5 mx-auto btn-block w-100 d-flex d-sm-none" @click="openHistoryDialog()">
                 <v-icon small class="mr-2">mdi-history</v-icon>
                 Historial
             </v-btn>
             <v-card-actions>
             <v-spacer></v-spacer>
-                <v-btn class="secondary--text" text @click="goRoute('loads')">Regresar</v-btn>
+                <v-btn class="secondary--text d-none d-sm-flex" text @click="goRoute('loads')">Regresar</v-btn>
+                <v-btn class="secondary--text d-flex d-sm-none" text @click="goRoute('loads')">Regresar</v-btn>
             <v-spacer></v-spacer>
             </v-card-actions>
         </div>
