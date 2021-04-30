@@ -77,6 +77,9 @@
           
         </v-card-text>
         <v-card-text class="mb-2 pb-0 body-2">
+          <p><strong>Tipo de proyecto: </strong>{{type}}</p> 
+        </v-card-text>
+        <v-card-text class="mb-2 pb-0 body-2">
           <p class="mb-1" ><strong>Total de horas trabajadas: </strong>{{worked_hours}}/{{total_estimated_hours}}</p> 
           <p v-if="worked_hours_percent > 85" style="color: red"><v-icon style="color: red">mdi-alert-octagon</v-icon> ¡Según la estimación, ya se han cargado el {{worked_hours_percent}}% de las horas!</p>
         </v-card-text>

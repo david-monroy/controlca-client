@@ -19,7 +19,15 @@
 
       <v-divider></v-divider>
 
-      <v-stepper-step step="3">
+      <v-stepper-step
+        :complete="formStep > 3"
+        step="3">
+        Presupuesto
+      </v-stepper-step>
+
+      <v-divider></v-divider>
+
+      <v-stepper-step step="4">
         Confirmar
       </v-stepper-step>
     </v-stepper-header>
@@ -219,7 +227,49 @@
                 Siguiente
                 </v-btn>
       </v-stepper-content>
+
       <v-stepper-content step="3">
+        <v-row class="pa-0 ma-0 form-row-rol text-center mb-5">
+            <h5 class="ma-0">Indique el presupuesto,</h5>
+            <h6>si no aplica, mantenga en cero (0).</h6>
+        </v-row>
+        <v-row class="pa-0 ma-0 form-row-rol">
+              <v-col md="6" cols="12" class="py-0 mx-auto">
+                <v-text-field
+                    v-model="budget_price"
+                    label="Gastos adicionales"
+                    prefix="USD$"
+                    type="number"
+                    hint="Transporte, envíos, viáticos, etc."
+                ></v-text-field>
+              </v-col>
+        </v-row>
+
+        <div style="display: flex; justify-content: space-between">
+            <v-btn text color="red"
+            @click="confirmCancel = true">
+                Cancelar
+            </v-btn>
+            <v-btn text color="primary"
+            @click="formStep = 2">
+                Regresar
+            </v-btn>
+            <v-btn
+                color="primary" class="d-none d-sm-flex"
+                @click="validateStep3()"
+                >
+                Siguiente
+                </v-btn>
+        </div>
+        <v-btn
+                color="primary" class="d-flex d-sm-none mx-auto w-100"
+                @click="validateStep3()"
+                >
+                Siguiente
+                </v-btn>
+      </v-stepper-content>
+
+      <v-stepper-content step="4">
 
         <div class="no-items-label mb-3 pa-5">
             <p class="text-body-2 ma-0">Confirme la información. Recuerde que una vez registrada la oferta, no podrá modificar los involucrados añadidos.</p>
@@ -280,6 +330,34 @@
                                 <v-icon small class="text-center" disabled
                                 color="red" @click="removeWorker(w)">mdi-delete</v-icon>
                             </td>
+                            </tr>
+                        </tbody>
+                        </template>
+                    </v-simple-table>
+                </v-expansion-panel-content>
+            </v-expansion-panel>
+        </v-expansion-panels>
+
+        <v-expansion-panels focusable class="pa-0 mb-5">
+            <v-expansion-panel>
+                <v-expansion-panel-header>Presupuesto</v-expansion-panel-header>
+                <v-expansion-panel-content>
+                    <v-simple-table max-height="240px" >
+                        <template v-slot:default>
+                        <thead >
+                            <tr>
+                            <th class="text-center">
+                                Rubro
+                            </th>
+                            <th class="text-center">
+                                Precio
+                            </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                            <td class="text-center">{{ budget_area }}</td>
+                            <td class="text-center">${{ budget_price }}</td>
                             </tr>
                         </tbody>
                         </template>
@@ -366,6 +444,7 @@
 <script>
 import UserDataService from "../../services/UserDataService";
 import OfferDataService from "../../services/OfferDataService";
+import BudgetOfferDataService from "../../services/BudgetOfferDataService";
 export default {
   name: "offers-add",
   data: () => ({
@@ -391,6 +470,11 @@ export default {
         //   "Líder",
           "Colaborador"
       ], 
+
+
+ 
+        budget_area: "Gastos adicionales",
+        budget_price: 0,
 
       origin_workers: [],
       temp_worker_id: null,
@@ -439,6 +523,13 @@ export default {
             worker.completeName = worker.name + " " + worker.lastname;
         });
         return data;
+    },
+    total_budget(){
+        let total = 0;
+        this.budget.forEach(b => {
+            total = total + b.price;
+        });
+        return total;
     }
   },
   methods: {
@@ -481,6 +572,9 @@ export default {
           if (this.offerData.workers.length < 2){
               this.confirmWorkers = true;
           } else this.formStep = 3;
+      },
+      validateStep3(){
+            this.formStep = 4;
       },
     retrieveUsers() {
       UserDataService.getAll()
@@ -563,6 +657,24 @@ export default {
                 console.log(e);
                 });
         });
+
+        let budget_payload = null;
+
+            budget_payload = {
+                area: this.budget_area,
+                price: this.budget_price,
+                offer: offer_id.data.id,
+            }
+            BudgetOfferDataService.create(budget_payload)
+                .then(response => {
+                console.log(response.data);
+                })
+                .catch(e => {
+                console.log(e);
+                });
+        
+
+        console.log(budget_payload);
 
         this.goRoute("offers");
 

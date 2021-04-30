@@ -8,6 +8,10 @@ class OfferUserDataService {
   addLoad(data) {
     return http.post("/offer_users/addLoad", data);
   }
+  
+  addBitacora(data) {
+    return http.post("/offer_users/addBitacora", data);
+  }
 
   update(id, data) {
     return http.put(`/offer_users/${id}`, data);
